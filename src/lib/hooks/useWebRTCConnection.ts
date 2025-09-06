@@ -181,7 +181,7 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
       console.log('📤 Local description set, exchanging SDP...');
       
       let sdpAnswer: string;
-      const sessionId = '56870bb9-8d51-44fb-b12c-28dbf281a6c0'; // You might want to generate this dynamically
+      const sessionId = '6c55353c-3851-47ab-a990-cb0d00e459a8'; // You might want to generate this dynamically
       setConversationId(sessionId); // Store the conversation ID
       
       try {
