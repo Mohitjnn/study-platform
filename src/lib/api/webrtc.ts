@@ -39,7 +39,7 @@ export interface LatestImageResponse {
 }
 
 // WebRTC API Base URL
-const WEBRTC_API_BASE = 'http://56.228.14.247';
+const WEBRTC_API_BASE = 'https://burgerkingswaadkapatakha.com';
 
 // Create WebRTC axios instance
 export const webrtcApiClient = axios.create({
