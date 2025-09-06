@@ -89,7 +89,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-6xl mx-auto p-4 gap-6">
+    <div className="flex flex-col max-w-7xl h-full mx-auto p-4 gap-6 bg-background">
       {/* Voice Sphere Section */}
       <div className="flex justify-center items-center py-8">
         <VoiceSphere 

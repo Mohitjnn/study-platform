@@ -1,27 +1,27 @@
-// lib/services/webrtc.service.ts
+// lib/services/webrtc.service.ts (SIMPLIFIED WORKING VERSION)
 import { exchangeSdp, bindWebRtcContext, endWebRtcSession, exchangeSdpFallback } from '@/lib/api/webrtc';
-import { WebRTCEvent, User, WebRTCRefs } from "@/types/chat.type";
+import { WebRTCEvent, User, WebRTCRefs } from '@/types/chat.type';
+import { AudioAnalysisService } from './audio.service';
 
 export class WebRTCService {
   private refs: WebRTCRefs;
+  private audioService: AudioAnalysisService;
 
-  constructor(refs: WebRTCRefs) {
+  constructor(refs: WebRTCRefs, audioService: AudioAnalysisService) {
     this.refs = refs;
+    this.audioService = audioService;
   }
 
   async createPeerConnection(): Promise<RTCPeerConnection> {
+    console.log('🔗 Creating RTCPeerConnection...');
+    
+    // Simple peer connection setup (like original)
     const pc = new RTCPeerConnection();
     
     pc.onconnectionstatechange = () => {
       console.log('🔄 Connection state changed:', pc.connectionState);
-      console.log('🔄 ICE connection state:', pc.iceConnectionState);
-    };
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        console.log('🧊 ICE candidate:', event.candidate.type);
-      } else {
-        console.log('🧊 ICE gathering completed');
+      if (['disconnected', 'failed', 'closed'].includes(pc.connectionState)) {
+        // Handle cleanup elsewhere
       }
     };
 
@@ -36,6 +36,8 @@ export class WebRTCService {
 
     try {
       console.log('🎤 Setting up microphone...');
+      
+      // EXACTLY like the working code
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: { 
           echoCancellation: true, 
@@ -45,8 +47,11 @@ export class WebRTCService {
       });
 
       console.log('✅ Microphone stream obtained');
+      
+      // NOTE: In original code, mic starts ON by default
+      // We'll keep our toggle functionality but ensure track is properly handled
       const audioTrack = stream.getTracks()[0];
-      audioTrack.enabled = false; // Initially disabled
+      audioTrack.enabled = false; // Start with mic off like our UI expects
       
       return stream;
     } catch (error) {
@@ -55,22 +60,18 @@ export class WebRTCService {
     }
   }
 
-  setupRemoteAudio(pc: RTCPeerConnection): void {
-    if (this.refs.remoteAudioRef.current) {
-      pc.ontrack = (e) => {
-        console.log('🎵 Received remote track:', e);
-        if (this.refs.remoteAudioRef.current) {
-          this.refs.remoteAudioRef.current.srcObject = e.streams[0];
-        }
-      };
-    }
+  setupRemoteAudioPlayback(pc: RTCPeerConnection): void {
+    // Delegate to audio service with simple setup
+    this.audioService.setupRemoteAudioPlayback(pc);
   }
 
   createDataChannel(pc: RTCPeerConnection): RTCDataChannel {
     console.log('📡 Creating data channel...');
+    
+    // Simple data channel setup (like original)
     const dc = pc.createDataChannel('oai-events');
     
-    dc.onopen = () => console.log('✅ Data channel opened successfully');
+    dc.onopen = () => console.log('✅ Data channel opened');
     dc.onerror = (error) => console.error('❌ Data channel error:', error);
     dc.onclose = () => console.log('📡 Data channel closed');
     
@@ -78,12 +79,12 @@ export class WebRTCService {
   }
 
   async exchangeSDP(offer: RTCSessionDescriptionInit, model: string): Promise<string> {
-    console.log('📤 Local description set, exchanging SDP...');
+    console.log('📤 Exchanging SDP...');
     
     try {
       return await exchangeSdp(offer.sdp!, model);
     } catch (error) {
-      console.warn('⚠️ Primary SDP exchange failed, trying fallback method...');
+      console.warn('⚠️ Primary SDP exchange failed, trying fallback...');
       return await exchangeSdpFallback(offer.sdp!, model);
     }
   }
@@ -109,7 +110,9 @@ export class WebRTCService {
   }
 
   cleanup(): void {
-    // Cleanup WebRTC connections
+    console.log('🧹 Cleaning up WebRTC...');
+    
+    // Simple cleanup (like original)
     if (this.refs.pcRef.current) {
       this.refs.pcRef.current.ontrack = null;
       this.refs.pcRef.current.onconnectionstatechange = null;
@@ -137,16 +140,10 @@ export class WebRTCService {
     const newMicState = !isMicOn;
     console.log(`🎤 Toggling microphone: ${isMicOn} -> ${newMicState}`);
     
+    // Simple toggle (like original)
     this.refs.micStreamRef.current.getTracks().forEach(track => {
       track.enabled = newMicState;
-      console.log(`🎤 Track ${track.id} enabled: ${track.enabled}`);
     });
-    
-    if (newMicState) {
-      console.log('🔊 Microphone is now ACTIVE');
-    } else {
-      console.log('🔇 Microphone is now MUTED');
-    }
     
     return newMicState;
   }

@@ -24,8 +24,8 @@ export const useWebRTCManager = ({
   onSpeakingUpdate
 }: UseWebRTCManagerProps) => {
   // Initialize services
-  const webrtcService = new WebRTCService(refs);
   const audioService = new AudioAnalysisService(refs);
+  const webrtcService = new WebRTCService(refs, audioService);
   const imageService = new ImagePollingService(refs, onMessage);
   const eventHandler = new EventHandlerService(
     onMessage,
@@ -63,7 +63,7 @@ export const useWebRTCManager = ({
       };
 
       // Setup remote audio
-      webrtcService.setupRemoteAudio(pc);
+      // webrtcService.setupRemoteAudio(pc);
 
       // Setup microphone
       const micStream = await webrtcService.setupMicrophone();

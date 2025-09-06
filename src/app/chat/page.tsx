@@ -23,11 +23,9 @@ export default async function ChatPage() {
   }
 
   return (
-    <div className="bg-background text-foreground dark">
+    <div className="bg-background text-foreground dark min-h-screen">
       <Navbar title="AI Assistant" showProfile={true} />
-      <main className="h-full">
         <ChatInterface user={user} />
-      </main>
     </div>
   );
 }

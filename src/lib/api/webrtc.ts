@@ -91,11 +91,11 @@ export const configureWebRtcRequest = async (
 // WebRTC SDP Exchange
 export async function exchangeSdp(
   sdpOffer: string,
-  model: string = 'gpt-4o-mini-realtime-preview-2024-12-17'
+  conversation_id: string = 'gpt-4o-mini-realtime-preview-2024-12-17'
 ): Promise<string> {
   console.log('🔄 Starting SDP exchange...');
   console.log('📤 SDP Offer length:', sdpOffer.length);
-  console.log('🎯 Target model:', model);
+  // console.log('🎯 Target model:', model);
   console.log('🌐 WebRTC API Base:', WEBRTC_API_BASE);
   
   try {
@@ -104,8 +104,8 @@ export async function exchangeSdp(
       headers: requestConfig.headers,
       baseURL: webrtcApiClient.defaults.baseURL
     });
-    
-    const url = `/api/v1/realtime/sdp?model=${model}`;
+
+    const url = `/api/v1/realtime2/sdp?conversation_id=${conversation_id}`;
     console.log('📍 Full request URL:', `${WEBRTC_API_BASE}${url}`);
     
     const response = await webrtcApiClient.post(
@@ -127,10 +127,7 @@ export async function exchangeSdp(
     console.error('Error type:', error.constructor.name);
     console.error('Error message:', error.message);
     console.error('Error code:', error.code);
-    console.error('Response status:', error.response?.status);
     console.error('Response data:', error.response?.data);
-    console.error('Response headers:', error.response?.headers);
-    console.error('Request config:', error.config);
     throw error;
   }
 }
@@ -138,14 +135,14 @@ export async function exchangeSdp(
 // Fallback SDP exchange using fetch with no-cors (for debugging)
 export async function exchangeSdpFallback(
   sdpOffer: string,
-  model: string = 'gpt-4o-mini-realtime-preview-2024-12-17'
+  conversation_id: string = 'gpt-4o-mini-realtime-preview-2024-12-17'
 ): Promise<string> {
   console.log('🔄 Fallback SDP exchange (using fetch)...');
   
   try {
     const token = await getAuthToken();
-    const url = `${WEBRTC_API_BASE}/api/v1/realtime/sdp?model=${model}`;
-    
+    const url = `${WEBRTC_API_BASE}/api/v1/realtime2/sdp?conversation_id=${conversation_id}`;
+
     console.log('📍 Fallback URL:', url);
     console.log('🔑 Using token:', token ? 'Token present' : 'No token');
     
@@ -182,7 +179,7 @@ export async function bindWebRtcContext(data: { title: string; information: stri
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
     console.log('🔑 Bind context request config:', requestConfig.headers);
     
-    const response = await webrtcApiClient.post('/api/v1/realtime/bind-context', data, requestConfig);
+    const response = await webrtcApiClient.post('/api/v1/realtime2/bind-context', data, requestConfig);
     
     console.log('✅ Context bind successful!');
     console.log('📥 Response:', response.data);
@@ -202,7 +199,7 @@ export async function endWebRtcSession(): Promise<any> {
   
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
-    const response = await webrtcApiClient.post('/api/v1/realtime/end', {}, requestConfig);
+    const response = await webrtcApiClient.post('/api/v1/realtime2/end', {}, requestConfig);
     
     console.log('✅ Session ended successfully!');
     return response.data;
@@ -219,7 +216,7 @@ export async function getLatestImage(): Promise<any> {
   
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
-    const response = await webrtcApiClient.get('/api/v1/realtime/latest-image', requestConfig);
+    const response = await webrtcApiClient.get('/api/v1/realtime2/latest-image', requestConfig);
     
     console.log('✅ Latest image retrieved!');
     console.log('📥 Image data:', response.data);
