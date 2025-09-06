@@ -3,7 +3,6 @@ import SubjectCard from "@/components/PersonalCards/SubjectCard";
 import Navbar from "@/components/Navbar";
 import { getSubjectsWithMetadata } from "@/actions/subjects";
 
-
 export default async function SubjectsPage() {
 
 	const subjects = await getSubjectsWithMetadata();

@@ -3,11 +3,43 @@ import { getAuthToken } from "@/actions/auth";
 import { ApiConfig } from "@/types/api";
 import { postDataToAPI, postWebRtcDataToAPI } from "./client";
 
-interface EndSessionResponse {
-  status: string;
+// --- Types for WebRTC API responses and errors ---
+export interface WebRtcError {
+  name?: string;
+  message?: string;
+  code?: string;
+  config?: unknown;
+  response?: {
+    status?: number;
+    statusText?: string;
+    data?: unknown;
+    headers?: unknown;
+  };
 }
+
+export interface SdpExchangeResponse {
+  sdp: string;
+}
+
+export interface EndSessionResponse {
+  status: string;
+  message?: string;
+}
+
+export interface BindContextResponse {
+  status: string;
+  message?: string;
+  data?: unknown;
+}
+
+export interface LatestImageResponse {
+  status: string;
+  image_url: string;
+  explanation?: string;
+}
+
 // WebRTC API Base URL
-const WEBRTC_API_BASE = 'http://192.168.1.39:8000';
+const WEBRTC_API_BASE = 'http://56.228.14.247';
 
 // Create WebRTC axios instance
 export const webrtcApiClient = axios.create({
@@ -126,13 +158,14 @@ export async function exchangeSdp(
     console.log('📥 Response data length:', response.data.length);
     
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as WebRtcError;
     console.error('❌ SDP exchange failed:');
-    console.error('Error type:', error.constructor.name);
-    console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
-    console.error('Response data:', error.response?.data);
-    throw error;
+    console.error('Error type:', err.name);
+    console.error('Error message:', err.message);
+    console.error('Error code:', err.code);
+    console.error('Response data:', err.response?.data);
+    throw err;
   }
 }
 
@@ -168,14 +201,15 @@ export async function exchangeSdpFallback(
     console.log('✅ Fallback SDP exchange successful!');
     return result;
     
-  } catch (error: any) {
-    console.error('❌ Fallback SDP exchange also failed:', error);
-    throw error;
+  } catch (error) {
+    const err = error as WebRtcError;
+    console.error('❌ Fallback SDP exchange also failed:', err);
+    throw err;
   }
 }
 
 // WebRTC Bind Context
-export async function bindWebRtcContext(data: { title: string; information: string }): Promise<any> {
+export async function bindWebRtcContext(data: { title: string; information: string }): Promise<BindContextResponse> {
   console.log('🔗 Binding WebRTC context...');
   console.log('📤 Context data:', data);
   
@@ -188,96 +222,97 @@ export async function bindWebRtcContext(data: { title: string; information: stri
     console.log('✅ Context bind successful!');
     console.log('📥 Response:', response.data);
     
-    return response.data;
-  } catch (error: any) {
+    return response.data as BindContextResponse;
+  } catch (error) {
+    const err = error as WebRtcError;
     console.error('❌ Context bind failed:');
-    console.error('Error:', error.message);
-    console.error('Response:', error.response?.data);
-    throw error;
+    console.error('Error:', err.message);
+    console.error('Response:', err.response?.data);
+    throw err;
   }
 }
 
-// Debug function to test the exact same request as your working cURL
-export async function testEndSessionWithFetch(conversation_id: string): Promise<any> {
-  console.log('🧪 Testing end session with fetch (like cURL)...');
+// // Debug function to test the exact same request as your working cURL
+// export async function testEndSessionWithFetch(conversation_id: string): Promise<any> {
+//   console.log('🧪 Testing end session with fetch (like cURL)...');
   
-  const token = await getAuthToken();
-  const url = `${WEBRTC_API_BASE}/api/v1/realtime2/end`;
-  const data = {
-    "conversation_id": conversation_id,
-    "reason": "ended_by_client"
-  };
+//   const token = await getAuthToken();
+//   const url = `${WEBRTC_API_BASE}/api/v1/realtime2/end`;
+//   const data = {
+//     "conversation_id": conversation_id,
+//     "reason": "ended_by_client"
+//   };
   
-  console.log('📤 Fetch request details:');
-  console.log('URL:', url);
-  console.log('Headers:', {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  });
-  console.log('Body:', JSON.stringify(data));
+//   console.log('📤 Fetch request details:');
+//   console.log('URL:', url);
+//   console.log('Headers:', {
+//     'Content-Type': 'application/json',
+//     'Authorization': `Bearer ${token}`
+//   });
+//   console.log('Body:', JSON.stringify(data));
   
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data),
-      mode: 'cors'
-    });
+//   try {
+//     const response = await fetch(url, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${token}`
+//       },
+//       body: JSON.stringify(data),
+//       mode: 'cors'
+//     });
     
-    console.log('📥 Fetch response status:', response.status);
-    console.log('📥 Fetch response headers:', Object.fromEntries(response.headers.entries()));
+//     console.log('📥 Fetch response status:', response.status);
+//     console.log('📥 Fetch response headers:', Object.fromEntries(response.headers.entries()));
     
-    const responseText = await response.text();
-    console.log('📥 Fetch response body:', responseText);
+//     const responseText = await response.text();
+//     console.log('📥 Fetch response body:', responseText);
     
-    return {
-      status: response.status,
-      statusText: response.statusText,
-      body: responseText
-    };
-  } catch (error: any) {
-    console.error('❌ Fetch request failed:', error);
-    throw error;
-  }
-}
+//     return {
+//       status: response.status,
+//       statusText: response.statusText,
+//       body: responseText
+//     };
+//   } catch (error: any) {
+//     console.error('❌ Fetch request failed:', error);
+//     throw error;
+//   }
+// }
 
-// WebRTC Health Check (for debugging connectivity)
-export async function testWebRtcConnection(): Promise<any> {
-  console.log('🩺 Testing WebRTC server connectivity...');
-  console.log('🌐 Target server:', WEBRTC_API_BASE);
+// // WebRTC Health Check (for debugging connectivity)
+// export async function testWebRtcConnection(): Promise<any> {
+//   console.log('🩺 Testing WebRTC server connectivity...');
+//   console.log('🌐 Target server:', WEBRTC_API_BASE);
   
-  try {
-    // Try a simple GET request first (if your server has a health endpoint)
-    const response = await fetch(`${WEBRTC_API_BASE}/health`, {
-      method: 'GET',
-      mode: 'cors'
-    });
+//   try {
+//     // Try a simple GET request first (if your server has a health endpoint)
+//     const response = await fetch(`${WEBRTC_API_BASE}/health`, {
+//       method: 'GET',
+//       mode: 'cors'
+//     });
     
-    console.log('✅ Health check response:', response.status, response.statusText);
-    return { status: 'ok', message: 'Server is reachable' };
-  } catch (error: any) {
-    console.error('❌ Health check failed:', error);
+//     console.log('✅ Health check response:', response.status, response.statusText);
+//     return { status: 'ok', message: 'Server is reachable' };
+//   } catch (error: any) {
+//     console.error('❌ Health check failed:', error);
     
-    // Try a basic connection to the base URL
-    try {
-      const baseResponse = await fetch(WEBRTC_API_BASE, {
-        method: 'GET',
-        mode: 'no-cors' // This will tell us if the server is at least responding
-      });
-      console.log('📡 Base URL response:', baseResponse.type);
-      return { status: 'partial', message: 'Server responds but may have CORS issues' };
-    } catch (baseError: any) {
-      console.error('❌ Base URL also failed:', baseError);
-      return { status: 'error', message: 'Server unreachable' };
-    }
-  }
-}
+//     // Try a basic connection to the base URL
+//     try {
+//       const baseResponse = await fetch(WEBRTC_API_BASE, {
+//         method: 'GET',
+//         mode: 'no-cors' // This will tell us if the server is at least responding
+//       });
+//       console.log('📡 Base URL response:', baseResponse.type);
+//       return { status: 'partial', message: 'Server responds but may have CORS issues' };
+//     } catch (baseError: any) {
+//       console.error('❌ Base URL also failed:', baseError);
+//       return { status: 'error', message: 'Server unreachable' };
+//     }
+//   }
+// }
 
 // WebRTC End Session
-export async function endWebRtcSession({conversation_id}: {conversation_id: string}): Promise<any> {
+export async function endWebRtcSession({conversation_id}: {conversation_id: string}): Promise<EndSessionResponse> {
   console.log('🛑 Ending WebRTC session...');
   console.log('🔑 Conversation ID:', conversation_id);
   console.log('🌐 Target URL:', `${WEBRTC_API_BASE}/api/v1/realtime2/end`);
@@ -302,34 +337,33 @@ export async function endWebRtcSession({conversation_id}: {conversation_id: stri
     const response = await webrtcApiClient.post('/api/v1/realtime2/end', requestData, requestConfig);
 
     console.log('✅ Session ended successfully!', response.data);
-    return response.data;
-  } catch (error: any) {
+    return response.data as EndSessionResponse;
+  } catch (error) {
+    const err = error as WebRtcError;
     console.error('❌ Failed to end session:');
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
-    console.error('Error config:', error.config);
-    console.error('Response status:', error.response?.status);
-    console.error('Response data:', error.response?.data);
-    console.error('Response headers:', error.response?.headers);
-    
+    console.error('Error name:', err.name);
+    console.error('Error message:', err.message);
+    console.error('Error code:', err.code);
+    console.error('Error config:', err.config);
+    console.error('Response status:', err.response?.status);
+    console.error('Response data:', err.response?.data);
+    console.error('Response headers:', err.response?.headers);
     // Log network-specific errors
-    if (error.code === 'ECONNREFUSED') {
+    if (err.code === 'ECONNREFUSED') {
       console.error('🚫 Connection refused - server may be down or unreachable');
-    } else if (error.code === 'ENOTFOUND') {
+    } else if (err.code === 'ENOTFOUND') {
       console.error('🚫 Host not found - check the server IP/URL');
-    } else if (error.code === 'ECONNRESET') {
+    } else if (err.code === 'ECONNRESET') {
       console.error('🚫 Connection reset - network issue or server dropped connection');
-    } else if (error.code === 'ETIMEDOUT') {
+    } else if (err.code === 'ETIMEDOUT') {
       console.error('🚫 Request timeout - server taking too long to respond');
     }
-    
-    throw error;
+    throw err;
   }
 }
 
 // WebRTC Get Latest Image
-export async function getLatestImage(): Promise<any> {
+export async function getLatestImage(): Promise<LatestImageResponse> {
   console.log('🖼️ Getting latest image...');
   
   try {
@@ -339,10 +373,11 @@ export async function getLatestImage(): Promise<any> {
     console.log('✅ Latest image retrieved!');
     console.log('📥 Image data:', response.data);
     
-    return response.data;
-  } catch (error: any) {
+    return response.data as LatestImageResponse;
+  } catch (error) {
+    const err = error as WebRtcError;
     console.error('❌ Failed to get latest image:');
-    console.error('Error:', error.message);
-    throw error;
+    console.error('Error:', err.message);
+    throw err;
   }
 }

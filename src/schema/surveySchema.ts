@@ -17,9 +17,19 @@ export const surveySubmissionSchema = z.object({
   ]))
 });
 
+// Type that matches the context of MultiStepSurvey
+export interface SurveyQuestion {
+  id: string;
+  question_key: string;
+  prompt: string;
+  answer_type: 'integer' | 'multi_choice' | 'single_choice' | 'text';
+  is_required: boolean;
+  options?: Array<string | { value: string; label: string }>;
+}
+
 // Dynamic schema that will be created based on the actual questions
-export const createDynamicFormSchema = (questions: any[]) => {
-  const schemaFields: Record<string, any> = {};
+export const createDynamicFormSchema = (questions: SurveyQuestion[]) => {
+  const schemaFields: Record<string, z.ZodTypeAny> = {};
   
   questions.forEach((question, index) => {
     const fieldName = `question_${index}`;

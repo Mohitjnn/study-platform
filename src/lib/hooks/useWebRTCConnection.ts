@@ -1,9 +1,22 @@
 import { useState, useRef, useCallback } from 'react';
-import { exchangeSdp, endWebRtcSession, exchangeSdpFallback, testWebRtcConnection } from '@/lib/api/webrtc';
+import { exchangeSdp, endWebRtcSession, exchangeSdpFallback } from '@/lib/api/webrtc';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface DataChannelEvent {
+  type: string;
+  transcript?: string;
+  // Add more known properties here as needed
+  [key: string]: string | number | boolean | undefined;
+}
 
 interface UseWebRTCConnectionProps {
-  user: any;
-  onDataChannelMessage: (event: any) => void;
+  user: User;
+  onDataChannelMessage: (event: DataChannelEvent) => void;
   remoteAudioRef: React.RefObject<HTMLAudioElement | null>;
 }
 
@@ -25,20 +38,24 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
     try {
       // Only call end session if we have a conversation ID and we're actually connected
       if (!fromPcEvent && conversationId && isConnected) {
-        console.log('🛑 Calling endWebRtcSession with ID:', conversationId);
+        // console.log('🛑 Calling endWebRtcSession with ID:', conversationId);
         
-        // Test connectivity first
-        console.log('🩺 Testing server connectivity before ending session...');
-        const healthCheck = await testWebRtcConnection();
-        console.log('🩺 Health check result:', healthCheck);
+        // // Test connectivity first
+        // console.log('🩺 Testing server connectivity before ending session...');
+        // const healthCheck = await testWebRtcConnection();
+        // console.log('🩺 Health check result:', healthCheck);
         
         await endWebRtcSession({ conversation_id: conversationId });
         console.log('✅ End session API call completed');
       } else {
         console.log('ℹ️ Skipping end session API call:', { fromPcEvent, conversationId, isConnected });
       }
-    } catch (error) {
-      console.error('❌ Error ending session:', error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('❌ Error ending session:', error.message);
+      } else {
+        console.error('❌ Error ending session:', error);
+      }
       // Continue with cleanup even if API call fails
     }
 
@@ -164,7 +181,7 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
       console.log('📤 Local description set, exchanging SDP...');
       
       let sdpAnswer: string;
-      const sessionId = 'a1691a0b-55fd-4822-8b4c-577ef791cbca'; // You might want to generate this dynamically
+      const sessionId = '56870bb9-8d51-44fb-b12c-28dbf281a6c0'; // You might want to generate this dynamically
       setConversationId(sessionId); // Store the conversation ID
       
       try {
@@ -218,13 +235,21 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
         setTimeout(monitorStats, 2000);
       }
       
-    } catch (error: any) {
-      console.error('❌ Start session failed:', error);
-      console.error('Error details:', {
-        name: error?.name || 'Unknown',
-        message: error?.message || 'Unknown error',
-        stack: error?.stack || 'No stack trace'
-      });
+    } catch (error: unknown) {
+      let errorDetails: { name: string; message: string; stack?: string };
+      if (error instanceof Error) {
+        errorDetails = {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        };
+      } else {
+        errorDetails = {
+          name: 'Unknown',
+          message: String(error),
+        };
+      }
+      console.error('Error details:', errorDetails);
       setIsConnecting(false);
       await cleanup();
       setConnectionStatus('Connection Failed');

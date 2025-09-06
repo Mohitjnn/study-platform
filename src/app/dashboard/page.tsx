@@ -44,8 +44,11 @@ export default async function DashboardPage() {
 
   if (result.success) {
     console.log("User data retrieved:", user);
-    if (!user.survey.submitted) {
-      redirect("/survey");
+    if (user && typeof user === 'object' && 'survey' in user) {
+      const userWithSurvey = user as { survey: { submitted: boolean } };
+      if (!userWithSurvey.survey.submitted) {
+        redirect("/survey");
+      }
     }
   }
 
@@ -124,11 +127,11 @@ export default async function DashboardPage() {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-              Hi, {user.full_name || "Student"}!
+              Hi, {(typeof user?.full_name === "string" && user.full_name) ? user.full_name : "Student"}!
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Ready to continue your learning journey? Here's what's happening
+            Ready to continue your learning journey? Here&apos;s what&apos;s happening
             today.
           </p>
         </div>

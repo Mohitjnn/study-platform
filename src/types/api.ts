@@ -3,7 +3,7 @@ export interface ApiConfig {
   mediaType?: "json" | "multipart" | "sdp";
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
   data: T;
   status: number;
   message?: string;

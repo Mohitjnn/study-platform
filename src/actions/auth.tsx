@@ -1,9 +1,7 @@
 "use server"
 import { cookies } from "next/headers";
 import { loginSchema } from "@/schema/loginSchema";
-import { signupSchema } from "@/schema/signupSchema";
 import { SignUpResponse } from "@/types/auth";
-import { redirect } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { fetchFromAPI, postDataToAPI } from "@/lib/api/client";
 
@@ -11,6 +9,54 @@ interface SignupData {
 full_name: string;
 email:string;
 password: string;
+}
+
+// Type for JWT token payload
+interface TokenPayload {
+  id: number;
+  role: string;
+  name: string;
+  email: string;
+  phone_number?: string;
+  user_type?: string;
+}
+
+// Type for API error responses
+interface APIError {
+  response?: {
+    data?: {
+      detail?: string;
+    };
+    status?: number;
+  };
+  status?: number;
+  message?: string;
+}
+
+// Type for login API response
+interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+}
+
+// Type for forgot password API response
+interface ForgotPasswordResponse {
+  status: string;
+  message: string;
+}
+
+// Type for verify reset token API response
+interface VerifyResetTokenResponse {
+  status: string;
+  message: string;
+  user_email: string;
+}
+
+// Type for reset password API response
+interface ResetPasswordResponse {
+  status: string;
+  message: string;
 }
 
 export async function signup(data: SignupData): Promise<SignUpResponse> {
@@ -32,15 +78,18 @@ export async function signup(data: SignupData): Promise<SignUpResponse> {
       is_active: result.is_active
     };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Signup error:", error);
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : (error as APIError)?.response?.data?.detail || `Something went wrong: ${error}`;
     return {
       id: "",
       full_name: "",
       email: "",
       is_active: false,
       success: false,
-      error: error.response?.data?.detail || `Something went wrong: ${error}`
+      error: errorMessage
     };
   }
 }
@@ -59,11 +108,7 @@ export async function login(formData: FormData) {
   }
 
   try {
-    const data = await postDataToAPI<{ 
-      access_token: string; 
-      refresh_token: string; 
-      token_type: string; 
-    }>(
+    const data = await postDataToAPI<LoginResponse>(
       "/auth/login",
       validatedFields.data,
       { requiresAuth: false }
@@ -88,10 +133,13 @@ export async function login(formData: FormData) {
 
     return { success: true };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     let errorMessage = `Authentication failed: ${error}`;
-    if (error?.response?.data?.detail) {
-      errorMessage = error.response.data.detail;
+    if (error && typeof error === 'object' && 'response' in error) {
+      const responseError = error as APIError;
+      if (responseError?.response?.data?.detail) {
+        errorMessage = responseError.response.data.detail;
+      }
     }
     return {
       success: false,
@@ -105,7 +153,7 @@ export async function logout() {
   try {
     cookie.delete("access_token")
     cookie.delete("refresh_token")
-  } catch (error) {
+  } catch {
     console.error("error occured in deleting cookies")
   }
 }
@@ -147,7 +195,7 @@ export async function getUserData() {
 
   try {
     // Decode the token
-    const decoded = jwtDecode<{ id: number, role: string, name: string; email: string; phone_number?: string | "", user_type?: string }>(`${token?.value}`);
+    const decoded = jwtDecode<TokenPayload>(`${token?.value}`);
     return {
       success: true,
       message: "User data retrieved successfully.",
@@ -186,7 +234,7 @@ export async function getUserDataFromAPI() {
   console.log("Access token found, making API request to /me");
 
   try {
-    const result = await fetchFromAPI<any>(
+    const result = await fetchFromAPI<Record<string, unknown>>(
       "/me",
       { requiresAuth: true }
     );
@@ -198,12 +246,13 @@ export async function getUserDataFromAPI() {
       data: result,
       shouldRedirect: false
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Get user data error:", error);
-    console.log("Error status:", error.status || error.response?.status);
+    const errorObj = error as APIError;
+    console.log("Error status:", errorObj.status || errorObj.response?.status);
     
     // If it's a 401 error, clear the invalid tokens
-    if (error.status === 401 || error.response?.status === 401) {
+    if (errorObj.status === 401 || errorObj.response?.status === 401) {
       console.log("401 error - clearing tokens");
       const cookieStore = await cookies();
       cookieStore.delete("access_token");
@@ -219,7 +268,7 @@ export async function getUserDataFromAPI() {
     
     return {
       success: false,
-      message: error.response?.data?.detail || "Failed to get user data",
+      message: errorObj.response?.data?.detail || "Failed to get user data",
       data: null,
       shouldRedirect: true
     };
@@ -229,7 +278,7 @@ export async function getUserDataFromAPI() {
 // Forgot Password Action
 export async function forgotPassword(email: string) {
   try {
-    const result = await postDataToAPI<{status: string, message: string}>(
+    const result = await postDataToAPI<ForgotPasswordResponse>(
       "/auth/forgot-password",
       { email },
       { requiresAuth: false }
@@ -239,11 +288,12 @@ export async function forgotPassword(email: string) {
       success: true,
       message: result.message
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Forgot password error:", error);
+    const errorObj = error as APIError;
     return {
       success: false,
-      error: error.response?.data?.detail || "Failed to send reset email. Please try again."
+      error: errorObj.response?.data?.detail || "Failed to send reset email. Please try again."
     };
   }
 }
@@ -251,7 +301,7 @@ export async function forgotPassword(email: string) {
 // Verify Reset Token Action
 export async function verifyResetToken(token: string) {
   try {
-    const result = await postDataToAPI<{status: string, message: string, user_email: string}>(
+    const result = await postDataToAPI<VerifyResetTokenResponse>(
       "/auth/verify-reset-token",
       { token },
       { requiresAuth: false }
@@ -262,11 +312,12 @@ export async function verifyResetToken(token: string) {
       userEmail: result.user_email,
       message: result.message
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Token verification error:", error);
+    const errorObj = error as APIError;
     return {
       success: false,
-      error: error.response?.data?.detail || "Invalid or expired reset token."
+      error: errorObj.response?.data?.detail || "Invalid or expired reset token."
     };
   }
 }
@@ -274,7 +325,7 @@ export async function verifyResetToken(token: string) {
 // Reset Password Action
 export async function resetPassword(token: string, newPassword: string) {
   try {
-    const result = await postDataToAPI<{status: string, message: string}>(
+    const result = await postDataToAPI<ResetPasswordResponse>(
       "/auth/reset-password",
       { token, new_password: newPassword },
       { requiresAuth: false }
@@ -284,11 +335,12 @@ export async function resetPassword(token: string, newPassword: string) {
       success: true,
       message: result.message
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Password reset error:", error);
+    const errorObj = error as APIError;
     return {
       success: false,
-      error: error.response?.data?.detail || "Failed to reset password. Please try again."
+      error: errorObj.response?.data?.detail || "Failed to reset password. Please try again."
     };
   }
 }

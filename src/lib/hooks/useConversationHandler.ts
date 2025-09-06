@@ -1,11 +1,19 @@
 import { useState, useCallback } from 'react';
 import { Message } from '@/types/chat.type';
 
+interface ConversationEvent {
+  type: string;
+  transcript?: string;
+  response?: {
+    output?: Array<{ type?: string; name?: string }>;
+  };
+}
+
 export const useConversationHandler = (setMessages: React.Dispatch<React.SetStateAction<Message[]>>) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const handleConversationEvent = useCallback((ev: any) => {
+  const handleConversationEvent = useCallback((ev: ConversationEvent) => {
     try {
       console.log('🗣️ Handling conversation event:', ev.type);
       

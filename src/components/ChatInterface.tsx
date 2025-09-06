@@ -19,8 +19,20 @@ interface Message {
   explanation?: string;
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface DataChannelEvent {
+  type: string;
+  transcript?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
 interface ChatInterfaceProps {
-  user: any;
+  user: User;
 }
 
 // Configuration
@@ -47,7 +59,7 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
   const imagePolling = useImagePolling(setMessages);
   
   // WebRTC data channel message handler
-  const handleDataChannelMessage = (ev: any) => {
+  const handleDataChannelMessage = (ev: DataChannelEvent) => {
     // Handle audio transcript events
     if (ev.type === 'conversation.item.input_audio_transcription.completed') {
       console.log('🎤 User audio transcription completed:', ev.transcript);
@@ -98,8 +110,9 @@ export default function ChatInterface({ user }: ChatInterfaceProps) {
       // Setup audio analysis after connection
       audioManagement.setupAudioAnalysis(webrtcConnection.isConnected);
       
-    } catch (error: any) {
-      console.error('❌ Start session failed:', error);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error('❌ Start session failed:', errorMessage);
     }
   };
 

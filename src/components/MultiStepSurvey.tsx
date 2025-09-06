@@ -19,6 +19,9 @@ interface MultiStepSurveyProps {
   survey: Survey;
 }
 
+// Type for form data that can handle various question types
+type SurveyFormData = Record<string, string | number | string[]>;
+
 export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,7 +44,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
     setError,
     clearErrors,
     watch
-  } = useForm<Record<string, any>>({
+  } = useForm<SurveyFormData>({
     mode: "onChange"
   });
 
@@ -102,7 +105,8 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             clearErrors(fieldName);
           }
         } else if (question.answer_type === 'integer') {
-          if (!value || isNaN(parseInt(value)) || parseInt(value) <= 0) {
+          const numValue = typeof value === 'string' ? parseInt(value) : value;
+          if (!value || (typeof value === 'string' && isNaN(parseInt(value))) || (typeof numValue === 'number' && numValue <= 0)) {
             setError(fieldName, { 
               type: "required", 
               message: "Please enter a valid number" 
@@ -112,7 +116,8 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             clearErrors(fieldName);
           }
         } else {
-          if (!value || (typeof value === 'string' && value.trim() === "")) {
+          const stringValue = typeof value === 'string' ? value : String(value || '');
+          if (!value || stringValue.trim() === "") {
             setError(fieldName, { 
               type: "required", 
               message: "This field is required" 
@@ -136,7 +141,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
     }
   };
 
-  const onSubmit = async (data: Record<string, any>) => {
+  const onSubmit = async (data: SurveyFormData) => {
     setIsSubmitting(true);
     
     try {
@@ -150,7 +155,9 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
         if (question.answer_type === 'multi_choice') {
           answer = multiChoiceSelections[fieldName] || [];
         } else if (question.answer_type === 'integer') {
-          const numValue = parseInt(data[fieldName]);
+          const fieldValue = data[fieldName];
+          const numValue = typeof fieldValue === 'string' ? parseInt(fieldValue) : 
+                          typeof fieldValue === 'number' ? fieldValue : 0;
           answer = isNaN(numValue) ? 0 : numValue;
         } else {
           // For text fields, ensure we always have a string value
@@ -217,7 +224,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
         return (
           <div className="space-y-3">
             <RadioGroup
-              value={watch(fieldName) || ""}
+              value={String(watch(fieldName) || "")}
               onValueChange={(value) => setValue(fieldName, value)}
               className="lg:flex lg:space-x-4 lg:space-y-0 space-y-2"
             >

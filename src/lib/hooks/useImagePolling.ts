@@ -2,6 +2,13 @@ import { useState, useRef, useCallback } from 'react';
 import { getLatestImage } from '@/lib/api/webrtc';
 import { Message } from '@/types/chat.type';
 
+interface ImagePollingEvent {
+  type: string;
+  response?: {
+    output?: Array<{ type?: string; name?: string }>;
+  };
+}
+
 export const useImagePolling = (setMessages: React.Dispatch<React.SetStateAction<Message[]>>) => {
   const [lastImageUrl, setLastImageUrl] = useState<string | null>(null);
   
@@ -61,7 +68,7 @@ export const useImagePolling = (setMessages: React.Dispatch<React.SetStateAction
     }, 3000);
   }, [lastImageUrl, setMessages, stopImagePolling]);
 
-  const maybeStartImagePollingFromEvent = useCallback((ev: any) => {
+  const maybeStartImagePollingFromEvent = useCallback((ev: ImagePollingEvent) => {
     try {
       if (!ev || typeof ev !== 'object') return;
       

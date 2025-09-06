@@ -40,8 +40,9 @@ export default function SignupPage() {
       } else {
         setErrorMsg(response.error || 'Signup failed.');
       }
-    } catch (error: any) {
-      setErrorMsg(error?.message || 'Signup failed.');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Signup failed.';
+      setErrorMsg(errorMessage);
     } finally {
       setIsLoading(false);
     }

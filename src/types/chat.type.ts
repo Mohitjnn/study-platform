@@ -13,7 +13,7 @@ export interface User {
   id?: string;
   full_name?: string;
   email?: string;
-  [key: string]: any;
+  [key: string]: string | undefined;
 }
 
 export interface ChatInterfaceProps {
@@ -29,7 +29,7 @@ export interface WebRTCEvent {
       name?: string;
     }>;
   };
-  [key: string]: any;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 export interface ConnectionState {

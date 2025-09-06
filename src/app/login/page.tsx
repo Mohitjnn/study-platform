@@ -48,8 +48,9 @@ export default function LoginPage() {
       } else {
         setErrorMsg(result.error || "Login failed");
       }
-    } catch (error: any) {
-      setErrorMsg(error?.message || "Login failed");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Login failed";
+      setErrorMsg(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -139,7 +140,7 @@ export default function LoginPage() {
 
               <div className="text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <Link
                     href="/signup"
                     className="text-blue-600 hover:text-blue-800 transition-colors"

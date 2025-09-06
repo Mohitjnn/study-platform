@@ -13,9 +13,19 @@ export const useAudioManagement = () => {
   useEffect(() => {
     const initAudio = async () => {
       try {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-        analyserRef.current = audioContextRef.current.createAnalyser();
-        analyserRef.current.fftSize = 256;
+        let AudioCtx: typeof AudioContext | undefined = undefined;
+        if (typeof window.AudioContext !== 'undefined') {
+          AudioCtx = window.AudioContext;
+        } else if ('webkitAudioContext' in window && typeof (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext !== 'undefined') {
+          AudioCtx = (window as Window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        }
+        if (AudioCtx) {
+          audioContextRef.current = new AudioCtx();
+          analyserRef.current = audioContextRef.current.createAnalyser();
+          analyserRef.current.fftSize = 256;
+        } else {
+          throw new Error('No AudioContext available');
+        }
         
         // Create remote audio element
         remoteAudioRef.current = new Audio();

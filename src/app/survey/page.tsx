@@ -3,6 +3,7 @@ import { getSurvey } from "@/actions/survey";
 import { redirect } from "next/navigation";
 import MultiStepSurvey from "@/components/MultiStepSurvey";
 import Navbar from "@/components/Navbar";
+import Link from "next/link";
 
 export default async function SurveyPage() {
   const surveySlug = process.env.SURVEY_SLUG || "user_personalization_v1";
@@ -21,12 +22,12 @@ export default async function SurveyPage() {
           <p className="text-gray-400 mb-4">
             {surveyResult.error || "The requested survey could not be loaded."}
           </p>
-          <a
+          <Link
             href="/"
             className="text-blue-400 hover:text-blue-300 underline"
           >
             Return to Home
-          </a>
+          </Link>
         </div>
       </div>
     );

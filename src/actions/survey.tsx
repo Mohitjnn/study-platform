@@ -4,6 +4,18 @@ import {fetchFromAPI, postDataToAPI } from "@/lib/api/client";
 import { Survey, SurveyApiResponse, SurveySubmission, SurveySubmissionResponse } from "@/types/survey";
 import { surveySubmissionSchema } from "@/schema/surveySchema";
 
+// API Error interface
+interface ApiError {
+  response?: {
+    data?: {
+      detail?: string;
+    };
+    status?: number;
+    headers?: unknown;
+  };
+  message?: string;
+}
+
 // Get survey by slug
 export async function getSurvey(slug: string): Promise<SurveyApiResponse> {
   try {
@@ -20,11 +32,12 @@ export async function getSurvey(slug: string): Promise<SurveyApiResponse> {
       message: "Survey fetched successfully",
       data: result
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Get survey error:", error);
+    const apiError = error as ApiError;
     return {
       success: false,
-      error: error.response?.data?.detail || "Failed to fetch survey",
+      error: apiError.response?.data?.detail || "Failed to fetch survey",
       data: undefined
     };
   }
@@ -50,14 +63,15 @@ export async function submitSurvey(submission: SurveySubmission): Promise<Survey
       message: result.message || "Survey submitted successfully",
       submission_id: result.submission_id
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Submit survey error:", error);
-    console.error("Error response data:", error.response?.data);
-    console.error("Error response status:", error.response?.status);
-    console.error("Error response headers:", error.response?.headers);
+    const apiError = error as ApiError;
+    console.error("Error response data:", apiError.response?.data);
+    console.error("Error response status:", apiError.response?.status);
+    console.error("Error response headers:", apiError.response?.headers);
     return {
       success: false,
-      error: error.response?.data?.detail || "Failed to submit survey"
+      error: apiError.response?.data?.detail || "Failed to submit survey"
     };
   }
 }
@@ -67,7 +81,7 @@ export async function getUserSurveyResponse(slug: string): Promise<SurveyApiResp
   try {
     console.log(`Fetching user survey response for slug: ${slug}`);
     
-    const result = await fetchFromAPI<any>(
+    const result = await fetchFromAPI<Survey>(
       `/surveys/${slug}/response`,
       { requiresAuth: true }
     );
@@ -78,11 +92,12 @@ export async function getUserSurveyResponse(slug: string): Promise<SurveyApiResp
       message: "User survey response fetched successfully",
       data: result
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Get user survey response error:", error);
+    const apiError = error as ApiError;
     return {
       success: false,
-      error: error.response?.data?.detail || "Failed to fetch user survey response"
+      error: apiError.response?.data?.detail || "Failed to fetch user survey response"
     };
   }
 }

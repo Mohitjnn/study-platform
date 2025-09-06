@@ -9,7 +9,7 @@ export interface Question {
   order_index: number;
   question_key: string;
   prompt: string;
-  answer_type: string;
+  answer_type: 'integer' | 'multi_choice' | 'single_choice' | 'text';
   is_required: boolean;
   options?: (string | QuestionOption)[];
 }
