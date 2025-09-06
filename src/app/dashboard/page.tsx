@@ -182,8 +182,8 @@ export default async function DashboardPage() {
             title="Guided Journey"
             text="Learn with structure plus free exploration."
             imageUrl="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80"
-            link="/assignments"
-            linkText="View Assignments"
+            link="/subjects"
+            linkText="View Subjects"
           />
           <DashboardSquareCard
             title="Free Explore"

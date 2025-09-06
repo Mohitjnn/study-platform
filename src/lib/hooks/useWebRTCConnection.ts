@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { exchangeSdp, endWebRtcSession, exchangeSdpFallback } from '@/lib/api/webrtc';
+import { exchangeSdp, endWebRtcSession, exchangeSdpFallback, testWebRtcConnection } from '@/lib/api/webrtc';
 
 interface UseWebRTCConnectionProps {
   user: any;
@@ -12,6 +12,7 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
   const [isConnecting, setIsConnecting] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
+  const [conversationId, setConversationId] = useState<string | null>(null);
   
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const dcRef = useRef<RTCDataChannel | null>(null);
@@ -22,11 +23,23 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
     setConnectionStatus('Ending...');
 
     try {
-    //   if (!fromPcEvent && isConnected) {
-        await endWebRtcSession({conversation_id: "3e70169e-7f5b-4a66-a872-1e01ef825a10"});
-    //   }
+      // Only call end session if we have a conversation ID and we're actually connected
+      if (!fromPcEvent && conversationId && isConnected) {
+        console.log('🛑 Calling endWebRtcSession with ID:', conversationId);
+        
+        // Test connectivity first
+        console.log('🩺 Testing server connectivity before ending session...');
+        const healthCheck = await testWebRtcConnection();
+        console.log('🩺 Health check result:', healthCheck);
+        
+        await endWebRtcSession({ conversation_id: conversationId });
+        console.log('✅ End session API call completed');
+      } else {
+        console.log('ℹ️ Skipping end session API call:', { fromPcEvent, conversationId, isConnected });
+      }
     } catch (error) {
-      console.error('Error ending session:', error);
+      console.error('❌ Error ending session:', error);
+      // Continue with cleanup even if API call fails
     }
 
     try {
@@ -47,8 +60,9 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
       setIsConnected(false);
       setConnectionStatus('Disconnected');
       setIsEnding(false);
+      setConversationId(null);
     }
-  }, [isEnding, isConnected]);
+  }, [isEnding, isConnected, conversationId]);
 
   const startSession = useCallback(async (micStream: MediaStream | null) => {
     if (isConnecting || isConnected) return;
@@ -150,11 +164,14 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
       console.log('📤 Local description set, exchanging SDP...');
       
       let sdpAnswer: string;
+      const sessionId = 'a1691a0b-55fd-4822-8b4c-577ef791cbca'; // You might want to generate this dynamically
+      setConversationId(sessionId); // Store the conversation ID
+      
       try {
-        sdpAnswer = await exchangeSdp(offer.sdp!, '3e70169e-7f5b-4a66-a872-1e01ef825a10');
+        sdpAnswer = await exchangeSdp(offer.sdp!, sessionId);
       } catch (error) {
         console.warn('⚠️ Primary SDP exchange failed, trying fallback method...');
-        sdpAnswer = await exchangeSdpFallback(offer.sdp!, '3e70169e-7f5b-4a66-a872-1e01ef825a10');
+        sdpAnswer = await exchangeSdpFallback(offer.sdp!, sessionId);
       }
       
       console.log('📥 Received SDP answer, setting remote description...');
@@ -219,6 +236,7 @@ export const useWebRTCConnection = ({ user, onDataChannelMessage, remoteAudioRef
     isConnecting,
     isEnding,
     connectionStatus,
+    conversationId,
     pcRef,
     dcRef,
     startSession,

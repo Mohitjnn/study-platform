@@ -1,7 +1,11 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { getAuthToken } from "@/actions/auth";
 import { ApiConfig } from "@/types/api";
+import { postDataToAPI, postWebRtcDataToAPI } from "./client";
 
+interface EndSessionResponse {
+  status: string;
+}
 // WebRTC API Base URL
 const WEBRTC_API_BASE = 'http://192.168.1.39:8000';
 
@@ -193,22 +197,133 @@ export async function bindWebRtcContext(data: { title: string; information: stri
   }
 }
 
+// Debug function to test the exact same request as your working cURL
+export async function testEndSessionWithFetch(conversation_id: string): Promise<any> {
+  console.log('🧪 Testing end session with fetch (like cURL)...');
+  
+  const token = await getAuthToken();
+  const url = `${WEBRTC_API_BASE}/api/v1/realtime2/end`;
+  const data = {
+    "conversation_id": conversation_id,
+    "reason": "ended_by_client"
+  };
+  
+  console.log('📤 Fetch request details:');
+  console.log('URL:', url);
+  console.log('Headers:', {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  });
+  console.log('Body:', JSON.stringify(data));
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data),
+      mode: 'cors'
+    });
+    
+    console.log('📥 Fetch response status:', response.status);
+    console.log('📥 Fetch response headers:', Object.fromEntries(response.headers.entries()));
+    
+    const responseText = await response.text();
+    console.log('📥 Fetch response body:', responseText);
+    
+    return {
+      status: response.status,
+      statusText: response.statusText,
+      body: responseText
+    };
+  } catch (error: any) {
+    console.error('❌ Fetch request failed:', error);
+    throw error;
+  }
+}
+
+// WebRTC Health Check (for debugging connectivity)
+export async function testWebRtcConnection(): Promise<any> {
+  console.log('🩺 Testing WebRTC server connectivity...');
+  console.log('🌐 Target server:', WEBRTC_API_BASE);
+  
+  try {
+    // Try a simple GET request first (if your server has a health endpoint)
+    const response = await fetch(`${WEBRTC_API_BASE}/health`, {
+      method: 'GET',
+      mode: 'cors'
+    });
+    
+    console.log('✅ Health check response:', response.status, response.statusText);
+    return { status: 'ok', message: 'Server is reachable' };
+  } catch (error: any) {
+    console.error('❌ Health check failed:', error);
+    
+    // Try a basic connection to the base URL
+    try {
+      const baseResponse = await fetch(WEBRTC_API_BASE, {
+        method: 'GET',
+        mode: 'no-cors' // This will tell us if the server is at least responding
+      });
+      console.log('📡 Base URL response:', baseResponse.type);
+      return { status: 'partial', message: 'Server responds but may have CORS issues' };
+    } catch (baseError: any) {
+      console.error('❌ Base URL also failed:', baseError);
+      return { status: 'error', message: 'Server unreachable' };
+    }
+  }
+}
+
 // WebRTC End Session
 export async function endWebRtcSession({conversation_id}: {conversation_id: string}): Promise<any> {
   console.log('🛑 Ending WebRTC session...');
+  console.log('🔑 Conversation ID:', conversation_id);
+  console.log('🌐 Target URL:', `${WEBRTC_API_BASE}/api/v1/realtime2/end`);
   
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
-    const response = await webrtcApiClient.post('/api/v1/realtime2/end', {
+    const requestData = {
       "conversation_id": `${conversation_id}`,
       "reason": "ended_by_client"
-    }, requestConfig);
+    };
+    
+    console.log('📤 Request data:', requestData);
+    console.log('📤 Request config:', requestConfig);
+    console.log('📤 Full axios config:', {
+      method: 'POST',
+      url: '/api/v1/realtime2/end',
+      baseURL: WEBRTC_API_BASE,
+      headers: requestConfig.headers,
+      data: requestData
+    });
+    
+    const response = await webrtcApiClient.post('/api/v1/realtime2/end', requestData, requestConfig);
 
-    console.log('✅ Session ended successfully!');
+    console.log('✅ Session ended successfully!', response.data);
     return response.data;
   } catch (error: any) {
     console.error('❌ Failed to end session:');
-    console.error('Error:', error.message);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    console.error('Error config:', error.config);
+    console.error('Response status:', error.response?.status);
+    console.error('Response data:', error.response?.data);
+    console.error('Response headers:', error.response?.headers);
+    
+    // Log network-specific errors
+    if (error.code === 'ECONNREFUSED') {
+      console.error('🚫 Connection refused - server may be down or unreachable');
+    } else if (error.code === 'ENOTFOUND') {
+      console.error('🚫 Host not found - check the server IP/URL');
+    } else if (error.code === 'ECONNRESET') {
+      console.error('🚫 Connection reset - network issue or server dropped connection');
+    } else if (error.code === 'ETIMEDOUT') {
+      console.error('🚫 Request timeout - server taking too long to respond');
+    }
+    
     throw error;
   }
 }
