@@ -179,15 +179,15 @@ export default async function DashboardPage() {
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           <DashboardSquareCard
-            title="Assignments"
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero."
+            title="Guided Journey"
+            text="Learn with structure plus free exploration."
             imageUrl="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80"
             link="/assignments"
             linkText="View Assignments"
           />
           <DashboardSquareCard
-            title="Open Communication"
-            text="Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet."
+            title="Free Explore"
+            text="Choose any topic and learn without limits."
             imageUrl="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"
             link="/quizzes"
             linkText="Take a Quiz"
