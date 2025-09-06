@@ -194,13 +194,16 @@ export async function bindWebRtcContext(data: { title: string; information: stri
 }
 
 // WebRTC End Session
-export async function endWebRtcSession(): Promise<any> {
+export async function endWebRtcSession({conversation_id}: {conversation_id: string}): Promise<any> {
   console.log('🛑 Ending WebRTC session...');
   
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
-    const response = await webrtcApiClient.post('/api/v1/realtime2/end', {}, requestConfig);
-    
+    const response = await webrtcApiClient.post('/api/v1/realtime2/end', {
+      "conversation_id": `${conversation_id}`,
+      "reason": "ended_by_client"
+    }, requestConfig);
+
     console.log('✅ Session ended successfully!');
     return response.data;
   } catch (error: any) {

@@ -143,7 +143,7 @@ export default function VoiceSphere({ isActive, audioLevel, isListening, isSpeak
         )}
 
         {/* Center dot */}
-        <motion.div
+        {/* <motion.div
           className="w-3 h-3 bg-white rounded-full z-10"
           animate={{
             scale: isActive ? [1, 1.5, 1] : 1,
@@ -154,7 +154,7 @@ export default function VoiceSphere({ isActive, audioLevel, isListening, isSpeak
             repeat: Infinity,
             ease: "easeInOut",
           }}
-        />
+        /> */}
 
         {/* Ripple effects */}
         {isActive && (
