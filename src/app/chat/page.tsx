@@ -35,6 +35,10 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
     redirect('/login');
   }
 
+  if(!conversationId || !linkId) {
+    redirect('/dashboard');
+  }
+
   const user = result.data;
 
   // Type guard for user data

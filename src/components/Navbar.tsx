@@ -78,13 +78,6 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
               <Home className="h-4 w-4" />
               <span>Home</span>
             </Link>
-            <Link
-              href="/chat"
-              className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200"
-            >
-              <FileText className="h-4 w-4" />
-              <span>AI Chat</span>
-            </Link>
             {showProfile && (
               <Link href="/profile" className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200">
                 <User className="h-4 w-4" />
