@@ -20,7 +20,7 @@ interface SubjectCardProps {
   titleName: string;
 }
 
-const SubjectCard: React.FC<SubjectCardProps> = ({
+const TopicCard: React.FC<SubjectCardProps> = ({
   titleName,
   name,
   progress,
@@ -31,7 +31,7 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
 
 
   const handleClick = () => {
-    router.push(`/subjects/${titleName.toLowerCase()}/${name.toLowerCase()}`);
+    router.push(`/subjects/${titleName}/${name}`);
   };
   return (
     <div className="flex flex-col h-full group hover:scale-[1.02] transition-all duration-300">
@@ -89,4 +89,4 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
   );
 };
 
-export default SubjectCard;
+export default TopicCard;

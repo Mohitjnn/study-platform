@@ -2,7 +2,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
+import { ConversationResponse } from "@/actions/subjects";
+import { initiateConversation } from "@/actions/subjects";
 const accentColors = [
   "from-blue-500 to-blue-700",
   "from-green-500 to-green-700",
@@ -12,23 +13,38 @@ const accentColors = [
   "from-teal-500 to-teal-700",
 ];
 
-interface SubjectCardProps {
-  name: string;
-  progress: number;
-  index?: number;
-  subtitle?: string;
+interface SubTopicData {
+  id: string;
+  sub_topic: string;
+  learning_outcome: string;
 }
 
-const SubjectCard: React.FC<SubjectCardProps> = ({
-  name,
+interface SubjectCardProps {
+  subTopicData: SubTopicData;
+  progress: number;
+  index?: number;
+  subjectName?: string;
+  topicName?: string;
+}
+
+const SubTopicCard: React.FC<SubjectCardProps> = ({
+  subTopicData,
   progress,
   index = 0,
-  subtitle = "Continue your learning journey",
+  subjectName,
+  topicName,
 }) => {
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push(`/subjects/${name}`);
+  const handleClick = async () => {
+    try {
+      const conversationResponse = await initiateConversation({ topic_id: subTopicData.id });
+      
+      // Navigate to chat with conversation_id and link_id
+      router.push(`/chat?conversation_id=${conversationResponse.conversation_id}&link_id=${conversationResponse.link_id}`);
+    } catch (error) {
+      console.error('Error in handleClick:', error);
+    }
   };
   return (
     <div className="flex flex-col h-full group hover:scale-[1.02] transition-all duration-300">
@@ -36,18 +52,20 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
         className={`w-full rounded-xl shadow-lg p-6 flex flex-col bg-gradient-to-br bg-gray-900 h-[40vh] relative overflow-hidden`}
       >
         {/* Badge */}
-        <div className="absolute top-3 right-3 text-white/70 text-xs font-mono bg-white/10 px-2 py-1 rounded-md">
-          {name.slice(0, 2).toUpperCase()}
+        <div className="absolute top-3 right-3 text-white/70 text-xs font-mono bg-white/10 px-2 py-1 rounded-md ">
+          {subTopicData.sub_topic.slice(0, 2).toUpperCase()}
         </div>
 
         {/* Content */}
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="mb-4">
-            <h3 className="text-xl font-bold text-white drop-shadow-md">
-              {name}
+            <h3 className="text-xl font-bold text-white drop-shadow-md lg:w-[90%]">
+              {subTopicData.sub_topic}
             </h3>
-            <p className="text-white/80 text-sm mt-1">{subtitle}</p>
+            <p className="text-white/80 text-sm mt-2">
+              {subTopicData.learning_outcome}
+            </p>
           </div>
 
           {/* Level indicator */}
@@ -86,4 +104,4 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
   );
 };
 
-export default SubjectCard;
+export default SubTopicCard;

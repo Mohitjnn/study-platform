@@ -15,13 +15,23 @@ type UserData = {
   survey?: Survey;
 };
 
-export default async function ChatPage() {
+type ChatPageProps = {
+  searchParams: {
+    conversation_id?: string;
+    link_id?: string;
+  };
+};
+
+export default async function ChatPage({ searchParams }: ChatPageProps) {
+  // Get URL parameters
+  const conversationId = searchParams.conversation_id;
+  const linkId = searchParams.link_id;
+
   // Get user data from API
   const result = await getUserDataFromAPI();
   
   // If not authenticated or should redirect, redirect to login
   if (!result.success || result.shouldRedirect) {
-    console.log("Redirecting to login:", result.message);
     redirect('/login');
   }
 
@@ -35,7 +45,6 @@ export default async function ChatPage() {
   const typedUser = isValidUser(user) ? user : null;
 
   if (result.success && typedUser) {
-    console.log("User data retrieved:", typedUser);
     if (typedUser.survey && !typedUser.survey.submitted) {
       redirect('/survey');
     }
@@ -56,7 +65,11 @@ export default async function ChatPage() {
   return (
     <div className="bg-background text-foreground dark min-h-screen">
       <Navbar title="AI Assistant" showProfile={true} />
-        <ChatInterface user={chatUser} />
+        <ChatInterface 
+          user={chatUser} 
+          conversationId={conversationId}
+          linkId={linkId}
+        />
     </div>
   );
 }

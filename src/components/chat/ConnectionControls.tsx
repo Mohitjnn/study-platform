@@ -4,27 +4,32 @@ interface ConnectionControlsProps {
   isConnected: boolean;
   isConnecting: boolean;
   isEnding: boolean;
-  onStartSession: () => void;
   onEndSession: () => void;
+  autoStarted?: boolean;
 }
 
 export const ConnectionControls = ({ 
   isConnected, 
   isConnecting, 
   isEnding, 
-  onStartSession, 
-  onEndSession 
+  onEndSession,
+  autoStarted = false
 }: ConnectionControlsProps) => {
+  // Only show controls if session is connected or if it was auto-started
+  if (!isConnected && !isConnecting && !isEnding && autoStarted) {
+    return null;
+  }
+
   return (
     <Button
-      variant={isConnected ? "destructive" : "default"}
-      onClick={isConnected ? onEndSession : onStartSession}
-      disabled={isConnecting || isEnding}
+      variant="destructive"
+      onClick={onEndSession}
+      disabled={isEnding || (!isConnected && !isConnecting)}
       className="min-w-[120px]"
     >
       {isConnecting ? 'Connecting...' : 
        isEnding ? 'Ending...' :
-       isConnected ? 'End Session' : 'Start Voice Chat'}
+       'End Session'}
     </Button>
   );
 };

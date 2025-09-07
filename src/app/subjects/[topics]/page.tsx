@@ -1,32 +1,34 @@
 import React from "react";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
 import Navbar from "@/components/Navbar";
-import { getSubjectsWithMetadata } from "@/actions/subjects";
-
-export default async function SubjectsPage() {
-
-	const subjects = await getSubjectsWithMetadata();
+import { fetchTopics, getSubjectsWithMetadata } from "@/actions/subjects";
+import TopicCard from "@/components/PersonalCards/TopicCard";
+export default async function Page({params}:{params:Promise<{topics:string}>}) {
+	const { topics } = await params;
+	console.log('Received topic:', topics);
+	const TopicsList = await fetchTopics({subject: topics});
+	console.log(TopicsList);
 
 	return (
 		<div className="min-h-screen bg-background px-4 dark">
             <Navbar title="My Subjects" showProfile={true} />
 			
 			{/* Loading state */}
-			{!subjects && (
+			{!TopicsList && (
 				<div className="flex justify-center items-center min-h-[400px]">
 					<div className="text-muted-foreground">Loading subjects...</div>
 				</div>
 			)}
 			
 			{/* Subjects grid */}
-			{subjects && (
+			{TopicsList && (
 				<div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 max-w-7xl mx-auto p-6">
-					{subjects.map((subject, index) => (
-						<SubjectCard
-							key={subject.name}
-							name={subject.name}
-							progress={subject.progress}
-							subtitle={subject.subtitle}
+					{TopicsList.map((topic, index) => (
+						<TopicCard
+							key={topic}
+							name={topic}
+							progress={0}
+							titleName={topics}
 							index={index}
 						/>
 					))}

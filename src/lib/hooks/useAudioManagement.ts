@@ -39,7 +39,6 @@ export const useAudioManagement = () => {
 
   const setupMicrophone = useCallback(async () => {
     if (navigator.mediaDevices && window.isSecureContext) {
-      console.log('🎤 Setting up microphone...');
       micStreamRef.current = await navigator.mediaDevices.getUserMedia({ 
         audio: { 
           echoCancellation: true, 
@@ -48,7 +47,6 @@ export const useAudioManagement = () => {
         } 
       });
       
-      console.log('✅ Microphone stream obtained');
       const audioTrack = micStreamRef.current.getTracks()[0];
       
       // Initially disable the audio track until mic is turned on manually
@@ -57,7 +55,6 @@ export const useAudioManagement = () => {
       
       return micStreamRef.current;
     } else {
-      console.warn('⚠️ MediaDevices not available or not in secure context');
       return null;
     }
   }, []);
@@ -75,12 +72,6 @@ export const useAudioManagement = () => {
           const normalizedLevel = average / 255;
           setAudioLevel(normalizedLevel);
           
-          // Log audio activity only when mic is on and audio is detected
-          if (normalizedLevel > 0.1) {
-            const audioTrack = micStreamRef.current?.getTracks()[0];
-            console.log('🎤 Audio detected, level:', normalizedLevel.toFixed(3), 'Mic enabled:', audioTrack?.enabled);
-          }
-          
           requestAnimationFrame(updateAudioLevel);
         } else if (!isMicOn || !isConnected) {
           setAudioLevel(0);
@@ -95,23 +86,17 @@ export const useAudioManagement = () => {
 
   const toggleMic = useCallback((isConnected: boolean) => {
     if (!micStreamRef.current || !isConnected) {
-      console.warn('⚠️ No microphone stream available or not connected');
       return;
     }
     
     const newMicState = !isMicOn;
-    console.log(`🎤 Toggling microphone: ${isMicOn} -> ${newMicState}`);
     setIsMicOn(newMicState);
     
     micStreamRef.current.getTracks().forEach(track => {
       track.enabled = newMicState;
-      console.log(`🎤 Track ${track.id} enabled: ${track.enabled}, readyState: ${track.readyState}`);
     });
     
-    if (newMicState) {
-      console.log('🔊 Microphone is now ACTIVE - audio will be sent to AI');
-    } else {
-      console.log('🔇 Microphone is now MUTED - no audio will be sent');
+    if (!newMicState) {
       setAudioLevel(0);
     }
   }, [isMicOn]);

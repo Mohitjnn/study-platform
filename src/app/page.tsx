@@ -1,8 +1,19 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { getUserDataFromAPI } from "@/actions/auth";
+import { redirect } from "next/navigation";
+export default async function Home() {
 
-export default function Home() {
+    // Get user data from API
+    const result = await getUserDataFromAPI();
+    
+    // If not authenticated or should redirect, redirect to login
+    if (result.success || !result.shouldRedirect) {
+      console.log("Redirecting to dashboard:", result.message);
+      redirect('/dashboard');
+    }
+
   return (
     <div className="min-h-screen bg-background text-foreground dark">
       <div className="container mx-auto px-4 py-16">

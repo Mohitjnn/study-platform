@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import { getSubjectsWithMetadata } from "@/actions/subjects";
 
 
-export default async function SubjectsPage() {
+export default async function Page() {
 
 	const subjects = await getSubjectsWithMetadata();
 
