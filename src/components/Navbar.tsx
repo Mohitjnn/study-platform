@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Menu, X, User, Home, FileText } from "lucide-react";
+import { Menu, X, User, Home, FileText,Zap } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 import Link from "next/link";
 
@@ -63,11 +63,11 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left side - Title */}
-          {/* <div className="flex items-center">
+          <div className="flex items-center">
             <h1 className="text-xl font-semibold text-card-foreground">
-              {title}
+              StudyMate
             </h1>
-          </div> */}
+          </div> 
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
@@ -79,11 +79,17 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
               <span>Home</span>
             </Link>
             {showProfile && (
-              <Link href="/profile" className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200">
-                <User className="h-4 w-4" />
-                <span>Profile</span>
-              </Link>
+                        <Link href="/profile" className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200">
+                          <User className="h-4 w-4" />
+                          <span>Profile</span>
+                        </Link>
             )}
+            {
+              <Link href="/activity" className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200">
+                <Zap className="h-4 w-4" />
+                <span>Activity</span>
+              </Link>
+            }
             <LogoutButton />
           </div>
 
@@ -133,32 +139,21 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
 
                 <motion.div variants={itemVariants}>
                   <Link
-                    href="/survey"
+                    href="/Activity"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
                   >
-                    <FileText className="h-5 w-5" />
-                    <span>Survey</span>
-                  </Link>
-                </motion.div>
-
-                <motion.div variants={itemVariants}>
-                  <Link
-                    href="/chat"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
-                  >
-                    <FileText className="h-5 w-5" />
-                    <span>AI Chat</span>
+                    <Zap className="h-5 w-5" />
+                    <span>Activity</span>
                   </Link>
                 </motion.div>
 
                 {showProfile && (
                   <motion.div variants={itemVariants}>
-                    <div className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground">
+                    <Link href="/profile" className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200">
                       <User className="h-5 w-5" />
                       <span>Profile</span>
-                    </div>
+                    </Link>
                   </motion.div>
                 )}
 

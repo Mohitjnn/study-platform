@@ -22,7 +22,7 @@ export default async function Page({params}:{params:Promise<{topics:string}>}) {
 			
 			{/* Subjects grid */}
 			{TopicsList && (
-				<div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 max-w-7xl mx-auto p-6">
+				<div className="grid grid-cols-1s gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 max-w-7xl mx-auto p-6">
 					{TopicsList.map((topic, index) => (
 						<TopicCard
 							key={topic}

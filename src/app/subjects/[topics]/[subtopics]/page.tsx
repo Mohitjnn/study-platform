@@ -34,7 +34,7 @@ export default async function SubjectsPage({params}:{params:Promise<{topics:stri
 			
 			{/* Subjects grid */}
 			{subTopicsData && subTopicsData.length > 0 && (
-				<div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 max-w-7xl mx-auto p-6">
+				<div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 max-w-7xl mx-auto p-6">
 					{subTopicsData.map((subTopic: SubTopicData, index: number) => (
 						<SubtTopicCard
 							key={subTopic.id || index}
