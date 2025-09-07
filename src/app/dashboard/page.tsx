@@ -29,6 +29,7 @@ import {
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DashboardSquareCard from "@/components/DashboardSquareCard";
+import ScreenTimeChart from "@/components/Bar-chart";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -114,6 +115,14 @@ export default async function DashboardPage() {
     },
   ];
 
+  // Dummy values for ScreenTimeChart
+  const screenTimeStats = {
+    dailyHours: [4.5, 3.8, 4.1, 6.3, 7.2, 8.1, 6.7], // array for each day
+    weeklyAverage: 5.2,
+    weeklyChange: 8.3,
+    lastUpdated: "2025-09-07T19:20:00Z",
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground dark">
       <Navbar title="Dashboard" showProfile={true} />
@@ -158,27 +167,7 @@ export default async function DashboardPage() {
 
         {/* Weekly Progress */}
         <div className="mb-8 bg-card border-border p-4 rounded-2xl">
-          <div className="flex items-center gap-2 mb-2">
-            <Target className="h-5 w-5" />
-            Weekly Learning Goal
-          </div>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>{0}%</span>
-              <span>{100}%</span>
-            </div>
-            <Progress
-              value={
-                (dashboardStats.weeklyProgress / dashboardStats.weeklyGoal) *
-                100
-              }
-              className="h-2"
-            />
-            <p className="text-sm text-muted-foreground">
-              {dashboardStats.weeklyGoal - dashboardStats.weeklyProgress} hours
-              left to reach your goal
-            </p>
-          </div>
+          <ScreenTimeChart {...screenTimeStats} />
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           <DashboardSquareCard
