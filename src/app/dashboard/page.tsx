@@ -30,10 +30,14 @@ import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DashboardSquareCard from "@/components/DashboardSquareCard";
 import ScreenTimeChart from "@/components/Bar-chart";
+import { getSubjectsWithMetadata } from "@/actions/subjects";
+import SubjectCard from "@/components/PersonalCards/SubjectCard";
 
 export default async function DashboardPage() {
   // Get user data from API
   const result = await getUserDataFromAPI();
+  const subjects = await getSubjectsWithMetadata();
+
 
   // If not authenticated or should redirect, redirect to login
   if (!result.success || result.shouldRedirect) {
@@ -124,7 +128,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground dark">
+    <div className="bg-background text-foreground dark">
       <Navbar title="Dashboard" showProfile={true} />
 
       <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -169,21 +173,17 @@ export default async function DashboardPage() {
         <div className="mb-8 bg-card border-border p-4 rounded-2xl">
           <ScreenTimeChart {...screenTimeStats} />
         </div>
-        <div className="grid lg:grid-cols-2 gap-8">
-          <DashboardSquareCard
-            title="Guided Journey"
-            text="Learn with structure plus free exploration."
-            imageUrl="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80"
-            link="/subjects"
-            linkText="View Subjects"
-          />
-          <DashboardSquareCard
-            title="Free Explore"
-            text="Choose any topic and learn without limits."
-            imageUrl="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80"
-            link="/quizzes"
-            linkText="Take a Quiz"
-          />
+        <h1 className="text-3xl lg:text-5xl text-center lg:text-left font-bold mb-8">Subjects</h1>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-8">
+					{subjects.map((subject, index) => (
+						<SubjectCard
+							key={subject.name}
+							name={subject.name}
+							progress={50}
+							subtitle={subject.subtitle}
+							index={index}
+						/>
+					))}
         </div>
       </main>
     </div>

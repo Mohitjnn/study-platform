@@ -1,5 +1,4 @@
 "use server";
-
 import { fetchFromAPI, postDataToAPI } from "@/lib/api/client";
 
 // Types for subject-related data
@@ -66,6 +65,113 @@ export async function fetchSubjects(): Promise<SubjectsResponse> {
   }
 }
 
+// NEW: Combined interface for topics with subtopics
+export interface TopicWithSubTopics {
+  topic: string;
+  subtopics: SubTopicData[];
+}
+
+export interface SubjectWithTopics {
+  subject: string;
+  topics: TopicWithSubTopics[];
+}
+
+export interface AllTopicsResponse {
+  subjects: SubjectWithTopics[];
+}
+
+// NEW: Combined function to fetch all topics with subtopics for all subjects
+export async function fetchAllTopicsWithSubTopics(): Promise<AllTopicsResponse> {
+  try {
+    // First, fetch all subjects
+    const subjectsResponse = await fetchSubjects();
+    
+    // For each subject, fetch its topics and then subtopics for each topic
+    const subjectsWithTopics = await Promise.all(
+      subjectsResponse.subjects.map(async (subject) => {
+        try {
+          // Fetch topics for this subject
+          const topics = await fetchTopics({ subject });
+          
+          // For each topic, fetch its subtopics
+          const topicsWithSubTopics = await Promise.all(
+            topics.map(async (topic) => {
+              try {
+                const subtopicsResponse = await fetchSubTopics({ subject, topic });
+                return {
+                  topic,
+                  subtopics: subtopicsResponse.items
+                };
+              } catch (error) {
+                console.warn(`Failed to fetch subtopics for ${subject} - ${topic}:`, error);
+                return {
+                  topic,
+                  subtopics: []
+                };
+              }
+            })
+          );
+          
+          return {
+            subject,
+            topics: topicsWithSubTopics
+          };
+        } catch (error) {
+          console.warn(`Failed to fetch topics for subject ${subject}:`, error);
+          return {
+            subject,
+            topics: []
+          };
+        }
+      })
+    );
+    
+    return {
+      subjects: subjectsWithTopics
+    };
+  } catch (error: unknown) {
+    let message = 'Unknown error';
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    throw new Error(`Failed to fetch all topics with subtopics: ${message}`);
+  }
+}
+
+// NEW: Alternative function to fetch topics with subtopics for a specific subject
+export async function fetchTopicsWithSubTopicsForSubject({subject}: {subject: string}): Promise<TopicWithSubTopics[]> {
+  try {
+    // Fetch topics for the subject
+    const topics = await fetchTopics({ subject });
+    
+    // For each topic, fetch its subtopics
+    const topicsWithSubTopics = await Promise.all(
+      topics.map(async (topic) => {
+        try {
+          const subtopicsResponse = await fetchSubTopics({ subject, topic });
+          return {
+            topic,
+            subtopics: subtopicsResponse.items
+          };
+        } catch (error) {
+          console.warn(`Failed to fetch subtopics for ${subject} - ${topic}:`, error);
+          return {
+            topic,
+            subtopics: []
+          };
+        }
+      })
+    );
+    
+    return topicsWithSubTopics;
+  } catch (error: unknown) {
+    let message = 'Unknown error';
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    throw new Error(`Failed to fetch topics with subtopics for subject ${subject}: ${message}`);
+  }
+}
 
 // Get subjects with additional metadata (for UI components)
 export async function getSubjectsWithMetadata() {
@@ -96,7 +202,6 @@ export async function initiateConversation({topic_id}:{topic_id:string}) {
   }
 }
 
-
 // Helper function to get subject subtitle
 function getSubjectSubtitle(subject: string): string {
   const subtitles: Record<string, string> = {
@@ -120,5 +225,3 @@ function getSubjectTheme(index: number): string {
   const themes = ["coral", "navy", "sunny"];
   return themes[index % themes.length];
 }
-
-

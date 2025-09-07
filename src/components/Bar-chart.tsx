@@ -79,7 +79,7 @@ export default function ScreenTimeChart({
   }
 
   return (
-    <div className="w-full text-white lg:rounded-2xl overflow-hidden">
+    <div className="w-full text-white lg:rounded-2xl overflow-hidden ">
       {/* Header */}
       <div className="p-2">
         <h2 className="text-gray-400 text-sm mb-1">{screenTimeConfig.header.title}</h2>
