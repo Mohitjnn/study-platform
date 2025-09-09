@@ -5,7 +5,7 @@ import AnimatedTopicsLayout from "@/components/AnimatedTopicsLayout";
 
 export default async function Page({params}: {params: Promise<{topics: string}>}) {
   const { topics } = await params;
-  
+  console.log("Fetching topics for subject:", topics);
   const topicsWithSubTopics = await fetchTopicsWithSubTopicsForSubject({subject: topics});
  console.log("Fetched topics with subtopics:", topicsWithSubTopics);
  console.log(topicsWithSubTopics)

@@ -337,7 +337,7 @@ export const useWebRTCConnection = ({
         // Add microphone track if available
         if (micStream) {
           const audioTrack = micStream.getTracks()[0];
-          audioTrack.enabled = false; // Initially disabled
+          audioTrack.enabled = true; // Initially disabled
           console.log("🎤 Adding microphone track to peer connection");
           pcRef.current.addTrack(audioTrack, micStream);
         }

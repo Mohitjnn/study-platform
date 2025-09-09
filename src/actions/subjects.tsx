@@ -35,8 +35,10 @@ interface SubTopicsResponse {
 }
 
 export async function fetchSubTopics({subject,topic}:{subject:string,topic:string}): Promise<SubTopicsResponse> {
+  console.log("Fetching subtopics for:", { subject, topic });
   try {
     const response = await fetchFromAPI<SubTopicsResponse>(`/topics/subtopics?subject=${subject}&topic=${topic}`, { requiresAuth: true });
+    console.log("Fetched subtopics:", response.items);
     return response;
   } catch (error: unknown) {
     let message = 'Unknown error';
@@ -143,7 +145,7 @@ export async function fetchTopicsWithSubTopicsForSubject({subject}: {subject: st
   try {
     // Fetch topics for the subject
     const topics = await fetchTopics({ subject });
-    
+    console.log("Fetched topics:", topics);
     // For each topic, fetch its subtopics
     const topicsWithSubTopics = await Promise.all(
       topics.map(async (topic) => {

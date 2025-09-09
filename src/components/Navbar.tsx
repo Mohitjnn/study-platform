@@ -139,7 +139,7 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
 
                 <motion.div variants={itemVariants}>
                   <Link
-                    href="/Activity"
+                    href="/activity"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
                   >

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 export const useAudioManagement = () => {
-  const [isMicOn, setIsMicOn] = useState(false);
+  const [isMicOn, setIsMicOn] = useState(true);
   const [audioLevel, setAudioLevel] = useState(0);
   
   const micStreamRef = useRef<MediaStream | null>(null);
@@ -50,8 +50,8 @@ export const useAudioManagement = () => {
       const audioTrack = micStreamRef.current.getTracks()[0];
       
       // Initially disable the audio track until mic is turned on manually
-      audioTrack.enabled = false;
-      setIsMicOn(false);
+      audioTrack.enabled = true;
+      setIsMicOn(true);
       
       return micStreamRef.current;
     } else {
