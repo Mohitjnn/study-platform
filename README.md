@@ -1,1 +1,1 @@
-changes implemented again with new page
+changes implemented again with new page and proper config
