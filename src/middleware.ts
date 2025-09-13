@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtDecode } from 'jwt-decode';
 
 // Define protected routes that require authentication
-const protectedRoutes = ['/dashboard', '/profile', '/settings', "/survey", "/chat"];
+const protectedRoutes = ['/dashboard', '/profile', '/sandbox', "/survey", "/chat"];
 
 // Define public routes that don't require authentication
 const publicRoutes = ['/login', '/signup', '/'];

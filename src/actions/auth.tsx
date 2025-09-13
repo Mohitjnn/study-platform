@@ -158,6 +158,18 @@ export async function logout() {
   }
 }
 
+export async function clearAuthTokens() {
+  const cookie = await cookies()
+  try {
+    cookie.delete("access_token")
+    cookie.delete("refresh_token")
+    return { success: true }
+  } catch (error) {
+    console.error("Error occurred in clearing auth tokens:", error)
+    return { success: false }
+  }
+}
+
 export async function validation() {
   const cookie = await cookies()
   const token = cookie.get("access_token");
@@ -220,9 +232,7 @@ export async function getUserData() {
 export async function getUserDataFromAPI() {
   const cookie = await cookies();
   const token = cookie.get("access_token");
-
   if (!token) {
-    console.log("No access token found in cookies");
     return {
       success: false,
       message: "Token not found in cookies.",
@@ -230,9 +240,7 @@ export async function getUserDataFromAPI() {
       shouldRedirect: true
     };
   }
-
-  console.log("Access token found, making API request to /me");
-
+  
   try {
     const result = await fetchFromAPI<Record<string, unknown>>(
       "/me",
@@ -251,12 +259,16 @@ export async function getUserDataFromAPI() {
     const errorObj = error as APIError;
     console.log("Error status:", errorObj.status || errorObj.response?.status);
     
-    // If it's a 401 error, clear the invalid tokens
+    // If it's a 401 error, clear the invalid tokens and indicate redirect
     if (errorObj.status === 401 || errorObj.response?.status === 401) {
-      console.log("401 error - clearing tokens");
-      const cookieStore = await cookies();
-      cookieStore.delete("access_token");
-      cookieStore.delete("refresh_token");
+      console.log("401 error - clearing tokens and redirecting");
+      try {
+        const cookieStore = await cookies();
+        cookieStore.delete("access_token");
+        cookieStore.delete("refresh_token");
+      } catch (cookieError) {
+        console.error("Error clearing cookies:", cookieError);
+      }
       
       return {
         success: false,
@@ -341,6 +353,35 @@ export async function resetPassword(token: string, newPassword: string) {
     return {
       success: false,
       error: errorObj.response?.data?.detail || "Failed to reset password. Please try again."
+    };
+  }
+}
+
+export async function decodeToken() {
+  const cookie = await cookies();
+  const token = cookie.get("access_token");
+
+  if (!token) {
+    return {
+      success: false,
+      message: "Token not found in cookies.",
+      data: null
+    };
+  }
+
+  try {
+    // Decode the token
+    const decoded = jwtDecode<TokenPayload>(`${token?.value}`);
+    return {
+      success: true,
+      message: "Token decoded successfully.",
+      data: decoded
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to decode token: ${error}`,
+      data: null
     };
   }
 }

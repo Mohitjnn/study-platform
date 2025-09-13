@@ -1,9 +1,15 @@
-"use client";
-import React from 'react';
-import Navbar from '@/components/Navbar';
-import { SandboxInterface } from '@/components/sandbox/SandboxInterface';
+import React from "react";
+import Navbar from "@/components/Navbar";
+import { SandboxInterface } from "@/components/sandbox/SandboxInterface";
+import { redirect } from "next/navigation";
+import { decodeToken } from "@/actions/auth";
 
-const SandboxPage: React.FC = () => {
+export default async function SandboxPage() {
+  const result = await decodeToken();
+  if (!(result.success && result.data?.email === "adarsh@test.com")) {
+    redirect("/");
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -20,6 +26,4 @@ const SandboxPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default SandboxPage;
+}
