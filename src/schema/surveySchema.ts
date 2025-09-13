@@ -22,7 +22,7 @@ export interface SurveyQuestion {
   id: string;
   question_key: string;
   prompt: string;
-  answer_type: 'integer' | 'multi_choice' | 'single_choice' | 'text';
+  answer_type: 'integer' | 'multi_choice' | 'single_choice' | 'text' | 'text_multi';
   is_required: boolean;
   options?: Array<string | { value: string; label: string }>;
 }

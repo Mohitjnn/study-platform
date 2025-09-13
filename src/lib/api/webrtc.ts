@@ -323,6 +323,85 @@ export async function getLatestImage(): Promise<LatestImageResponse> {
   }
 }
 
+// Sandbox SDP Exchange with query parameters
+export async function exchangeSandboxSdp(
+  sdpOffer: string,
+  config: {
+    model: string;
+    prompt: string;
+    temperature: number;
+    max_output_tokens: number;
+    threshold: number;
+    prefix_padding_ms: number;
+    silence_duration_ms: number;
+    create_response: boolean;
+    interrupt_response: boolean;
+    auto_start: boolean;
+  }
+): Promise<string> {
+  try {
+    const requestConfig = await configureWebRtcRequest({ requiresAuth: true, mediaType: "sdp" });
+
+    // Build query parameters
+    const params = new URLSearchParams({
+      model: config.model,
+      prompt: config.prompt,
+      temperature: config.temperature.toString(),
+      max_output_tokens: config.max_output_tokens.toString(),
+      threshold: config.threshold.toString(),
+      prefix_padding_ms: config.prefix_padding_ms.toString(),
+      silence_duration_ms: config.silence_duration_ms.toString(),
+      create_response: config.create_response.toString(),
+      interrupt_response: config.interrupt_response.toString(),
+      auto_start: config.auto_start.toString(),
+    });
+
+    const url = `/api/v1/realtime2/sandbox/sdp?${params.toString()}`;
+    
+    console.log('🔄 Sandbox SDP Exchange URL:', `${WEBRTC_API_BASE}${url}`);
+    
+    const response = await webrtcApiClient.post(
+      url,
+      sdpOffer,
+      {
+        ...requestConfig,
+        responseType: 'text'
+      }
+    );
+    
+    console.log('✅ Sandbox SDP Answer received');
+    return response.data;
+  } catch (error) {
+    const err = error as WebRtcError;
+    console.error('❌ Sandbox SDP Exchange failed:', err);
+    throw err;
+  }
+}
+
+// Sandbox End Session
+export async function endSandboxSession(session_id: string, fast: boolean = true): Promise<{ status: string; message?: string }> {
+  try {
+    const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
+
+    const url = '/api/v1/realtime2/sandbox/end';
+    const data = {
+      session_id,
+      fast
+    };
+
+    console.log('🛑 Ending sandbox session:', session_id);
+
+    const response = await webrtcApiClient.post(url, data, requestConfig);
+    
+    console.log('✅ Sandbox session ended successfully');
+    return response.data;
+  } catch (error) {
+    const err = error as WebRtcError;
+    console.error('❌ Failed to end sandbox session:', err);
+    throw err;
+  }
+}
+
 // // Add these functions to your webrtc.ts file for backend testing
 
 // // Test if backend server is reachable

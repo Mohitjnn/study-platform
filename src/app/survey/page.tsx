@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import Link from "next/link";
 
 export default async function SurveyPage() {
-  const surveySlug = process.env.SURVEY_SLUG || "user_personalization_v1";
+  const surveySlug = process.env.SURVEY_SLUG || "user_personalization_v2";
 
   // Fetch the survey data
   const surveyResult = await getSurvey(surveySlug);

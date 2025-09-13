@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Menu, X, User, Home, FileText,Zap } from "lucide-react";
+import { Menu, X, User, Home, FileText,Zap,Box } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 import Link from "next/link";
 
@@ -78,6 +78,14 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
               <Home className="h-4 w-4" />
               <span>Home</span>
             </Link>
+                        <Link
+              // href= {showProfile ? "/dashboard" : "/"}
+              href= {"/sandbox"}
+              className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200"
+            >
+              <Box className="h-4 w-4" />
+              <span>Sandbox</span>
+            </Link>
             {showProfile && (
                         <Link href="/profile" className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200">
                           <User className="h-4 w-4" />
@@ -134,6 +142,18 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
                   >
                     <Home className="h-5 w-5" />
                     <span>Home</span>
+                  </Link>
+                </motion.div>
+
+                                <motion.div variants={itemVariants}>
+                  <Link
+                    // href={showProfile ? "/dashboard" : "/"}
+                    href={"/sandbox"}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
+                  >
+                    <Box className="h-5 w-5" />
+                    <span>Sandbox</span>
                   </Link>
                 </motion.div>
 

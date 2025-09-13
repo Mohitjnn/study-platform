@@ -52,7 +52,7 @@ export async function submitSurvey(submission: SurveySubmission): Promise<Survey
     console.log("Submitting survey:", validatedData);
     
     const result = await postDataToAPI<{ submission_id: string; message: string }>(
-      "/surveys/user_personalization_v1/submit",
+      "/surveys/user_personalization_v2/submit",
       validatedData,
       { requiresAuth: true }
     );

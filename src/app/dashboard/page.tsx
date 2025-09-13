@@ -30,6 +30,7 @@ import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DashboardSquareCard from "@/components/DashboardSquareCard";
 import ScreenTimeChart from "@/components/Bar-chart";
+import { getWeeklyScreenTimeStats } from "@/actions/screenTime";
 import { getSubjectsWithMetadata } from "@/actions/subjects";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
 
@@ -37,8 +38,8 @@ export default async function DashboardPage() {
   // Get user data from API
   const result = await getUserDataFromAPI();
   const subjects = await getSubjectsWithMetadata();
-
-
+  const screenTimeStats = await getWeeklyScreenTimeStats();
+  console.log("Screen time stats:", screenTimeStats);
   // If not authenticated or should redirect, redirect to login
   if (!result.success || result.shouldRedirect) {
     console.log("Redirecting to login:", result.message);
@@ -120,12 +121,12 @@ export default async function DashboardPage() {
   ];
 
   // Dummy values for ScreenTimeChart
-  const screenTimeStats = {
-    dailyHours: [4.5, 3.8, 4.1, 6.3, 7.2, 8.1, 6.7], // array for each day
-    weeklyAverage: 5.2,
-    weeklyChange: 8.3,
-    lastUpdated: "2025-09-07T19:20:00Z",
-  };
+  // const screenTimeStats = {
+  //   dailyHours: [4.5, 3.8, 4.1, 6.3, 7.2, 8.1, 6.7], // array for each day
+  //   weeklyAverage: 5.2,
+  //   weeklyChange: 8.3,
+  //   lastUpdated: "2025-09-07T19:20:00Z",
+  // };
 
   return (
     <div className="bg-background text-foreground dark">
@@ -179,7 +180,7 @@ export default async function DashboardPage() {
 						<SubjectCard
 							key={subject.name}
 							name={subject.name}
-							progress={50}
+							progress={subject.progress}
 							subtitle={subject.subtitle}
 							index={index}
 						/>

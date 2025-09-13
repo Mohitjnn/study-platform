@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { getLatestImage } from '@/lib/api/webrtc';
 import { Message } from '@/types/chat.type';
 
-interface ImagePollingEvent {
+export interface ImagePollingEvent {
   type: string;
   response?: {
     output?: Array<{ type?: string; name?: string }>;

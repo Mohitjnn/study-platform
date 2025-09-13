@@ -1,18 +1,22 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ReferenceLine } from "recharts"
+import * as React from "react";
 import {
-  ChartConfig,
-  ChartContainer,
-} from "@/components/ui/chart"
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ReferenceLine,
+} from "recharts";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
 const chartConfig = {
   hours: {
     label: "Hours",
     color: "#00d4aa", // Cyan/teal color like iPhone
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 // Hardcoded day structure (Sunday to Saturday)
 const dayLabels = [
@@ -23,7 +27,7 @@ const dayLabels = [
   { day: "T", dayFull: "Thursday" },
   { day: "F", dayFull: "Friday" },
   { day: "S", dayFull: "Saturday" },
-]
+];
 
 const screenTimeConfig = {
   header: {
@@ -52,41 +56,46 @@ const screenTimeConfig = {
 };
 
 interface ScreenTimeChartProps {
-  dailyHours: number[] // Array of 7 numbers for Sunday to Saturday
-  weeklyAverage: number
-  weeklyChange: number // Percentage change from last week
-  lastUpdated: string // e.g., "Updated today at 7:20 PM"
+  dailyHours: number[]; // Array of 7 numbers for Sunday to Saturday
+  weeklyAverage: number;
+  weeklyChange: number; // Percentage change from last week
+  lastUpdated: string; // e.g., "Updated today at 7:20 PM"
 }
 
-export default function ScreenTimeChart({ 
-  dailyHours, 
-  weeklyAverage, 
-  weeklyChange, 
-  lastUpdated 
+export default function ScreenTimeChart({
+  dailyHours,
+  weeklyAverage,
+  weeklyChange,
+  lastUpdated,
 }: ScreenTimeChartProps) {
   // Create chart data by mapping props to hardcoded structure
   const chartData = React.useMemo(() => {
     return dayLabels.map((dayInfo, index) => ({
       ...dayInfo,
       hours: dailyHours[index] || 0,
-    }))
-  }, [dailyHours])
+    }));
+  }, [dailyHours]);
 
-  const formatTime = (hours: number) => {
-    const h = Math.floor(hours)
-    const m = Math.round((hours - h) * 60)
-    return `${h}h ${m}m`
-  }
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+    return `${h}h ${m}m ${s}s`;
+  };
 
   return (
     <div className="w-full text-white lg:rounded-2xl overflow-hidden ">
       {/* Header */}
       <div className="p-2">
-        <h2 className="text-gray-400 text-sm mb-1">{screenTimeConfig.header.title}</h2>
+        <h2 className="text-gray-400 text-sm mb-1">
+          {screenTimeConfig.header.title}
+        </h2>
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xl lg:text-4xl font-light">{formatTime(weeklyAverage)}</span>
+          <span className="text-xl lg:text-4xl font-light">
+            {formatTime(weeklyAverage)}
+          </span>
           <div className="flex items-center gap-1 text-gray-400">
-            <span className="text-lg">{weeklyChange >= 0 ? '↗' : '↘'}</span>
+            <span className="text-lg">{weeklyChange >= 0 ? "↗" : "↘"}</span>
             <span className="text-xs lg:text-sm">
               {Math.abs(weeklyChange).toFixed(0)}% from last week
             </span>
@@ -99,11 +108,9 @@ export default function ScreenTimeChart({
         config={chartConfig}
         className="h-[200px] w-[110%] sm:w-full -ml-6 lg:-ml-2"
       >
-        <BarChart
-          data={chartData}
-        >
-          <CartesianGrid 
-            vertical={false} 
+        <BarChart data={chartData}>
+          <CartesianGrid
+            vertical={false}
             horizontal={true}
             strokeDasharray="none"
             stroke="#374151"
@@ -114,24 +121,32 @@ export default function ScreenTimeChart({
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tick={{ fill: screenTimeConfig.axis.tickColor, fontSize: screenTimeConfig.axis.fontSize }}
+            tick={{
+              fill: screenTimeConfig.axis.tickColor,
+              fontSize: screenTimeConfig.axis.fontSize,
+            }}
           />
           <YAxis
             tickLine={false}
             axisLine={false}
-            tick={{ fill: screenTimeConfig.axis.tickColor, fontSize: screenTimeConfig.axis.fontSize }}
+            domain={[0, 8]}
+            ticks={[0, 2, 4, 6, 8]}
+            tick={{
+              fill: screenTimeConfig.axis.tickColor,
+              fontSize: screenTimeConfig.axis.fontSize,
+            }}
             tickFormatter={(value) => `${value}h`}
           />
           {/* Average line */}
-          <ReferenceLine 
-            y={weeklyAverage} 
-            stroke={screenTimeConfig.average.lineColor} 
+          <ReferenceLine
+            y={weeklyAverage}
+            stroke={screenTimeConfig.average.lineColor}
             strokeDasharray={screenTimeConfig.average.lineStyle}
             strokeWidth={2}
             z={1000}
           />
-          <Bar 
-            dataKey={screenTimeConfig.bar.dataKey} 
+          <Bar
+            dataKey={screenTimeConfig.bar.dataKey}
             fill={screenTimeConfig.bar.fill}
             radius={screenTimeConfig.bar.radius}
             maxBarSize={screenTimeConfig.bar.maxBarSize}
@@ -142,14 +157,19 @@ export default function ScreenTimeChart({
       {/* Average label */}
       <div className="flex justify-end mt-2">
         <div className="flex items-center gap-2 text-xs text-gray-400">
-          <div className="w-3 h-0 border-t-2 border-dashed" style={{ borderColor: screenTimeConfig.average.lineColor }}></div>
+          <div
+            className="w-3 h-0 border-t-2 border-dashed"
+            style={{ borderColor: screenTimeConfig.average.lineColor }}
+          ></div>
           <span>{screenTimeConfig.average.label}</span>
         </div>
       </div>
       {/* Updated time */}
       <div className="px-6 pb-4">
-        <p className={`${screenTimeConfig.updated.color} text-sm`}>{lastUpdated}</p>
+        <p className={`${screenTimeConfig.updated.color} text-sm`}>
+          {lastUpdated}
+        </p>
       </div>
     </div>
-  )
+  );
 }
