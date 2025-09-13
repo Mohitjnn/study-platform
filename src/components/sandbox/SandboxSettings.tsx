@@ -44,8 +44,8 @@ export const SandboxSettings: React.FC<SandboxSettingsProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="gpt-realtime">GPT Realtime</SelectItem>
-                <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                <SelectItem value="gpt-4o-realtime-preview">GPT-4o-realtime-preview</SelectItem>
+                <SelectItem value="gpt-4o-mini-realtime-preview">GPT-4o-mini-realtime-preview</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -92,16 +92,11 @@ export const SandboxSettings: React.FC<SandboxSettingsProps> = ({
               value={[config.temperature]}
               onValueChange={(value: number[]) => handleChange('temperature', value[0])}
               disabled={disabled}
-              min={0}
-              max={2}
+              min={0.6}
+              max={1.2}
               step={0.01}
               className="w-full"
             />
-            <div className="flex justify-between text-xs text-muted-foreground hidden lg:block">
-              <span>Focused (0)</span>
-              <span>Balanced (1)</span>
-              <span>Creative (2)</span>
-            </div>
           </div>
 
           <div className="space-y-2">
@@ -118,11 +113,6 @@ export const SandboxSettings: React.FC<SandboxSettingsProps> = ({
               step={0.01}
               className="w-full"
             />
-            <div className="flex justify-between text-xs text-muted-foreground hidden lg:block">
-              <span>Sensitive (0)</span>
-              <span>Balanced (0.5)</span>
-              <span>Less Sensitive (1)</span>
-            </div>
           </div>
 
           <div className="space-y-2">
