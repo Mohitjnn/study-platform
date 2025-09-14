@@ -1,1 +1,1 @@
-changes implemented again with new page and proper config
+changes implemented again with new page and proper config and auth
