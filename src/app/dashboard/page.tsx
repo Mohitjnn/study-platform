@@ -30,7 +30,10 @@ import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DashboardSquareCard from "@/components/DashboardSquareCard";
 import ScreenTimeChart from "@/components/Bar-chart";
-import { getWeeklyScreenTimeStats } from "@/actions/screenTime";
+import {
+  getOverAllStats,
+  getWeeklyScreenTimeStats,
+} from "@/actions/screenTime";
 import { getSubjectsWithMetadata } from "@/actions/subjects";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
 
@@ -39,95 +42,22 @@ export default async function DashboardPage() {
   const result = await getUserDataFromAPI();
   const subjects = await getSubjectsWithMetadata();
   const screenTimeStats = await getWeeklyScreenTimeStats();
-  console.log("Screen time stats:", screenTimeStats);
+  const overallStats = await getOverAllStats();
   // If not authenticated or should redirect, redirect to login
   if (!result.success || result.shouldRedirect) {
-    console.log("Redirecting to login:", result.message);
     redirect("/login");
   }
 
   const user = result.data;
 
   if (result.success) {
-    console.log("User data retrieved:", user);
-    if (user && typeof user === 'object' && 'survey' in user) {
+    if (user && typeof user === "object" && "survey" in user) {
       const userWithSurvey = user as { survey: { submitted: boolean } };
       if (!userWithSurvey.survey.submitted) {
         redirect("/survey");
       }
     }
   }
-
-  // Mock data for dashboard stats (replace with real data from your API)
-  const dashboardStats = {
-    totalCourses: 8,
-    completedCourses: 3,
-    hoursStudied: 24,
-    currentStreak: 7,
-    weeklyGoal: 15,
-    weeklyProgress: 9,
-  };
-
-  const recentActivities = [
-    {
-      id: 1,
-      type: "course",
-      title: "Completed JavaScript Fundamentals",
-      time: "2 hours ago",
-      status: "completed",
-    },
-    {
-      id: 2,
-      type: "quiz",
-      title: "React Hooks Quiz",
-      time: "5 hours ago",
-      status: "passed",
-    },
-    {
-      id: 3,
-      type: "assignment",
-      title: "CSS Grid Project",
-      time: "1 day ago",
-      status: "submitted",
-    },
-    {
-      id: 4,
-      type: "lesson",
-      title: "Advanced TypeScript",
-      time: "2 days ago",
-      status: "in-progress",
-    },
-  ];
-
-  const upcomingTasks = [
-    {
-      id: 1,
-      title: "Complete Node.js Assignment",
-      dueDate: "Tomorrow",
-      priority: "high",
-    },
-    {
-      id: 2,
-      title: "Review Database Concepts",
-      dueDate: "Dec 8",
-      priority: "medium",
-    },
-    {
-      id: 3,
-      title: "Practice Algorithm Problems",
-      dueDate: "Dec 10",
-      priority: "low",
-    },
-  ];
-
-  // Dummy values for ScreenTimeChart
-  // const screenTimeStats = {
-  //   dailyHours: [4.5, 3.8, 4.1, 6.3, 7.2, 8.1, 6.7], // array for each day
-  //   weeklyAverage: 5.2,
-  //   weeklyChange: 8.3,
-  //   lastUpdated: "2025-09-07T19:20:00Z",
-  // };
-
   return (
     <div className="bg-background text-foreground dark">
       <Navbar title="Dashboard" showProfile={true} />
@@ -141,50 +71,62 @@ export default async function DashboardPage() {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-              Hi, {(typeof user?.full_name === "string" && user.full_name) ? user.full_name : "Student"}!
+              Hi,{" "}
+              {typeof user?.full_name === "string" && user.full_name
+                ? user.full_name
+                : "Student"}
+              !
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Ready to continue your learning journey? Here&apos;s what&apos;s happening
-            today.
+            Ready to continue your learning journey? Here&apos;s what&apos;s
+            happening today.
           </p>
         </div>
 
         {/* Stats Badges */}
-        <div className="flex flex-nowrap gap-3 mb-8 items-center overflow-x-auto lg:overflow-visible">
-          <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold">
-            <BookOpen className="h-5 w-5" />
-            <span>Total Courses: {dashboardStats.totalCourses}</span>
-          </Badge>
-          <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold ">
-            <CheckCircle className="h-5 w-5" />
-            <span>Completed: {dashboardStats.completedCourses}</span>
-          </Badge>
-          <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold ">
-            <Clock className="h-5 w-5" />
-            <span>Hours Studied: {dashboardStats.hoursStudied}</span>
-          </Badge>
-          <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold">
-            <TrendingUp className="h-5 w-5" />
-            <span>Streak: {dashboardStats.currentStreak}</span>
-          </Badge>
-        </div>
+        {overallStats ? (
+          <div className="flex flex-nowrap gap-3 mb-8 items-center overflow-x-auto lg:overflow-visible">
+            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold">
+              <BookOpen className="h-5 w-5" />
+              <span>Total Courses: {overallStats.totalCourses}</span>
+            </Badge>
+            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold ">
+              <CheckCircle className="h-5 w-5" />
+              <span>Completed: {overallStats.completedCourses}</span>
+            </Badge>
+            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold ">
+              <Clock className="h-5 w-5" />
+              <span>Hours Studied: {overallStats.hoursStudied}</span>
+            </Badge>
+            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold">
+              <TrendingUp className="h-5 w-5" />
+              <span>Streak: {overallStats.currentStreak}</span>
+            </Badge>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center mb-8 min-h-[40px]">
+            <div className="text-muted-foreground">Loading stats...</div>
+          </div>
+        )}
 
         {/* Weekly Progress */}
         <div className="mb-8 bg-card border-border p-4 rounded-2xl">
           <ScreenTimeChart {...screenTimeStats} />
         </div>
-        <h1 className="text-3xl lg:text-5xl text-center lg:text-left font-bold mb-8">Subjects</h1>
+        <h1 className="text-3xl lg:text-5xl text-center lg:text-left font-bold mb-8">
+          Subjects
+        </h1>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-8">
-					{subjects.map((subject, index) => (
-						<SubjectCard
-							key={subject.name}
-							name={subject.name}
-							progress={subject.progress}
-							subtitle={subject.subtitle}
-							index={index}
-						/>
-					))}
+          {subjects.map((subject, index) => (
+            <SubjectCard
+              key={subject.name}
+              name={subject.name}
+              progress={subject.progress}
+              subtitle={subject.subtitle}
+              index={index}
+            />
+          ))}
         </div>
       </main>
     </div>
