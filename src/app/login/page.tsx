@@ -49,7 +49,8 @@ export default function LoginPage() {
         setErrorMsg(result.error || "Login failed");
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Login failed";
+      const errorMessage =
+        error instanceof Error ? error.message : "Login failed";
       setErrorMsg(errorMessage);
     } finally {
       setIsLoading(false);
@@ -57,101 +58,86 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground dark">
-      {/* Header */}
-      <header className="text-center mb-8">
-        <div className="flex justify-center mb-8"></div>
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 text-foreground">
-          Welcome to Study Platform
-        </h1>
-        <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
-          Your comprehensive learning platform designed to accelerate your
-          educational journey with interactive courses, real-time progress
-          tracking, and personalized learning paths.
-        </p>
-      </header>
-      <div className="flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <Card className="shadow-lg bg-card text-card-foreground">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold text-card-foreground">
-                Welcome Back
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Sign in to your account to continue
-              </CardDescription>
-            </CardHeader>
+    <main className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] px-5 flex justify-center items-center">
+      <div className="w-full max-w-md relative">
+        <img
+          src="/images/blob.png"
+          alt="Logo"
+          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
+        />
+        <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl font-light">Sign In</CardTitle>
+          </CardHeader>
 
-            <CardContent className="space-y-6">
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      className="pl-10"
-                      {...register("email")}
-                    />
-                  </div>
-                  {errors.email && (
-                    <p className="text-sm text-red-600">
-                      {errors.email.message}
-                    </p>
-                  )}
+          <CardContent className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white h-4 w-4" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    className="pl-10 text-white placeholder:text-white/60 py-5 border-white/30"
+                    {...register("email")}
+                  />
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Enter your password"
-                      className="pl-10"
-                      {...register("password")}
-                    />
-                  </div>
-                  {errors.password && (
-                    <p className="text-sm text-red-600">
-                      {errors.password.message}
-                    </p>
-                  )}
-                </div>
-
-                {errorMsg && (
-                  <p className="text-sm text-red-600 text-center">{errorMsg}</p>
+                {errors.email && (
+                  <p className="text-sm text-red-600">{errors.email.message}</p>
                 )}
-
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Signing In...
-                    </>
-                  ) : (
-                    "Sign In"
-                  )}
-                </Button>
-              </form>
-
-              <div className="text-center">
-                <p className="text-sm text-gray-600">
-                  Don&apos;t have an account?{" "}
-                  <Link
-                    href="/signup"
-                    className="text-blue-600 hover:text-blue-800 transition-colors"
-                  >
-                    Sign up
-                  </Link>
-                </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white h-4 w-4" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    className="pl-10 text-white placeholder:text-white/60 py-5 border-white/30 "
+                    {...register("password")}
+                  />
+                </div>
+                {errors.password && (
+                  <p className="text-sm text-red-600">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              {errorMsg && (
+                <p className="text-sm text-red-600 text-center">{errorMsg}</p>
+              )}
+
+              <button
+                type="submit"
+                className="w-full bg-white/20 py-3 rounded-lg flex items-center justify-center gap-3"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4" />
+                    Signing In...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
+              </button>
+            </form>
+
+            <div className="text-center">
+              <p className="text-sm text-white/60">
+                Don&apos;t have an account?{" "}
+                <Link href="/signup" className="text-white underline">
+                  Sign up
+                </Link>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );

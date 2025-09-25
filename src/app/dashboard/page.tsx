@@ -1,31 +1,7 @@
 import { getUserDataFromAPI } from "@/actions/auth";
 import { redirect } from "next/navigation";
-import Navbar from "@/components/Navbar";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import {
-  User,
-  BookOpen,
-  Clock,
-  Target,
-  TrendingUp,
-  Award,
-  Calendar,
-  Activity,
-  CheckCircle,
-  AlertCircle,
-  BarChart3,
-  PlusCircle,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
+
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DashboardSquareCard from "@/components/DashboardSquareCard";
@@ -59,50 +35,97 @@ export default async function DashboardPage() {
     }
   }
   return (
-    <div className="bg-background text-foreground dark">
-      <Navbar title="Dashboard" showProfile={true} />
+    <div className="bg-[#010532] text-foreground dark relative pt-5 w-full">
+      {/* <Navbar title="Dashboard" showProfile={true} /> */}
 
-      <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="absolute inset-0 flex justify-start items-start mt-24 -translate-x-20 right-0 ">
+        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+      </div>
+
+      <div className="absolute inset-0 flex justify-end items-center mt-24 -translate-x-20 right-0 ">
+        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+      </div>
+
+      <div className="absolute inset-0 flex justify-end ml-36 items-end mt-24 -translate-x-20 right-0 ">
+        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+      </div>
+      <main className="w-full p-4 sm:p-6 lg:p-8">
         {/* Welcome Section */}
-        <div className="mb-8 flex flex-col items-start gap-4">
-          <div className="flex gap-4 items-end">
+        <div className=" w-full flex items-center justify-between">
+          <div className="w-1/2 flex gap-3 items-center">
+            <div className="p-3 border-[1px] border-white/30 rounded-lg bg-white/10 backdrop-blur-3xl">
+              <img
+                src="/images/Category.png"
+                alt="Dashboard"
+                className="h-5 w-5"
+              />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-3xl font-medium text-foreground">
+                Hi,{" "}
+                {typeof user?.full_name === "string" && user.full_name
+                  ? user.full_name
+                  : "Student"}
+                !
+              </h1>
+              <p className="text-muted-foreground text-sm">Good Morning</p>
+            </div>
+          </div>
+          <div className="flex w-1/2 justify-end">
             <Avatar>
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-              Hi,{" "}
-              {typeof user?.full_name === "string" && user.full_name
-                ? user.full_name
-                : "Student"}
-              !
-            </h1>
           </div>
-          <p className="text-muted-foreground">
-            Ready to continue your learning journey? Here&apos;s what&apos;s
-            happening today.
-          </p>
         </div>
 
-        {/* Stats Badges */}
+        <div className="my-8">
+          <h1 className="font-extralight text-xl text-white/60">
+            Ready to grow your brain?
+          </h1>
+
+          <h1 className="font-bold text-2xl">Lets Dive in!</h1>
+        </div>
+
         {overallStats ? (
-          <div className="flex flex-nowrap gap-3 mb-8 items-center overflow-x-auto lg:overflow-visible">
-            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold">
-              <BookOpen className="h-5 w-5" />
-              <span>Total Courses: {overallStats.totalCourses}</span>
-            </Badge>
-            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold ">
-              <CheckCircle className="h-5 w-5" />
-              <span>Completed: {overallStats.completedCourses}</span>
-            </Badge>
-            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold ">
-              <Clock className="h-5 w-5" />
-              <span>Hours Studied: {overallStats.hoursStudied}</span>
-            </Badge>
-            <Badge className="min-w-[100px] whitespace-nowrap flex items-center gap-2 px-4 py-2 text-base font-semibold">
-              <TrendingUp className="h-5 w-5" />
-              <span>Streak: {overallStats.currentStreak}</span>
-            </Badge>
+          <div className="flex flex-col justify-center items-center gap-3 relative my-5">
+            <div className="flex items-center gap-3 w-full">
+              <div className="bg-white/20 flex flex-col rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+                <h1 className="text-2xl font-bold">
+                  {overallStats.totalCourses}
+                </h1>
+                <h1 className="text-sm font-light">Total Courses</h1>
+              </div>
+              <div className="bg-white/20 flex flex-col items-end rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+                <h1 className="text-2xl font-bold">
+                  {overallStats.completedCourses}
+                </h1>
+                <h1 className="text-sm font-light">Completed</h1>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-full absolute">
+              <img
+                src="/images/globe.png"
+                alt="Globe"
+                className="h-24 w-24 object-cover rounded-2xl"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 w-full">
+              <div className="bg-white/20 flex flex-col rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+                <h1 className="text-2xl font-bold">
+                  {overallStats.hoursStudied}
+                </h1>
+                <h1 className="text-sm font-light">Hours Studied</h1>
+              </div>
+              <div className="bg-white/20 flex flex-col items-end rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+                <h1 className="text-2xl font-bold">
+                  {overallStats.currentStreak}
+                </h1>
+                <h1 className="text-sm font-light">Streak</h1>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="flex justify-center items-center mb-8 min-h-[40px]">
@@ -114,10 +137,17 @@ export default async function DashboardPage() {
         <div className="mb-8 bg-card border-border p-4 rounded-2xl">
           <ScreenTimeChart {...screenTimeStats} />
         </div>
-        <h1 className="text-3xl lg:text-5xl text-center lg:text-left font-bold mb-8">
+
+        <div className="w-full py-4 px-7 border border-white/20 bg-white/10 rounded-lg mt-5 mb-8 flex justify-between items-center">
+          <h1>Free Explore</h1>
+          <div className="h-6 w-6 p-1 flex justify-center items-center bg-white/10 rounded-full border border-white/20">
+            <ChevronRight />
+          </div>
+        </div>
+        <h1 className="text-xl lg:text-5xl font-medium lg:text-left mb-5">
           Subjects
         </h1>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-8">
+        <div className="w-full">
           {subjects.map((subject, index) => (
             <SubjectCard
               key={subject.name}

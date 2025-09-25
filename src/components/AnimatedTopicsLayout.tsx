@@ -130,11 +130,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
             className="space-y-6"
           >
             {/* Topic Header */}
-            <div
-              className={`pl-6 border-l-4 ${getTopicAccent(
-                topicIndex
-              )}`}
-            >
+            <div className={`pl-6 border-l-4 ${getTopicAccent(topicIndex)}`}>
               <h2 className="text-2xl font-semibold text-foreground mb-2">
                 {topicData.topic}
               </h2>
@@ -185,7 +181,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
                       <Button
                         onClick={() => handleSubtopicClick(subtopic)}
                         disabled={loadingSubtopic === subtopic.id}
-                        className=" text-sm lg:text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 min-w-[140px]"
+                        className="z-50 text-sm lg:text-base bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 min-w-[140px]"
                         size="default"
                       >
                         {loadingSubtopic === subtopic.id ? (
