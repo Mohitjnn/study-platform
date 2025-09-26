@@ -38,12 +38,16 @@ const SubTopicCard: React.FC<SubjectCardProps> = ({
 
   const handleClick = async () => {
     try {
-      const conversationResponse = await initiateConversation({ topic_id: subTopicData.id });
-      
+      const conversationResponse = await initiateConversation({
+        topic_id: subTopicData.id,
+      });
+
       // Navigate to chat with conversation_id and link_id
-      router.push(`/chat?conversation_id=${conversationResponse.conversation_id}&link_id=${conversationResponse.link_id}`);
+      router.push(
+        `/chat?conversation_id=${conversationResponse.conversation_id}&link_id=${conversationResponse.link_id}`
+      );
     } catch (error) {
-      console.error('Error in handleClick:', error);
+      console.error("Error in handleClick:", error);
     }
   };
   return (

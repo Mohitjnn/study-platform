@@ -2,18 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Menu, X, User, Home, FileText,Zap,Box } from "lucide-react";
+import { Menu, X, User, Home, FileText, Zap, Box } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 import Link from "next/link";
 import { decodeToken } from "@/actions/auth";
+import { useMobileMenu } from "@/components/MobileMenuContext";
 
 interface NavbarProps {
   title?: string;
   showProfile?: boolean;
 }
 
-export default function Navbar({ title = "Dashboard", showProfile = true }: NavbarProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+export default function Navbar({
+  title = "Dashboard",
+  showProfile = true,
+}: NavbarProps) {
+  const { isOpen, toggle } = useMobileMenu(); // ⬅️ use shared state
   const [showSandbox, setShowSandbox] = useState(false);
 
   useEffect(() => {
@@ -28,25 +32,21 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
     checkAccess();
   }, []);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
   const menuVariants: Variants = {
     closed: {
       opacity: 0,
       height: 0,
       transition: {
-        duration: 0.3
-      }
+        duration: 0.3,
+      },
     },
     open: {
       opacity: 1,
       height: "auto",
       transition: {
-        duration: 0.3
-      }
-    }
+        duration: 0.3,
+      },
+    },
   };
 
   const itemVariants: Variants = {
@@ -54,22 +54,22 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
       opacity: 0,
       x: -20,
       transition: {
-        duration: 0.2
-      }
+        duration: 0.2,
+      },
     },
     open: {
       opacity: 1,
       x: 0,
       transition: {
         duration: 0.2,
-        delay: 0.1
-      }
-    }
+        delay: 0.1,
+      },
+    },
   };
 
   const iconVariants: Variants = {
     closed: { rotate: 0 },
-    open: { rotate: 180 }
+    open: { rotate: 180 },
   };
 
   return (
@@ -81,12 +81,12 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
             <h1 className="text-xl font-semibold text-card-foreground">
               StudyMate
             </h1>
-          </div> 
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <Link
-              href= {showProfile ? "/dashboard" : "/"}
+              href={showProfile ? "/dashboard" : "/"}
               className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200"
             >
               <Home className="h-4 w-4" />
@@ -102,13 +102,19 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
               </Link>
             )}
             {showProfile && (
-                        <Link href="/profile" className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200">
-                          <User className="h-4 w-4" />
-                          <span>Profile</span>
-                        </Link>
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200"
+              >
+                <User className="h-4 w-4" />
+                <span>Profile</span>
+              </Link>
             )}
             {
-              <Link href="/activity" className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200">
+              <Link
+                href="/activity"
+                className="flex items-center gap-2 text-muted-foreground hover:text-card-foreground transition-colors duration-200"
+              >
                 <Zap className="h-4 w-4" />
                 <span>Activity</span>
               </Link>
@@ -119,16 +125,16 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
           {/* Mobile menu button */}
           <div className="md:hidden">
             <motion.button
-              onClick={toggleMobileMenu}
+              onClick={toggle}
               className="p-2 rounded-md text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
               whileTap={{ scale: 0.95 }}
             >
               <motion.div
                 variants={iconVariants}
-                animate={isMobileMenuOpen ? "open" : "closed"}
+                animate={isOpen ? "open" : "closed"}
                 transition={{ duration: 0.2 }}
               >
-                {isMobileMenuOpen ? (
+                {isOpen ? (
                   <X className="h-6 w-6" />
                 ) : (
                   <Menu className="h-6 w-6" />
@@ -140,7 +146,7 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
 
         {/* Mobile Navigation Menu */}
         <AnimatePresence>
-          {isMobileMenuOpen && (
+          {isOpen && (
             <motion.div
               variants={menuVariants}
               initial="closed"
@@ -152,7 +158,7 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
                 <motion.div variants={itemVariants}>
                   <Link
                     href={showProfile ? "/dashboard" : "/"}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={toggle}
                     className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
                   >
                     <Home className="h-5 w-5" />
@@ -163,7 +169,7 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
                   <motion.div variants={itemVariants}>
                     <Link
                       href={"/sandbox"}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={toggle}
                       className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
                     >
                       <Box className="h-5 w-5" />
@@ -175,7 +181,7 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
                 <motion.div variants={itemVariants}>
                   <Link
                     href="/activity"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={toggle}
                     className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
                   >
                     <Zap className="h-5 w-5" />
@@ -185,7 +191,10 @@ export default function Navbar({ title = "Dashboard", showProfile = true }: Navb
 
                 {showProfile && (
                   <motion.div variants={itemVariants}>
-                    <Link href="/profile" className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200">
+                    <Link
+                      href="/profile"
+                      className="flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-card-foreground hover:bg-muted transition-colors duration-200"
+                    >
                       <User className="h-5 w-5" />
                       <span>Profile</span>
                     </Link>

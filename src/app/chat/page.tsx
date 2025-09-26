@@ -1,7 +1,8 @@
-import ChatInterface from '@/components/ChatInterface';
-import Navbar from '@/components/Navbar';
-import { getUserDataFromAPI } from '@/actions/auth';
-import { redirect } from 'next/navigation';
+import ChatInterface from "@/components/ChatInterface";
+import Navbar from "@/components/Navbar";
+import { getUserDataFromAPI } from "@/actions/auth";
+import { redirect } from "next/navigation";
+import { ChevronLeft, Ellipsis } from "lucide-react";
 
 type Survey = {
   submitted: boolean;
@@ -29,51 +30,67 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
 
   // Get user data from API
   const result = await getUserDataFromAPI();
-  
+
   // If not authenticated or should redirect, redirect to login
   if (!result.success || result.shouldRedirect) {
-    redirect('/login');
+    redirect("/login");
   }
 
-  if(!conversationId || !linkId) {
-    redirect('/dashboard');
+  if (!conversationId || !linkId) {
+    redirect("/dashboard");
   }
 
   const user = result.data;
 
   // Type guard for user data
   const isValidUser = (data: unknown): data is UserData => {
-    return data !== null && typeof data === 'object' && 'email' in data;
+    return data !== null && typeof data === "object" && "email" in data;
   };
 
   const typedUser = isValidUser(user) ? user : null;
 
   if (result.success && typedUser) {
     if (typedUser.survey && !typedUser.survey.submitted) {
-      redirect('/survey');
+      redirect("/survey");
     }
   }
 
   // Ensure user is not null before rendering
   if (!typedUser) {
-    redirect('/login');
+    redirect("/login");
   }
 
   // Transform user data to match ChatInterface expectations
   const chatUser = {
-    id: typedUser.id || '',
-    name: typedUser.name || typedUser.full_name || '',
-    email: typedUser.email
+    id: typedUser.id || "",
+    name: typedUser.name || typedUser.full_name || "",
+    email: typedUser.email,
   };
 
   return (
-    <div className="bg-background text-foreground dark min-h-screen">
-      <Navbar title="AI Assistant" showProfile={true} />
-        <ChatInterface 
-          user={chatUser} 
-          conversationId={conversationId}
-          linkId={linkId}
-        />
+    <div className="bg-[#010532] text-white dark h-screen p-5 relative">
+      {/* <Navbar title="AI Assistant" showProfile={true} /> */}
+
+      <div className="absolute inset-0 flex justify-start items-start mt-24 -translate-x-20 right-0 ">
+        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+      </div>
+
+      <div className="flex justify-between items-center">
+        <div className="p-2 rounded-full bg-white/10 border-2 border-white/10">
+          <ChevronLeft />
+        </div>
+        <div>
+          <h1 className="text-xl">Speaking to AI Bot</h1>
+        </div>
+        <div className="p-2 rounded-full bg-white/10 border-2 border-white/10">
+          <Ellipsis />
+        </div>
+      </div>
+      <ChatInterface
+        user={chatUser}
+        conversationId={conversationId}
+        linkId={linkId}
+      />
     </div>
   );
 }

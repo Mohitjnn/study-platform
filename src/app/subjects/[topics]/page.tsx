@@ -17,30 +17,20 @@ export default async function Page({
   console.log(topicsWithSubTopics);
 
   return (
-    <div className="bg-[#010532] text-foreground dark relative pt-5 w-full dark">
-      {/* <Navbar title={`${topics} Topics`} showProfile={true} /> */}
+    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
+      {/* Blobs go OUTSIDE the main content */}
+      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+      {/* <div className="fixed top-1/3 right-[-150px] w-[600px] h-[600px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div> */}
+      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
 
-      {/* <div className="absolute inset-0 flex justify-start items-start mt-24 -translate-x-20 right-0 ">
-        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      </div>
+      {/* Page content on top */}
+      <div className="relative z-10 pt-5">
+        {!topicsWithSubTopics && (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <div className="text-muted-foreground">Loading topics...</div>
+          </div>
+        )}
 
-      <div className="absolute inset-0 flex justify-end items-center mt-24 -translate-x-20 right-0 -z-50 ">
-        <div className="w-[600px] h-[600px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      </div>
-
-      <div className="absolute inset-0 flex justify-end ml-36 items-end mt-24 -translate-x-20 right-0  -z-50">
-        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      </div> */}
-
-      {/* Loading state */}
-      {!topicsWithSubTopics && (
-        <div className="flex justify-center items-center min-h-[400px]">
-          <div className="text-muted-foreground">Loading topics...</div>
-        </div>
-      )}
-
-      <div className="z-50">
-        {/* Topics with subtopics layout */}
         {topicsWithSubTopics && (
           <AnimatedTopicsLayout
             topicsWithSubTopics={topicsWithSubTopics}

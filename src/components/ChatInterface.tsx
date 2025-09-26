@@ -39,7 +39,11 @@ interface ChatInterfaceProps {
 }
 
 // Configuration
-export default function ChatInterface({ user, conversationId, linkId }: ChatInterfaceProps) {
+export default function ChatInterface({
+  user,
+  conversationId,
+  linkId,
+}: ChatInterfaceProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
@@ -83,15 +87,16 @@ export default function ChatInterface({ user, conversationId, linkId }: ChatInte
   // Auto-start session when conversationId is provided
   useEffect(() => {
     const autoStartSession = async () => {
-      if (conversationId && 
-          conversationId !== "test" && 
-          !webrtcConnection.isConnected && 
-          !webrtcConnection.isConnecting && 
-          !sessionStartedRef.current) {
-        
+      if (
+        conversationId &&
+        conversationId !== "test" &&
+        !webrtcConnection.isConnected &&
+        !webrtcConnection.isConnecting &&
+        !sessionStartedRef.current
+      ) {
         sessionStartedRef.current = true;
         setIsLoading(false);
-        
+
         try {
           // Setup microphone first
           const micStream = await audioManagement.setupMicrophone();
@@ -102,7 +107,11 @@ export default function ChatInterface({ user, conversationId, linkId }: ChatInte
         } catch (error) {
           sessionStartedRef.current = false; // Reset on error
         }
-      } else if (!conversationId || conversationId === "test" || sessionStartedRef.current) {
+      } else if (
+        !conversationId ||
+        conversationId === "test" ||
+        sessionStartedRef.current
+      ) {
         setIsLoading(false);
       } else {
         setIsLoading(false);
@@ -149,7 +158,7 @@ export default function ChatInterface({ user, conversationId, linkId }: ChatInte
   // End session and navigate to dashboard
   const endSessionAndNavigate = async () => {
     await cleanup();
-    router.push('/dashboard');
+    router.push("/dashboard");
   };
 
   // Show loading screen while initializing
@@ -158,21 +167,29 @@ export default function ChatInterface({ user, conversationId, linkId }: ChatInte
   }
 
   return (
-    <div className="flex flex-col h-full max-w-6xl mx-auto p-4 gap-6">
-      {/* Voice Sphere Section */}
-      <div className="flex justify-center items-center py-8">
-        <VoiceSphere
-          isActive={webrtcConnection.isConnected}
-          audioLevel={audioManagement.isMicOn ? audioManagement.audioLevel : 0}
-          isListening={audioManagement.isMicOn && webrtcConnection.isConnected}
-          isSpeaking={conversationHandler.isSpeaking}
-        />
+    <div className="flex flex-col h-full max-w-6xl mx-auto gap-6 relative">
+      <div>
+        <h1 className="font-extralight text-center mt-10 text-white/70">
+          Go ahead, I am listening
+        </h1>
       </div>
-      {/* Chat Messages */}
-      <MessageList messages={messages} />
-      {/* Controls */}
+
+      <div className="w-full flex justify-center">
+        <img src="/images/globe.png" alt="Globe" className="h-52 w-52 mt-7" />
+      </div>
+
+      {/* Add the current response text below globe */}
+      <div className="text-center text-white/90 px-4 min-h-[100px]">
+        {messages.length > 0 &&
+          messages[messages.length - 1].role === "assistant" &&
+          messages[messages.length - 1].content}
+      </div>
+
+      {/* Remove or comment out the MessageList component */}
+      {/* <MessageList messages={messages} /> */}
+
+      {/* Controls Section */}
       <div className="space-y-4">
-        {/* WebRTC Session Controls */}
         <div className="flex flex-col space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -183,7 +200,6 @@ export default function ChatInterface({ user, conversationId, linkId }: ChatInte
                 onEndSession={endSessionAndNavigate}
                 autoStarted={!!conversationId}
               />
-
               <AudioControls
                 isConnected={webrtcConnection.isConnected}
                 isMicOn={audioManagement.isMicOn}
@@ -192,13 +208,6 @@ export default function ChatInterface({ user, conversationId, linkId }: ChatInte
                 onToggleMic={toggleMic}
               />
             </div>
-
-            {/* <StatusDisplay
-              connectionStatus={webrtcConnection.connectionStatus}
-              isConnected={webrtcConnection.isConnected}
-              pcConnectionState={webrtcConnection.pcRef.current?.connectionState}
-              isMicOn={audioManagement.isMicOn}
-            /> */}
           </div>
         </div>
       </div>

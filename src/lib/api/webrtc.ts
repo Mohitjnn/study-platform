@@ -39,7 +39,7 @@ export interface LatestImageResponse {
 }
 
 // WebRTC API Base URL
-const WEBRTC_API_BASE = 'https://burgerkingswaadkapatakha.com';
+const WEBRTC_API_BASE = "https://studymate.realtimeconvo.com";
 
 // Create WebRTC axios instance
 export const webrtcApiClient = axios.create({
@@ -47,26 +47,29 @@ export const webrtcApiClient = axios.create({
   timeout: 30000,
   // Add CORS headers to help with preflight requests
   headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  }
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  },
 });
 
 // Add request interceptor for debugging
 webrtcApiClient.interceptors.request.use(
   (config) => {
-    console.log('📤 WebRTC API Request:', {
+    console.log("📤 WebRTC API Request:", {
       method: config.method,
       url: config.url,
       baseURL: config.baseURL,
       headers: config.headers,
-      data: typeof config.data === 'string' ? `${config.data.substring(0, 100)}...` : config.data
+      data:
+        typeof config.data === "string"
+          ? `${config.data.substring(0, 100)}...`
+          : config.data,
     });
     return config;
   },
   (error) => {
-    console.error('📤 WebRTC API Request Error:', error);
+    console.error("📤 WebRTC API Request Error:", error);
     return Promise.reject(error);
   }
 );
@@ -74,22 +77,25 @@ webrtcApiClient.interceptors.request.use(
 // Add response interceptor for debugging
 webrtcApiClient.interceptors.response.use(
   (response) => {
-    console.log('📥 WebRTC API Response:', {
+    console.log("📥 WebRTC API Response:", {
       status: response.status,
       statusText: response.statusText,
       headers: response.headers,
-      data: typeof response.data === 'string' ? `${response.data.substring(0, 100)}...` : response.data
+      data:
+        typeof response.data === "string"
+          ? `${response.data.substring(0, 100)}...`
+          : response.data,
     });
     return response;
   },
   (error) => {
-    console.error('📥 WebRTC API Response Error:', {
+    console.error("📥 WebRTC API Response Error:", {
       message: error.message,
       code: error.code,
       status: error.response?.status,
       statusText: error.response?.statusText,
       data: error.response?.data,
-      headers: error.response?.headers
+      headers: error.response?.headers,
     });
     return Promise.reject(error);
   }
@@ -127,22 +133,21 @@ export const configureWebRtcRequest = async (
 // WebRTC SDP Exchange
 export async function exchangeSdp(
   sdpOffer: string,
-  conversation_id: string = 'gpt-4o-mini-realtime-preview-2024-12-17'
+  conversation_id: string = "gpt-4o-mini-realtime-preview-2024-12-17"
 ): Promise<string> {
   try {
-    const requestConfig = await configureWebRtcRequest({ requiresAuth: true, mediaType: "sdp" });
+    const requestConfig = await configureWebRtcRequest({
+      requiresAuth: true,
+      mediaType: "sdp",
+    });
 
     const url = `/api/v1/realtime2/sdp?conversation_id=${conversation_id}`;
-    
-    const response = await webrtcApiClient.post(
-      url,
-      sdpOffer,
-      {
-        ...requestConfig,
-        responseType: 'text'
-      }
-    );
-    
+
+    const response = await webrtcApiClient.post(url, sdpOffer, {
+      ...requestConfig,
+      responseType: "text",
+    });
+
     return response.data;
   } catch (error) {
     const err = error as WebRtcError;
@@ -153,29 +158,28 @@ export async function exchangeSdp(
 // Fallback SDP exchange using fetch with no-cors (for debugging)
 export async function exchangeSdpFallback(
   sdpOffer: string,
-  conversation_id: string = 'gpt-4o-mini-realtime-preview-2024-12-17'
+  conversation_id: string = "gpt-4o-mini-realtime-preview-2024-12-17"
 ): Promise<string> {
   try {
     const token = await getAuthToken();
     const url = `${WEBRTC_API_BASE}/api/v1/realtime2/sdp?conversation_id=${conversation_id}`;
-    
+
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/sdp',
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/sdp",
       },
       body: sdpOffer,
-      mode: 'cors',
+      mode: "cors",
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     const result = await response.text();
     return result;
-    
   } catch (error) {
     const err = error as WebRtcError;
     throw err;
@@ -183,25 +187,32 @@ export async function exchangeSdpFallback(
 }
 
 // WebRTC Bind Context
-export async function bindWebRtcContext(data: { title: string; information: string }): Promise<BindContextResponse> {
-  console.log('🔗 Binding WebRTC context...');
-  console.log('📤 Context data:', data);
-  
+export async function bindWebRtcContext(data: {
+  title: string;
+  information: string;
+}): Promise<BindContextResponse> {
+  console.log("🔗 Binding WebRTC context...");
+  console.log("📤 Context data:", data);
+
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
-    console.log('🔑 Bind context request config:', requestConfig.headers);
-    
-    const response = await webrtcApiClient.post('/api/v1/realtime2/bind-context', data, requestConfig);
-    
-    console.log('✅ Context bind successful!');
-    console.log('📥 Response:', response.data);
-    
+    console.log("🔑 Bind context request config:", requestConfig.headers);
+
+    const response = await webrtcApiClient.post(
+      "/api/v1/realtime2/bind-context",
+      data,
+      requestConfig
+    );
+
+    console.log("✅ Context bind successful!");
+    console.log("📥 Response:", response.data);
+
     return response.data as BindContextResponse;
   } catch (error) {
     const err = error as WebRtcError;
-    console.error('❌ Context bind failed:');
-    console.error('Error:', err.message);
-    console.error('Response:', err.response?.data);
+    console.error("❌ Context bind failed:");
+    console.error("Error:", err.message);
+    console.error("Response:", err.response?.data);
     throw err;
   }
 }
@@ -209,14 +220,14 @@ export async function bindWebRtcContext(data: { title: string; information: stri
 // // Debug function to test the exact same request as your working cURL
 // export async function testEndSessionWithFetch(conversation_id: string): Promise<any> {
 //   console.log('🧪 Testing end session with fetch (like cURL)...');
-  
+
 //   const token = await getAuthToken();
 //   const url = `${WEBRTC_API_BASE}/api/v1/realtime2/end`;
 //   const data = {
 //     "conversation_id": conversation_id,
 //     "reason": "ended_by_client"
 //   };
-  
+
 //   console.log('📤 Fetch request details:');
 //   console.log('URL:', url);
 //   console.log('Headers:', {
@@ -224,7 +235,7 @@ export async function bindWebRtcContext(data: { title: string; information: stri
 //     'Authorization': `Bearer ${token}`
 //   });
 //   console.log('Body:', JSON.stringify(data));
-  
+
 //   try {
 //     const response = await fetch(url, {
 //       method: 'POST',
@@ -235,13 +246,13 @@ export async function bindWebRtcContext(data: { title: string; information: stri
 //       body: JSON.stringify(data),
 //       mode: 'cors'
 //     });
-    
+
 //     console.log('📥 Fetch response status:', response.status);
 //     console.log('📥 Fetch response headers:', Object.fromEntries(response.headers.entries()));
-    
+
 //     const responseText = await response.text();
 //     console.log('📥 Fetch response body:', responseText);
-    
+
 //     return {
 //       status: response.status,
 //       statusText: response.statusText,
@@ -257,19 +268,19 @@ export async function bindWebRtcContext(data: { title: string; information: stri
 // export async function testWebRtcConnection(): Promise<any> {
 //   console.log('🩺 Testing WebRTC server connectivity...');
 //   console.log('🌐 Target server:', WEBRTC_API_BASE);
-  
+
 //   try {
 //     // Try a simple GET request first (if your server has a health endpoint)
 //     const response = await fetch(`${WEBRTC_API_BASE}/health`, {
 //       method: 'GET',
 //       mode: 'cors'
 //     });
-    
+
 //     console.log('✅ Health check response:', response.status, response.statusText);
 //     return { status: 'ok', message: 'Server is reachable' };
 //   } catch (error: any) {
 //     console.error('❌ Health check failed:', error);
-    
+
 //     // Try a basic connection to the base URL
 //     try {
 //       const baseResponse = await fetch(WEBRTC_API_BASE, {
@@ -286,15 +297,23 @@ export async function bindWebRtcContext(data: { title: string; information: stri
 // }
 
 // WebRTC End Session
-export async function endWebRtcSession({conversation_id}: {conversation_id: string}): Promise<EndSessionResponse> {
+export async function endWebRtcSession({
+  conversation_id,
+}: {
+  conversation_id: string;
+}): Promise<EndSessionResponse> {
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
     const requestData = {
-      "conversation_id": `${conversation_id}`,
-      "reason": "ended_by_client"
+      conversation_id: `${conversation_id}`,
+      reason: "ended_by_client",
     };
-    
-    const response = await webrtcApiClient.post('/api/v1/realtime2/end', requestData, requestConfig);
+
+    const response = await webrtcApiClient.post(
+      "/api/v1/realtime2/end",
+      requestData,
+      requestConfig
+    );
 
     return response.data as EndSessionResponse;
   } catch (error) {
@@ -305,20 +324,23 @@ export async function endWebRtcSession({conversation_id}: {conversation_id: stri
 
 // WebRTC Get Latest Image
 export async function getLatestImage(): Promise<LatestImageResponse> {
-  console.log('🖼️ Getting latest image...');
-  
+  console.log("🖼️ Getting latest image...");
+
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
-    const response = await webrtcApiClient.get('/api/v1/realtime2/latest-image', requestConfig);
-    
-    console.log('✅ Latest image retrieved!');
-    console.log('📥 Image data:', response.data);
-    
+    const response = await webrtcApiClient.get(
+      "/api/v1/realtime2/latest-image",
+      requestConfig
+    );
+
+    console.log("✅ Latest image retrieved!");
+    console.log("📥 Image data:", response.data);
+
     return response.data as LatestImageResponse;
   } catch (error) {
     const err = error as WebRtcError;
-    console.error('❌ Failed to get latest image:');
-    console.error('Error:', err.message);
+    console.error("❌ Failed to get latest image:");
+    console.error("Error:", err.message);
     throw err;
   }
 }
@@ -340,7 +362,10 @@ export async function exchangeSandboxSdp(
   }
 ): Promise<string> {
   try {
-    const requestConfig = await configureWebRtcRequest({ requiresAuth: true, mediaType: "sdp" });
+    const requestConfig = await configureWebRtcRequest({
+      requiresAuth: true,
+      mediaType: "sdp",
+    });
 
     // Build query parameters
     const params = new URLSearchParams({
@@ -357,47 +382,46 @@ export async function exchangeSandboxSdp(
     });
 
     const url = `/api/v1/realtime2/sandbox/sdp?${params.toString()}`;
-    
-    console.log('🔄 Sandbox SDP Exchange URL:', `${WEBRTC_API_BASE}${url}`);
-    
-    const response = await webrtcApiClient.post(
-      url,
-      sdpOffer,
-      {
-        ...requestConfig,
-        responseType: 'text'
-      }
-    );
-    
-    console.log('✅ Sandbox SDP Answer received');
+
+    console.log("🔄 Sandbox SDP Exchange URL:", `${WEBRTC_API_BASE}${url}`);
+
+    const response = await webrtcApiClient.post(url, sdpOffer, {
+      ...requestConfig,
+      responseType: "text",
+    });
+
+    console.log("✅ Sandbox SDP Answer received");
     return response.data;
   } catch (error) {
     const err = error as WebRtcError;
-    console.error('❌ Sandbox SDP Exchange failed:', err);
+    console.error("❌ Sandbox SDP Exchange failed:", err);
     throw err;
   }
 }
 
 // Sandbox End Session
-export async function endSandboxSession(session_id: string, fast: boolean = true): Promise<{ status: string; message?: string }> {
+export async function endSandboxSession(
+  session_id: string,
+  fast: boolean = true
+): Promise<{ status: string; message?: string }> {
   try {
     const requestConfig = await configureWebRtcRequest({ requiresAuth: true });
 
-    const url = '/api/v1/realtime2/sandbox/end';
+    const url = "/api/v1/realtime2/sandbox/end";
     const data = {
       session_id,
-      fast
+      fast,
     };
 
-    console.log('🛑 Ending sandbox session:', session_id);
+    console.log("🛑 Ending sandbox session:", session_id);
 
     const response = await webrtcApiClient.post(url, data, requestConfig);
-    
-    console.log('✅ Sandbox session ended successfully');
+
+    console.log("✅ Sandbox session ended successfully");
     return response.data;
   } catch (error) {
     const err = error as WebRtcError;
-    console.error('❌ Failed to end sandbox session:', err);
+    console.error("❌ Failed to end sandbox session:", err);
     throw err;
   }
 }
@@ -412,9 +436,9 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 // }> {
 //   console.log('🩺 Testing backend connectivity...');
 //   console.log('🌐 Target server:', WEBRTC_API_BASE);
-  
+
 //   const tests = [];
-  
+
 //   // Test 1: Basic server reachability
 //   try {
 //     const response = await fetch(`${WEBRTC_API_BASE}/health`, {
@@ -433,7 +457,7 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //       status: 'FAIL',
 //       details: error.message
 //     });
-    
+
 //     // If health check fails, try base URL
 //     try {
 //       const baseResponse = await fetch(WEBRTC_API_BASE, {
@@ -454,7 +478,7 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //       });
 //     }
 //   }
-  
+
 //   // Test 2: WebRTC endpoint specifically
 //   try {
 //     const token = await getAuthToken();
@@ -467,7 +491,7 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //       mode: 'cors',
 //       signal: AbortSignal.timeout(10000)
 //     });
-    
+
 //     tests.push({
 //       name: 'WebRTC Endpoint OPTIONS',
 //       status: testResponse.ok ? 'PASS' : 'FAIL',
@@ -480,12 +504,12 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //       details: error.message
 //     });
 //   }
-  
+
 //   console.log('🩺 Backend connectivity test results:', tests);
-  
+
 //   const failedTests = tests.filter(t => t.status === 'FAIL');
 //   const passedTests = tests.filter(t => t.status === 'PASS');
-  
+
 //   if (passedTests.length === tests.length) {
 //     return { status: 'ok', message: 'Backend server is fully accessible', details: tests };
 //   } else if (failedTests.length === tests.length) {
@@ -502,24 +526,24 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //   details: any;
 // }> {
 //   console.log('🔍 Testing WebRTC capabilities...');
-  
+
 //   const issues: string[] = [];
 //   const details: any = {};
-  
+
 //   // Check RTCPeerConnection support
 //   if (typeof RTCPeerConnection === 'undefined') {
 //     issues.push('RTCPeerConnection not supported');
 //   } else {
 //     details.rtcPeerConnection = 'supported';
 //   }
-  
+
 //   // Check getUserMedia support
 //   if (!navigator.mediaDevices?.getUserMedia) {
 //     issues.push('getUserMedia not supported');
 //   } else {
 //     details.getUserMedia = 'supported';
 //   }
-  
+
 //   // Check secure context
 //   if (!window.isSecureContext) {
 //     issues.push('Not in secure context (HTTPS required for WebRTC)');
@@ -527,7 +551,7 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //   } else {
 //     details.secureContext = true;
 //   }
-  
+
 //   // Test creating a peer connection
 //   try {
 //     const testPC = new RTCPeerConnection({
@@ -539,9 +563,9 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //     issues.push(`Cannot create RTCPeerConnection: ${error.message}`);
 //     details.peerConnectionCreation = 'failed';
 //   }
-  
+
 //   console.log('🔍 WebRTC capabilities test:', { issues, details });
-  
+
 //   return {
 //     supported: issues.length === 0,
 //     issues,
@@ -553,7 +577,7 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 // export async function runFullDiagnostics(): Promise<void> {
 //   console.log('🚀 Running full WebRTC diagnostics...');
 //   console.log('=' .repeat(50));
-  
+
 //   // Test 1: WebRTC Capabilities
 //   console.log('📋 Test 1: WebRTC Browser Capabilities');
 //   const webrtcTest = await testWebRTCCapabilities();
@@ -563,7 +587,7 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //   } else {
 //     console.log('✅ WebRTC is supported in this browser');
 //   }
-  
+
 //   // Test 2: Backend Connectivity
 //   console.log('📋 Test 2: Backend Server Connectivity');
 //   const backendTest = await testBackendConnectivity();
@@ -576,12 +600,12 @@ export async function endSandboxSession(session_id: string, fast: boolean = true
 //   } else {
 //     console.log('✅ Backend server is accessible');
 //   }
-  
+
 //   console.log('=' .repeat(50));
 //   console.log('🎯 DIAGNOSTIC SUMMARY:');
 //   console.log(`Frontend WebRTC: ${webrtcTest.supported ? '✅' : '❌'}`);
 //   console.log(`Backend Server: ${backendTest.status === 'ok' ? '✅' : backendTest.status === 'partial' ? '⚠️' : '❌'}`);
-  
+
 //   if (webrtcTest.supported && backendTest.status !== 'error') {
 //     console.log('💡 System should work - if audio fails, it\'s likely a backend configuration issue');
 //   } else {

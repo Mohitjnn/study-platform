@@ -1,7 +1,7 @@
 import { getUserDataFromAPI } from "@/actions/auth";
 import { redirect } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-
+import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import DashboardSquareCard from "@/components/DashboardSquareCard";
@@ -12,6 +12,8 @@ import {
 } from "@/actions/screenTime";
 import { getSubjectsWithMetadata } from "@/actions/subjects";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
+import CategoryButton from "@/components/CategoryButton";
+import MobileMenu from "@/components/MobileMenu";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -34,6 +36,7 @@ export default async function DashboardPage() {
       }
     }
   }
+
   return (
     <div className="bg-[#010532] text-foreground dark relative pt-5 w-full">
       {/* <Navbar title="Dashboard" showProfile={true} /> */}
@@ -53,13 +56,8 @@ export default async function DashboardPage() {
         {/* Welcome Section */}
         <div className=" w-full flex items-center justify-between">
           <div className="w-1/2 flex gap-3 items-center">
-            <div className="p-3 border-[1px] border-white/30 rounded-lg bg-white/10 backdrop-blur-3xl">
-              <img
-                src="/images/Category.png"
-                alt="Dashboard"
-                className="h-5 w-5"
-              />
-            </div>
+            <CategoryButton />
+            <MobileMenu />
             <div>
               <h1 className="text-xl sm:text-3xl font-medium text-foreground">
                 Hi,{" "}
@@ -90,13 +88,22 @@ export default async function DashboardPage() {
         {overallStats ? (
           <div className="flex flex-col justify-center items-center gap-3 relative my-5">
             <div className="flex items-center gap-3 w-full">
-              <div className="bg-white/20 flex flex-col rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+              <div
+                className="relative bg-white/20 flex flex-col border-2 border-white/20 w-1/2 h-full p-6 
+  [mask-image:radial-gradient(circle_70px_at_105%_110%,transparent_99%,black)]
+  [mask-repeat:no-repeat] [mask-size:100%_100%] rounded-lg"
+              >
                 <h1 className="text-2xl font-bold">
                   {overallStats.totalCourses}
                 </h1>
                 <h1 className="text-sm font-light">Total Courses</h1>
               </div>
-              <div className="bg-white/20 flex flex-col items-end rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+
+              <div
+                className="relative bg-white/20 flex flex-col items-end rounded-lg border-2 border-white/20 w-1/2 h-full p-6
+  [mask-image:radial-gradient(circle_70px_at_-5%_110%,transparent_99%,black)]
+  [mask-repeat:no-repeat] [mask-size:100%_100%]"
+              >
                 <h1 className="text-2xl font-bold">
                   {overallStats.completedCourses}
                 </h1>
@@ -108,18 +115,28 @@ export default async function DashboardPage() {
               <img
                 src="/images/globe.png"
                 alt="Globe"
-                className="h-24 w-24 object-cover rounded-2xl"
+                className="h-28 w-28 object-cover rounded-2xl 
+             [filter:brightness(1.2)_drop-shadow(0_0_10px_rgba(255,255,255,0.5))]"
               />
             </div>
 
-            <div className="flex items-center gap-3 w-full">
-              <div className="bg-white/20 flex flex-col rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+            <div className=" flex items-center gap-3 w-full">
+              <div
+                className="relative bg-white/20 flex flex-col rounded-lg border-2 border-white/20 w-1/2 h-full p-6
+  [mask-image:radial-gradient(circle_70px_at_105%_-10%,transparent_99%,black)]
+  [mask-repeat:no-repeat] [mask-size:100%_100%]"
+              >
                 <h1 className="text-2xl font-bold">
                   {overallStats.hoursStudied}
                 </h1>
                 <h1 className="text-sm font-light">Hours Studied</h1>
               </div>
-              <div className="bg-white/20 flex flex-col items-end rounded-lg border-2 border-white/20 w-1/2 h-full p-4">
+
+              <div
+                className="relative bg-white/20 flex flex-col items-end rounded-lg border-2 border-white/20 w-1/2 h-full p-6
+  [mask-image:radial-gradient(circle_70px_at_-5%_-10%,transparent_99%,black)]
+  [mask-repeat:no-repeat] [mask-size:100%_100%]"
+              >
                 <h1 className="text-2xl font-bold">
                   {overallStats.currentStreak}
                 </h1>
