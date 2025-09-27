@@ -14,7 +14,7 @@ export default async function SurveyPage() {
   if (!surveyResult.success || !surveyResult.data) {
     // Handle error - could redirect to an error page or show error message
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">
             Survey Not Found
@@ -34,8 +34,13 @@ export default async function SurveyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground dark">
-      <Navbar title="Survey" showProfile={true} />
+    <div className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] text-white flex flex-col justify-center">
+      {/* <Navbar title="Survey" showProfile={true} /> */}
+      <div className="w-full flex flex-col justify-center items-center">
+        <img src="/images/bot.png" alt="Bot" />
+        <h1 className="text-2xl font-light mt-3">Let us Get to Know You!</h1>
+        <h1 className="text-white/60">Ready to spark your journey?</h1>
+      </div>
       <MultiStepSurvey survey={surveyResult.data} />
     </div>
   );

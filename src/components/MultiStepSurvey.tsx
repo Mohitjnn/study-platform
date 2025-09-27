@@ -250,16 +250,16 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
   const renderProgressBar = () => (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-medium text-muted-foreground">
+        <span className="text-sm font-medium text-white/60">
           Step {currentStep} of {totalSteps}
         </span>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-white/60">
           {Math.round((currentStep / totalSteps) * 100)}% Complete
         </span>
       </div>
-      <div className="w-full bg-secondary rounded-full h-2">
+      <div className="w-full bg-white/30 rounded-full h-2">
         <div
-          className="bg-primary h-2 rounded-full transition-all duration-300"
+          className="bg-white h-2 rounded-full transition-all duration-300"
           style={{ width: `${(currentStep / totalSteps) * 100}%` }}
         />
       </div>
@@ -357,7 +357,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
               valueAsNumber: true,
               min: { value: 0, message: "Please enter a positive number" },
             })}
-            className="bg-background border-input"
+            className="bg-transparent border-white/20"
             placeholder="Enter a number..."
           />
         );
@@ -370,7 +370,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             {...register(fieldName, {
               required: question.is_required ? "This field is required" : false,
             })}
-            className="bg-background border-input"
+            className="bg-transparent border-white/20"
             placeholder="Enter your answer..."
           />
         );
@@ -383,7 +383,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             {...register(fieldName, {
               required: question.is_required ? "This field is required" : false,
             })}
-            className="bg-background border-input"
+            className="bg-transparent border-white/20"
             placeholder="Enter comma-separated values (e.g. English,Hindi)"
           />
         );
@@ -396,7 +396,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             {...register(fieldName, {
               required: question.is_required ? "This field is required" : false,
             })}
-            className="bg-background border-input"
+            className="bg-transparent border-white/20"
             placeholder="Enter your answer..."
           />
         );
@@ -436,9 +436,9 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4 dark">
+    <div className="py-8 px-4 dark">
       <div className="max-w-7xl mx-auto">
-        <Card className="border-border">
+        <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">
           <CardHeader>
             <CardTitle className="text-2xl">{survey.title}</CardTitle>
             <CardDescription>

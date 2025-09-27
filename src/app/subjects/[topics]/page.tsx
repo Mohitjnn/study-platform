@@ -18,9 +18,8 @@ export default async function Page({
 
   return (
     <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
-      {/* Blobs go OUTSIDE the main content */}
       <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      {/* <div className="fixed top-1/3 right-[-150px] w-[600px] h-[600px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div> */}
+
       <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
 
       {/* Page content on top */}
