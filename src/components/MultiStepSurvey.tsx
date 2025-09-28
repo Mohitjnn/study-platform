@@ -357,7 +357,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
               valueAsNumber: true,
               min: { value: 0, message: "Please enter a positive number" },
             })}
-            className="bg-transparent border-white/20"
+            className="bg-transparent border-white/20 placeholder:text-white/50"
             placeholder="Enter a number..."
           />
         );
@@ -370,7 +370,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             {...register(fieldName, {
               required: question.is_required ? "This field is required" : false,
             })}
-            className="bg-transparent border-white/20"
+            className="bg-transparent border-white/20 placeholder:text-white/50"
             placeholder="Enter your answer..."
           />
         );
@@ -383,7 +383,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             {...register(fieldName, {
               required: question.is_required ? "This field is required" : false,
             })}
-            className="bg-transparent border-white/20"
+            className="bg-transparent border-white/20 placeholder:text-white/50"
             placeholder="Enter comma-separated values (e.g. English,Hindi)"
           />
         );
@@ -482,14 +482,14 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
 
                 {/* Submit Button - Show only on last step */}
                 {currentStep === totalSteps && (
-                  <Button
+                  <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex items-center gap-2 bg-green-600 text-primary-foreground hover:bg-green-700"
+                    className="flex px-4 py-2 text-sm rounded-lg items-center gap-2 bg-green-600 text-white hover:bg-green-700"
                   >
                     {isSubmitting ? "Submitting..." : "Complete Survey"}
                     <Check className="h-4 w-4" />
-                  </Button>
+                  </button>
                 )}
               </div>
             </form>

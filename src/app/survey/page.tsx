@@ -34,9 +34,9 @@ export default async function SurveyPage() {
   }
 
   return (
-    <div className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] text-white flex flex-col justify-center">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] text-white flex flex-col justify-center">
       {/* <Navbar title="Survey" showProfile={true} /> */}
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="pt-12 w-full flex flex-col justify-center items-center">
         <img src="/images/bot.png" alt="Bot" />
         <h1 className="text-2xl font-light mt-3">Let us Get to Know You!</h1>
         <h1 className="text-white/60">Ready to spark your journey?</h1>

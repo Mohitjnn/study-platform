@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface ConnectionControlsProps {
   isConnected: boolean;
@@ -8,12 +9,12 @@ interface ConnectionControlsProps {
   autoStarted?: boolean;
 }
 
-export const ConnectionControls = ({ 
-  isConnected, 
-  isConnecting, 
-  isEnding, 
+export const ConnectionControls = ({
+  isConnected,
+  isConnecting,
+  isEnding,
   onEndSession,
-  autoStarted = false
+  autoStarted = false,
 }: ConnectionControlsProps) => {
   // Only show controls if session is connected or if it was auto-started
   if (!isConnected && !isConnecting && !isEnding && autoStarted) {
@@ -21,15 +22,20 @@ export const ConnectionControls = ({
   }
 
   return (
-    <Button
-      variant="destructive"
-      onClick={onEndSession}
-      disabled={isEnding || (!isConnected && !isConnecting)}
-      className="min-w-[120px]"
-    >
-      {isConnecting ? 'Connecting...' : 
-       isEnding ? 'Ending...' :
-       'End Session'}
-    </Button>
+    <div>
+      <button
+        className="bg-white/10 text-white rounded-full p-3 border border-white/30 flex justify-center items-center"
+        onClick={onEndSession}
+        disabled={isEnding || (!isConnected && !isConnecting)}
+      >
+        {isConnecting ? (
+          "Connecting..."
+        ) : isEnding ? (
+          "Ending..."
+        ) : (
+          <X size={20} />
+        )}
+      </button>
+    </div>
   );
 };

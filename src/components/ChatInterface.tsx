@@ -189,26 +189,25 @@ export default function ChatInterface({
       {/* <MessageList messages={messages} /> */}
 
       {/* Controls Section */}
-      <div className="space-y-4">
-        <div className="flex flex-col space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <ConnectionControls
-                isConnected={webrtcConnection.isConnected}
-                isConnecting={webrtcConnection.isConnecting}
-                isEnding={webrtcConnection.isEnding}
-                onEndSession={endSessionAndNavigate}
-                autoStarted={!!conversationId}
-              />
-              <AudioControls
-                isConnected={webrtcConnection.isConnected}
-                isMicOn={audioManagement.isMicOn}
-                audioLevel={audioManagement.audioLevel}
-                micStreamAvailable={!!audioManagement.micStreamRef.current}
-                onToggleMic={toggleMic}
-              />
-            </div>
-          </div>
+      <div className="flex justify-between items-center mt-20">
+        <div className="w-1/3"></div>
+        <div className="w-1/3 flex justify-center">
+          <AudioControls
+            isConnected={webrtcConnection.isConnected}
+            isMicOn={audioManagement.isMicOn}
+            audioLevel={audioManagement.audioLevel}
+            micStreamAvailable={!!audioManagement.micStreamRef.current}
+            onToggleMic={toggleMic}
+          />
+        </div>
+        <div className="w-1/3 flex justify-end">
+          <ConnectionControls
+            isConnected={webrtcConnection.isConnected}
+            isConnecting={webrtcConnection.isConnecting}
+            isEnding={webrtcConnection.isEnding}
+            onEndSession={endSessionAndNavigate}
+            autoStarted={!!conversationId}
+          />
         </div>
       </div>
     </div>

@@ -148,13 +148,13 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ day }) => {
 };
 
 const LoadingCard = () => (
-  <div className="bg-card rounded-lg border border-border p-4 animate-pulse">
+  <div className="bg-white/20 rounded-lg border border-border p-4 animate-pulse">
     <div className="flex items-start space-x-3">
-      <div className="w-8 h-8 bg-muted rounded-full"></div>
+      <div className="w-8 h-8 bg-white/20 rounded-full"></div>
       <div className="flex-1">
-        <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
-        <div className="h-3 bg-muted rounded w-1/2 mb-2"></div>
-        <div className="h-3 bg-muted rounded w-full"></div>
+        <div className="h-4 bg-white/50 rounded w-3/4 mb-2"></div>
+        <div className="h-3 bg-white/50 rounded w-1/2 mb-2"></div>
+        <div className="h-3 bg-white/50 rounded w-full"></div>
       </div>
     </div>
   </div>

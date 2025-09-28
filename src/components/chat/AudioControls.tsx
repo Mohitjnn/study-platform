@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import { Mic, MicOff } from "lucide-react";
 
 interface AudioControlsProps {
   isConnected: boolean;
@@ -13,20 +14,21 @@ export const AudioControls = ({
   isMicOn,
   audioLevel,
   micStreamAvailable,
-  onToggleMic
+  onToggleMic,
 }: AudioControlsProps) => {
   if (!isConnected) return null;
 
   return (
     <>
-      <Button
-        variant={isMicOn ? "default" : "secondary"}
-        onClick={onToggleMic}
-        disabled={!micStreamAvailable}
-        className={`min-w-[120px] ${isMicOn ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 hover:bg-gray-700'}`}
-      >
-        {isMicOn ? '🎤 Mic ON' : '🎤 Mic OFF'}
-      </Button>
+      <div className="h-24">
+        <button
+          className="bg-white/10 text-white rounded-full p-6 border border-white/30 flex justify-center items-center"
+          onClick={onToggleMic}
+          disabled={!micStreamAvailable}
+        >
+          {isMicOn ? <Mic size={32} /> : <MicOff size={32} />}
+        </button>
+      </div>
     </>
   );
 };

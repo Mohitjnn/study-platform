@@ -68,7 +68,7 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
   };
 
   return (
-    <div className="bg-[#010532] text-white dark h-screen p-5 relative">
+    <div className="bg-[#010532] text-white dark min-h-screen px-5 pt-10 relative">
       {/* <Navbar title="AI Assistant" showProfile={true} /> */}
 
       <div className="absolute inset-0 flex justify-start items-start mt-24 -translate-x-20 right-0 ">
