@@ -44,7 +44,7 @@ export default function LoginPage() {
       const result = await login(formData);
 
       if (result.success) {
-        router.push("/profile");
+        router.push("/dashboard");
       } else {
         setErrorMsg(result.error || "Login failed");
       }

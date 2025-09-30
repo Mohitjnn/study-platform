@@ -236,7 +236,7 @@ const ActivityTimeline: React.FC = () => {
         <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
 
         <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-        {/* <Navbar /> */}
+
         <div className="max-w-4xl mx-auto px-6 py-8">
           <motion.div
             className="mb-12 flex justify-between items-center"

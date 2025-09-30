@@ -2,6 +2,10 @@ import { getUserDataFromAPI } from "@/actions/auth";
 import { redirect } from "next/navigation";
 import { User, Mail } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { motion } from "framer-motion";
+// import { useRouter } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 type Survey = {
   submitted: boolean;
@@ -41,10 +45,23 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground dark">
-      <Navbar title="Profile" showProfile={true} />
+    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
+      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+
+      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+      {/* <Navbar title="Profile" showProfile={true} /> */}
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="mb-12 flex justify-between items-center px-5">
+          <div className="w-1/3 flex">
+            <BackButton />
+          </div>
+          <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
+            Profile
+          </h1>
+
+          <div className="w-1/3"></div>
+        </div>
         <div className="px-4 py-6 sm:px-0">
           <div className="space-y-8">
             <h2 className="text-3xl font-bold text-card-foreground mb-6 text-center">
