@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function ConversationLoading() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-col items-center space-y-8">
         {/* Animated Logo */}
         <motion.div
@@ -11,7 +11,7 @@ export default function ConversationLoading() {
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full"
         />
-        
+
         {/* Loading Text */}
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-semibold text-foreground">
@@ -21,7 +21,7 @@ export default function ConversationLoading() {
             Setting up your AI assistant...
           </p>
         </div>
-        
+
         {/* Progress Steps */}
         <div className="flex space-x-4">
           {[1, 2, 3].map((step) => (

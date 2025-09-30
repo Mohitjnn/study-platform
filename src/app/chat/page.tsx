@@ -75,15 +75,9 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
         <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
       </div>
 
-      <div className="flex justify-between items-center">
-        <div className="p-2 rounded-full bg-white/10 border-2 border-white/10">
-          <ChevronLeft />
-        </div>
+      <div className="flex justify-center items-center">
         <div>
           <h1 className="text-xl">Speaking to AI Bot</h1>
-        </div>
-        <div className="p-2 rounded-full bg-white/10 border-2 border-white/10">
-          <Ellipsis />
         </div>
       </div>
       <ChatInterface

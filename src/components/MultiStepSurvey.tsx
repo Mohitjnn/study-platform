@@ -235,7 +235,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
       const result = await submitSurvey(submission);
       if (result.success) {
         toast.success("Survey submitted successfully!");
-        router.push("/profile");
+        router.push("/dashboard");
       } else {
         toast.error(result.error || "Failed to submit survey");
       }
@@ -436,9 +436,14 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
   };
 
   return (
-    <div className="py-8 px-4 dark">
-      <div className="max-w-7xl mx-auto">
-        <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">
+    <div className="py-8 px-10 dark">
+      <div className="max-w-7xl mx-auto relative">
+        {/* Background divs */}
+        <div className="absolute inset-0 -top-2 -left-4 -right-4 -bottom-4">
+          <div className="w-full h-[95%] bg-white/10 rounded-2xl transform rotate-[5deg]"></div>
+        </div>
+
+        <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-50">
           <CardHeader>
             <CardTitle className="text-2xl">{survey.title}</CardTitle>
             <CardDescription>
