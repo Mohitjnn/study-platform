@@ -8,14 +8,14 @@ import { useRouter } from "next/navigation";
 export default function Splash() {
   const router = useRouter();
 
-  // useEffect(() => {
-  //   // redirect after 2s
-  //   const timer = setTimeout(() => {
-  //     router.push("/login");
-  //   }, 2000);
+  useEffect(() => {
+    // redirect after 2s
+    const timer = setTimeout(() => {
+      router.push("/login");
+    }, 2000);
 
-  //   return () => clearTimeout(timer);
-  // }, [router]);
+    return () => clearTimeout(timer);
+  }, [router]);
 
   return (
     <div className="h-screen flex text-center flex-col items-center justify-center bg-gradient-to-br from-[#010532] to-[#DF9AEE]">
