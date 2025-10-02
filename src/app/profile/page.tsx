@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { User, Mail } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BackButton from "@/components/BackButton";
+import { createPaymentIntent } from "@/actions/paymentActions";
+import PaymentForm from "@/components/Profile/PaymentTabSection";
+import PaymentHistorySection from "@/components/Profile/PaymentHistorSection";
 
 type Survey = {
   submitted: boolean;
@@ -39,6 +42,9 @@ export default async function ProfilePage() {
     }
   }
 
+  const payment = await createPaymentIntent({ tokens: "MINS_200" });
+  console.log("Payment Intent:", payment);
+
   return (
     <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
       <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
@@ -46,7 +52,7 @@ export default async function ProfilePage() {
       <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
       {/* <Navbar title="Profile" showProfile={true} /> */}
 
-      <main className="relative max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 z-10">
+      <main className="relative w-full mx-auto py-6 sm:px-6 lg:px-8 z-10">
         <div className="mb-4 flex justify-between items-center px-5">
           <div className="w-1/3 flex">
             <BackButton />
@@ -238,10 +244,10 @@ export default async function ProfilePage() {
               )}
             </TabsContent>
             <TabsContent value="payment">
-              <p>Change your payment here.</p>
+              <PaymentForm />
             </TabsContent>
             <TabsContent value="billing">
-              <p>Change your billing here.</p>
+             <PaymentHistorySection />
             </TabsContent>
           </Tabs>
         </div>
