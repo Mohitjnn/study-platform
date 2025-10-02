@@ -59,6 +59,19 @@ interface ResetPasswordResponse {
   message: string;
 }
 
+interface SendOTPResponse {
+  message: string;
+  expires_in_minutes: number;
+}
+
+// Type for OTP verify API response
+interface VerifyOTPResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+}
+
+
 export async function signup(data: SignupData): Promise<SignUpResponse> {
   try {
     const result = await postDataToAPI<SignUpResponse>(
@@ -376,6 +389,70 @@ export async function decodeToken() {
       success: false,
       message: `Failed to decode token: ${error}`,
       data: null
+    };
+  }
+}
+
+export async function sendOTP(email: string) {
+  try {
+    const result = await postDataToAPI<SendOTPResponse>(
+      "/otp/send",
+      { email },
+      { requiresAuth: false }
+    );
+
+    return {
+      success: true,
+      message: result.message,
+      expiresInMinutes: result.expires_in_minutes
+    };
+  } catch (error: unknown) {
+    console.error("Send OTP error:", error);
+    const errorObj = error as APIError;
+    return {
+      success: false,
+      error: errorObj.response?.data?.detail || "Failed to send OTP. Please try again."
+    };
+  }
+}
+
+// Verify OTP Action
+export async function verifyOTP(email: string, code: string) {
+  try {
+    const result = await postDataToAPI<VerifyOTPResponse>(
+      "/otp/verify",
+      { email, code },
+      { requiresAuth: false }
+    );
+
+    const cookie = await cookies();
+    
+    // Set both access and refresh tokens
+    cookie.set("access_token", result.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24, // 24 hours
+    });
+
+    cookie.set("refresh_token", result.refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", 
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+    });
+
+    return { 
+      success: true,
+      message: "Login successful"
+    };
+
+  } catch (error: unknown) {
+    console.error("Verify OTP error:", error);
+    const errorObj = error as APIError;
+    return {
+      success: false,
+      error: errorObj.response?.data?.detail || "Invalid OTP. Please try again."
     };
   }
 }

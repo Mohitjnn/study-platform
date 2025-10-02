@@ -1,134 +1,64 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginFormData } from "@/schema/loginSchema";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Mail, Lock, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { login } from "@/actions/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import PasswordBasedLogin from "@/components/Login/PaswordLogin";
+import OtpBasedLogin from "@/components/Login/OtpLogin";
+
+type LoginMethod = "password" | "otp";
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [loginMethod, setLoginMethod] = useState<LoginMethod>("password");
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setErrorMsg(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("email", data.email);
-      formData.append("password", data.password);
-
-      const result = await login(formData);
-
-      if (result.success) {
-        router.push("/dashboard");
-      } else {
-        setErrorMsg(result.error || "Login failed");
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Login failed";
-      setErrorMsg(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <main className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] px-5 flex justify-center items-center">
+    <main className="min-h-screen w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] px-5 flex justify-center items-center py-8">
       <div className="w-full max-w-md relative">
         <img
           src="/images/blob.png"
           alt="Logo"
-          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
         />
         <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">
           <CardHeader className="text-center">
             <CardTitle className="text-xl font-light">Sign In</CardTitle>
-          </CardHeader>
-
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white h-4 w-4" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10 text-white placeholder:text-white/60 py-5 border-white/30"
-                    {...register("email")}
-                  />
-                </div>
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white h-4 w-4" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    className="pl-10 text-white placeholder:text-white/60 py-5 border-white/30 "
-                    {...register("password")}
-                  />
-                </div>
-                {errors.password && (
-                  <p className="text-sm text-red-600">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-
-              {errorMsg && (
-                <p className="text-sm text-red-600 text-center">{errorMsg}</p>
-              )}
-
+            {/* Login method tabs */}
+            <div className="flex gap-2 mt-4 bg-white/5 p-1 rounded-lg">
               <button
-                type="submit"
-                className="w-full bg-white/20 py-3 rounded-lg flex items-center justify-center gap-3"
-                disabled={isLoading}
+                type="button"
+                onClick={() => setLoginMethod("password")}
+                className={`flex-1 py-2 px-4 rounded-md text-sm transition-all ${
+                  loginMethod === "password"
+                    ? "bg-white/20 text-white"
+                    : "text-white/60 hover:text-white"
+                }`}
               >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4" />
-                    Signing In...
-                  </>
-                ) : (
-                  "Sign In"
-                )}
+                Password
               </button>
-            </form>
-
-            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setLoginMethod("otp")}
+                className={`flex-1 py-2 px-4 rounded-md text-sm transition-all ${
+                  loginMethod === "otp"
+                    ? "bg-white/20 text-white"
+                    : "text-white/60 hover:text-white"
+                }`}
+              >
+                OTP
+              </button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {loginMethod === "password" ? (
+              <PasswordBasedLogin />
+            ) : (
+              <OtpBasedLogin />
+            )}
+            <div className="text-center pt-2">
               <p className="text-sm text-white/60">
                 Don&apos;t have an account?{" "}
                 <Link href="/signup" className="text-white underline">
