@@ -21,7 +21,7 @@ export default function PaymentFailPage() {
             {/* Bot Image */}
             <div className="flex justify-center mb-6">
               <img 
-                src="/images/bot.png" 
+                src="/images/Bot.png" 
                 alt="Bot" 
                 className="w-24 h-24 object-contain"
               />

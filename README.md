@@ -1,1 +1,1 @@
-free ended convo added
+thankyiu and payment fail url added
