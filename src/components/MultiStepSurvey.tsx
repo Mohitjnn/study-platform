@@ -212,25 +212,11 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
 
         // Always include the field in answers, even if empty
         answers[question.question_key] = answer;
-        console.log(
-          `Processing ${question.question_key}: ${JSON.stringify(
-            answer
-          )} (type: ${typeof answer})`
-        );
       });
 
       const submission = {
         answers,
       };
-
-      console.log("Submitting survey:", submission);
-      console.log("Answers object:", JSON.stringify(answers, null, 2));
-      console.log(
-        "board_state_name value:",
-        answers.board_state_name,
-        "type:",
-        typeof answers.board_state_name
-      );
 
       const result = await submitSurvey(submission);
       if (result.success) {

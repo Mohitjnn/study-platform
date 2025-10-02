@@ -127,9 +127,9 @@ export default async function DashboardPage() {
   [mask-repeat:no-repeat] [mask-size:100%_100%]"
               >
                 <h1 className="text-2xl font-bold">
-                  {overallStats.hoursStudied}
+                  {overallStats.minutesStudied}
                 </h1>
-                <h1 className="text-sm font-light">Hours Studied</h1>
+                <h1 className="text-sm font-light">Minutes Studied</h1>
               </div>
 
               <div
@@ -152,15 +152,20 @@ export default async function DashboardPage() {
 
         {/* Weekly Progress */}
         <div className="mb-8 bg-card border-border p-4 rounded-2xl">
-          <ScreenTimeChart {...screenTimeStats} />
+          <ScreenTimeChart
+            dailyMinutes={screenTimeStats.dailyMinutes}
+            weeklyAverage={screenTimeStats.weeklyAverage}
+            weeklyChange={screenTimeStats.weeklyChange}
+            lastUpdated={screenTimeStats.lastUpdated}
+          />
         </div>
 
-        <div className="w-full py-4 px-7 border border-white/20 bg-white/10 rounded-lg mt-5 mb-8 flex justify-between items-center">
+        <Link href="/chat?mode=free-explore" className="w-full py-4 px-7 border border-white/20 bg-white/10 rounded-lg mt-5 mb-8 flex justify-between items-center hover:bg-white/20 transition-colors cursor-pointer">
           <h1>Free Explore</h1>
           <div className="h-6 w-6 p-1 flex justify-center items-center bg-white/10 rounded-full border border-white/20">
             <ChevronRight />
           </div>
-        </div>
+        </Link>
         <h1 className="text-xl lg:text-5xl font-medium lg:text-left mb-5">
           Subjects
         </h1>

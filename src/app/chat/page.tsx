@@ -20,6 +20,7 @@ type ChatPageProps = {
   searchParams: {
     conversation_id?: string;
     link_id?: string;
+    mode?: string;
   };
 };
 
@@ -27,6 +28,7 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
   // Get URL parameters
   const conversationId = searchParams.conversation_id;
   const linkId = searchParams.link_id;
+  const mode = searchParams.mode;
 
   // Get user data from API
   const result = await getUserDataFromAPI();
@@ -36,7 +38,8 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
     redirect("/login");
   }
 
-  if (!conversationId || !linkId) {
+  // For free explore mode, we don't need conversation_id or link_id
+  if (mode !== 'free-explore' && (!conversationId || !linkId)) {
     redirect("/dashboard");
   }
 
@@ -77,13 +80,16 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
 
       <div className="flex justify-center items-center">
         <div>
-          <h1 className="text-xl">Speaking to AI Bot</h1>
+          <h1 className="text-xl">
+            {mode === 'free-explore' ? 'Free Explore Chat' : 'Speaking to AI Bot'}
+          </h1>
         </div>
       </div>
       <ChatInterface
         user={chatUser}
         conversationId={conversationId}
         linkId={linkId}
+        mode={mode}
       />
     </div>
   );

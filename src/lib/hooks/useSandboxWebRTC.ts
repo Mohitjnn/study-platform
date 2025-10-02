@@ -43,19 +43,14 @@ export const useSandboxWebRTC = ({
       setConnectionStatus("Ending...");
 
       try {
-        // End sandbox session if we have a conversation ID and we're not cleaning up from a PC event
         if (!fromPcEvent && conversationId && isConnected) {
           try {
-            console.log('� Calling endSandboxSession with ID:', conversationId);
             await endSandboxSession(conversationId, true);
-            console.log("✅ Sandbox session ended successfully");
           } catch (error) {
-            console.error("❌ Error ending sandbox session:", error);
             // Continue with cleanup even if API call fails
           }
         }
 
-        // Cleanup WebRTC connection
         if (pcRef.current) {
           pcRef.current.ontrack = null;
           pcRef.current.onconnectionstatechange = null;
@@ -85,14 +80,10 @@ export const useSandboxWebRTC = ({
     async (micStream: MediaStream | null) => {
       if (isConnecting || isConnected) return;
 
-      console.log("🚀 Starting Sandbox WebRTC session...");
-      console.log("⚙️ Config:", config);
-
       setIsConnecting(true);
       setConnectionStatus("Connecting...");
 
       try {
-        // Create RTCPeerConnection
         pcRef.current = new RTCPeerConnection({
           iceServers: [
             { urls: "stun:stun.l.google.com:19302" },
@@ -102,10 +93,8 @@ export const useSandboxWebRTC = ({
           iceCandidatePoolSize: 10,
         });
 
-        // Connection state monitoring
         pcRef.current.onconnectionstatechange = () => {
           const state = pcRef.current?.connectionState;
-          console.log('📡 Connection state:', state);
           setConnectionStatus(`Connection: ${state}`);
           
           if (state === 'connected') {
@@ -116,64 +105,48 @@ export const useSandboxWebRTC = ({
           }
         };
 
-        // Handle incoming audio tracks
         pcRef.current.ontrack = (event) => {
-          console.log('🎵 Received remote track:', event.track.kind);
           if (event.track.kind === 'audio' && remoteAudioRef.current) {
             remoteAudioRef.current.srcObject = event.streams[0];
           }
         };
 
-        // Add microphone track if available
         if (micStream) {
           const audioTrack = micStream.getAudioTracks()[0];
           if (audioTrack) {
             pcRef.current.addTrack(audioTrack, micStream);
-            console.log('🎤 Added microphone track');
           }
         }
 
-        // Create data channel
         dcRef.current = pcRef.current.createDataChannel("oai-events");
 
-        dcRef.current.onopen = () => {
-          console.log('📡 Data channel opened');
-        };
+        dcRef.current.onopen = () => {};
 
-        dcRef.current.onerror = (error) => {
-          console.error('❌ Data channel error:', error);
-        };
+        dcRef.current.onerror = () => {};
 
         dcRef.current.onmessage = (e) => {
           try {
             const data = JSON.parse(e.data);
             onDataChannelMessage(data);
           } catch (error) {
-            console.error('❌ Error parsing data channel message:', error);
+            // Error parsing data channel message
           }
         };
 
-        // Create and set local offer
         const offer = await pcRef.current.createOffer({
           offerToReceiveAudio: true,
           offerToReceiveVideo: false,
         });
         await pcRef.current.setLocalDescription(offer);
 
-        console.log('📤 Created SDP offer');
-
-        // Exchange SDP using sandbox endpoint with config
         const sdpAnswer = await exchangeSandboxSdp(offer.sdp || '', config);
 
-        // Set remote description
         const answer = { type: "answer" as RTCSdpType, sdp: sdpAnswer };
         await pcRef.current.setRemoteDescription(answer);
 
-        console.log('✅ Sandbox WebRTC session setup completed!');
         setConversationId(`sandbox-${Date.now()}`);
         
       } catch (error) {
-        console.error('❌ Sandbox WebRTC setup failed:', error);
         setIsConnecting(false);
         await cleanup();
         setConnectionStatus("Connection Failed");

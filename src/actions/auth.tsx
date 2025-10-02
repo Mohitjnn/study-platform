@@ -60,7 +60,6 @@ interface ResetPasswordResponse {
 }
 
 export async function signup(data: SignupData): Promise<SignUpResponse> {
-    console.log("Signup data received:", data);
   try {
     const result = await postDataToAPI<SignUpResponse>(
       "/auth/register",
@@ -70,7 +69,6 @@ export async function signup(data: SignupData): Promise<SignUpResponse> {
     if (!result.id) {
         throw new Error("Invalid response from server");
     }
-    console.log("Signup successful:", result);
     return {
       id: result.id,
       full_name: result.full_name,
@@ -246,8 +244,6 @@ export async function getUserDataFromAPI() {
       "/me",
       { requiresAuth: true }
     );
-
-    console.log("API response successful:", result);
     return {
       success: true,
       message: "User data retrieved successfully from API.",
@@ -257,11 +253,9 @@ export async function getUserDataFromAPI() {
   } catch (error: unknown) {
     console.error("Get user data error:", error);
     const errorObj = error as APIError;
-    console.log("Error status:", errorObj.status || errorObj.response?.status);
     
     // If it's a 401 error, clear the invalid tokens and indicate redirect
     if (errorObj.status === 401 || errorObj.response?.status === 401) {
-      console.log("401 error - clearing tokens and redirecting");
       try {
         const cookieStore = await cookies();
         cookieStore.delete("access_token");

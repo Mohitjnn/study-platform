@@ -28,7 +28,6 @@ export const configureRequest = async (
   if (config.requiresAuth) {
     const token = await getAuthToken();
     headers["Authorization"] = `Bearer ${token}`;
-    console.log("Authorization header set");
   }
 
   return {

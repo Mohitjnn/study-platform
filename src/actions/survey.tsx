@@ -18,15 +18,11 @@ interface ApiError {
 
 // Get survey by slug
 export async function getSurvey(slug: string): Promise<SurveyApiResponse> {
-  try {
-    console.log(`Fetching survey with slug: ${slug}`);
-    
+  try {    
     const result = await fetchFromAPI<Survey>(
       `/surveys/${slug}`,
       { requiresAuth: true }
     );
-
-    console.log("Survey fetched successfully:", result);
     return {
       success: true,
       message: "Survey fetched successfully",
@@ -48,16 +44,12 @@ export async function submitSurvey(submission: SurveySubmission): Promise<Survey
   try {
     // Validate the submission data
     const validatedData = surveySubmissionSchema.parse(submission);
-    
-    console.log("Submitting survey:", validatedData);
-    
+        
     const result = await postDataToAPI<{ submission_id: string; message: string }>(
       "/surveys/user_personalization_v2/submit",
       validatedData,
       { requiresAuth: true }
     );
-
-    console.log("Survey submitted successfully:", result);
     return {
       success: true,
       message: result.message || "Survey submitted successfully",
@@ -78,15 +70,11 @@ export async function submitSurvey(submission: SurveySubmission): Promise<Survey
 
 // Get user's survey responses (if they've already submitted)
 export async function getUserSurveyResponse(slug: string): Promise<SurveyApiResponse> {
-  try {
-    console.log(`Fetching user survey response for slug: ${slug}`);
-    
+  try {    
     const result = await fetchFromAPI<Survey>(
       `/surveys/${slug}/response`,
       { requiresAuth: true }
     );
-
-    console.log("User survey response fetched:", result);
     return {
       success: true,
       message: "User survey response fetched successfully",

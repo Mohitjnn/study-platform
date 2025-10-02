@@ -116,7 +116,6 @@ export const SandboxInterface: React.FC = () => {
   const handleBeginConversation = async () => {
     // If already connected, end the current session first
     if (webrtcConnection.isConnected) {
-      console.log('🔄 Restarting session with new configuration...');
       await webrtcConnection.cleanup();
     }
 

@@ -12,8 +12,8 @@ import {
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
 const chartConfig = {
-  hours: {
-    label: "Hours",
+  minutes: {
+    label: "Minutes",
     color: "#00d4aa", // Cyan/teal color like iPhone
   },
 } satisfies ChartConfig;
@@ -41,7 +41,7 @@ const screenTimeConfig = {
     lineStyle: "4 4",
   },
   bar: {
-    dataKey: "hours",
+    dataKey: "minutes",
     fill: "#e8e8e8ff",
     radius: [2, 2, 0, 0] as [number, number, number, number],
     maxBarSize: 80,
@@ -56,14 +56,14 @@ const screenTimeConfig = {
 };
 
 interface ScreenTimeChartProps {
-  dailyHours: number[]; // Array of 7 numbers for Sunday to Saturday
+  dailyMinutes: number[]; // Array of 7 numbers for Sunday to Saturday
   weeklyAverage: number;
   weeklyChange: number; // Percentage change from last week
   lastUpdated: string; // e.g., "Updated today at 7:20 PM"
 }
 
 export default function ScreenTimeChart({
-  dailyHours,
+  dailyMinutes,
   weeklyAverage,
   weeklyChange,
   lastUpdated,
@@ -72,15 +72,17 @@ export default function ScreenTimeChart({
   const chartData = React.useMemo(() => {
     return dayLabels.map((dayInfo, index) => ({
       ...dayInfo,
-      hours: dailyHours[index] || 0,
+      minutes: dailyMinutes[index] || 0,
     }));
-  }, [dailyHours]);
+  }, [dailyMinutes]);
 
-  const formatTime = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    return `${h}h ${m}m ${s}s`;
+  const formatTime = (minutes: number) => {
+    const h = Math.floor(minutes / 60);
+    const m = Math.floor(minutes % 60);
+    if (h > 0) {
+      return `${h}h ${m}m`;
+    }
+    return `${m}m`;
   };
 
   return (
@@ -129,13 +131,13 @@ export default function ScreenTimeChart({
           <YAxis
             tickLine={false}
             axisLine={false}
-            domain={[0, 8]}
-            ticks={[0, 2, 4, 6, 8]}
+            domain={[0, 120]}
+            ticks={[0, 30, 60, 90, 120]}
             tick={{
               fill: screenTimeConfig.axis.tickColor,
               fontSize: screenTimeConfig.axis.fontSize,
             }}
-            tickFormatter={(value) => `${value}h`}
+            tickFormatter={(value) => `${value}m`}
           />
           {/* Average line */}
           <ReferenceLine

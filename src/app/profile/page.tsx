@@ -23,7 +23,6 @@ export default async function ProfilePage() {
 
   // If not authenticated or should redirect, redirect to login
   if (!result.success || result.shouldRedirect) {
-    console.log("Redirecting to login:", result.message);
     redirect("/login");
   }
 
@@ -35,7 +34,6 @@ export default async function ProfilePage() {
   const user = isValidUser(result.data) ? result.data : null;
 
   if (result.success && user) {
-    console.log("User data retrieved:", user);
     if (user.survey && !user.survey.submitted) {
       redirect("/survey");
     }

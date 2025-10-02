@@ -27,7 +27,6 @@ export const useImagePolling = (setMessages: React.Dispatch<React.SetStateAction
     if (ev.type === 'response.output_item.added' && 
         ev.output_item?.type === 'function_call' && 
         ev.output_item?.name === 'generate_image') {
-      console.log('🖼️ Image generation detected, starting polling...');
       // For sandbox, we'll simulate image polling
       // In a real implementation, you'd poll your API for the generated image
     }

@@ -9,13 +9,9 @@ export default async function Page({
   params: Promise<{ topics: string }>;
 }) {
   const { topics } = await params;
-  console.log("Fetching topics for subject:", topics);
   const topicsWithSubTopics = await fetchTopicsWithSubTopicsForSubject({
     subject: topics,
   });
-  console.log("Fetched topics with subtopics:", topicsWithSubTopics);
-  console.log(topicsWithSubTopics);
-
   return (
     <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
       <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>

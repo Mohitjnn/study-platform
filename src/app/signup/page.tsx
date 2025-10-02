@@ -32,7 +32,6 @@ export default function SignupPage() {
   });
 
   const onSubmit = async (data: SignupFormData) => {
-    console.log("Form Data:", data);
     setIsLoading(true);
     setErrorMsg(null);
     try {

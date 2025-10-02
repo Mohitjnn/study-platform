@@ -8,7 +8,6 @@ export default async function Home() {
 
   // If not authenticated or should redirect, redirect to login
   if (result.success || !result.shouldRedirect) {
-    console.log("Redirecting to dashboard:", result.message);
     redirect("/dashboard");
   }
 

@@ -13,9 +13,9 @@ export interface ScreenTimeStats {
   percent_change_vs_prev: number;
 }
 
-// Helper to convert seconds to hours (float)
-function secondsToHours(seconds: number): number {
-  return Math.round((seconds / 3600) * 10) / 10;
+// Helper to convert seconds to minutes (float)
+function secondsToMinutes(seconds: number): number {
+  return Math.round((seconds / 60) * 10) / 10;
 }
 
 export async function getWeeklyScreenTimeStats() {
@@ -24,16 +24,15 @@ export async function getWeeklyScreenTimeStats() {
   const res = await fetchFromAPI<ScreenTimeStats>(endpoint, {
     requiresAuth: true,
   });
-  console.log("Screen time response:", res);
-  // Map days to hours
-  const dailyHours = (res.days || []).map((d: dayContent) =>
-    secondsToHours(d.duration_seconds)
+  // Map days to minutes
+  const dailyMinutes = (res.days || []).map((d: dayContent) =>
+    secondsToMinutes(d.duration_seconds)
   );
   // Ensure 7 days
-  while (dailyHours.length < 7) dailyHours.push(0);
+  while (dailyMinutes.length < 7) dailyMinutes.push(0);
 
   // Weekly average
-  const weeklyAverage = res.daily_average_seconds;
+  const weeklyAverage = secondsToMinutes(res.daily_average_seconds);
   // Weekly change
   const weeklyChange =
     typeof res.percent_change_vs_prev === "number"
@@ -46,7 +45,7 @@ export async function getWeeklyScreenTimeStats() {
       : "";
 
   return {
-    dailyHours,
+    dailyMinutes,
     weeklyAverage,
     weeklyChange,
     lastUpdated,
@@ -63,7 +62,7 @@ export async function getOverAllStats() {
   return {
     totalCourses: res.total_courses || 0,
     completedCourses: res.completed_courses || 0,
-    hoursStudied: secondsToHours((res.minutes_studied || 0) * 60),
+    minutesStudied: res.minutes_studied || 0,
     currentStreak: res.streak || 0,
   };
 

@@ -6,6 +6,7 @@ import { MessageList } from "@/components/chat/MessageList";
 import { ConnectionControls } from "@/components/chat/ConnectionControls";
 import { AudioControls } from "@/components/chat/AudioControls";
 import { useWebRTCConnection } from "@/lib/hooks/useWebRTCConnection";
+import { useFreeExploreWebRTC } from "@/lib/hooks/useFreeExploreWebRTC";
 import { useAudioManagement } from "@/lib/hooks/useAudioManagement";
 import { useImagePolling } from "@/lib/hooks/useImagePolling";
 import { useConversationHandler } from "@/lib/hooks/useConversationHandler";
@@ -36,6 +37,7 @@ interface ChatInterfaceProps {
   user: User;
   conversationId?: string;
   linkId?: string;
+  mode?: string;
 }
 
 // Configuration
@@ -43,13 +45,16 @@ export default function ChatInterface({
   user,
   conversationId,
   linkId,
+  mode,
 }: ChatInterfaceProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm your AI assistant. How can I help you today?",
+      content: mode === 'free-explore' 
+        ? "Welcome to Free Explore! Ask me anything and let's have an open conversation." 
+        : "Hello! I'm your AI assistant. How can I help you today?",
       role: "assistant",
       timestamp: new Date(),
       type: "text",
@@ -84,14 +89,48 @@ export default function ChatInterface({
     externalConversationId: conversationId,
   });
 
-  // Auto-start session when conversationId is provided
+  const freeExploreConnection = useFreeExploreWebRTC({
+    user,
+    onDataChannelMessage: handleDataChannelMessage,
+    remoteAudioRef: audioManagement.remoteAudioRef,
+  });
+
+  // Choose the appropriate connection based on mode
+  const activeConnection = mode === 'free-explore' ? freeExploreConnection : webrtcConnection;
+
+  // Auto-start session when conversationId is provided or in free explore mode
   useEffect(() => {
     const autoStartSession = async () => {
-      if (
+      if (mode === 'free-explore') {
+        // For free explore mode, start immediately
+        if (
+          !activeConnection.isConnected &&
+          !activeConnection.isConnecting &&
+          !sessionStartedRef.current
+        ) {
+          sessionStartedRef.current = true;
+          setIsLoading(false);
+
+          try {
+            // Setup microphone first
+            const micStream = await audioManagement.setupMicrophone();
+            
+            // Start WebRTC session with mic stream
+            await activeConnection.startSession(micStream);
+            
+            // Setup audio analysis after connection
+            audioManagement.setupAudioAnalysis(activeConnection.isConnected);
+          } catch (error) {
+            sessionStartedRef.current = false; // Reset on error
+          }
+        } else {
+          setIsLoading(false);
+        }
+      } else if (
         conversationId &&
         conversationId !== "test" &&
-        !webrtcConnection.isConnected &&
-        !webrtcConnection.isConnecting &&
+        !activeConnection.isConnected &&
+        !activeConnection.isConnecting &&
         !sessionStartedRef.current
       ) {
         sessionStartedRef.current = true;
@@ -101,18 +140,12 @@ export default function ChatInterface({
           // Setup microphone first
           const micStream = await audioManagement.setupMicrophone();
           // Start WebRTC session with mic stream
-          await webrtcConnection.startSession(micStream);
+          await activeConnection.startSession(micStream);
           // Setup audio analysis after connection
-          audioManagement.setupAudioAnalysis(webrtcConnection.isConnected);
+          audioManagement.setupAudioAnalysis(activeConnection.isConnected);
         } catch (error) {
           sessionStartedRef.current = false; // Reset on error
         }
-      } else if (
-        !conversationId ||
-        conversationId === "test" ||
-        sessionStartedRef.current
-      ) {
-        setIsLoading(false);
       } else {
         setIsLoading(false);
       }
@@ -125,7 +158,7 @@ export default function ChatInterface({
     } else {
       setIsLoading(false);
     }
-  }, [conversationId]);
+  }, [conversationId, mode]); // Keep these dependencies but make session start more stable
 
   // Auto scroll to bottom when new messages are added
   useEffect(() => {
@@ -134,30 +167,45 @@ export default function ChatInterface({
     }
   }, [messages]);
 
-  // Cleanup on unmount
+  // Cleanup on unmount ONLY - remove dependencies to prevent re-runs
   useEffect(() => {
     return () => {
       sessionStartedRef.current = false;
-      cleanup();
+      if (mode === 'free-explore' && 'endSession' in activeConnection) {
+        activeConnection.endSession();
+      } else {
+        activeConnection.cleanup();
+      }
     };
-  }, []);
+  }, []); // Empty dependency array - only run on mount/unmount
 
   // Mic Control
   const toggleMic = () => {
-    audioManagement.toggleMic(webrtcConnection.isConnected);
+    audioManagement.toggleMic(activeConnection.isConnected);
   };
 
   // Cleanup function with dashboard navigation
   const cleanup = async () => {
     sessionStartedRef.current = false;
-    await webrtcConnection.cleanup();
+    await activeConnection.cleanup();
     audioManagement.cleanupAudio();
     imagePolling.stopImagePolling();
   };
 
   // End session and navigate to dashboard
   const endSessionAndNavigate = async () => {
-    await cleanup();
+    sessionStartedRef.current = false;
+    
+    // For free explore mode, call endSession to properly end the backend session
+    if (mode === 'free-explore' && 'endSession' in activeConnection) {
+      await activeConnection.endSession();
+    } else {
+      // For regular mode, just cleanup
+      await activeConnection.cleanup();
+    }
+    
+    audioManagement.cleanupAudio();
+    imagePolling.stopImagePolling();
     router.push("/dashboard");
   };
 
@@ -193,7 +241,7 @@ export default function ChatInterface({
         <div className="w-1/3"></div>
         <div className="w-1/3 flex justify-center">
           <AudioControls
-            isConnected={webrtcConnection.isConnected}
+            isConnected={activeConnection.isConnected}
             isMicOn={audioManagement.isMicOn}
             audioLevel={audioManagement.audioLevel}
             micStreamAvailable={!!audioManagement.micStreamRef.current}
@@ -202,11 +250,11 @@ export default function ChatInterface({
         </div>
         <div className="w-1/3 flex justify-end">
           <ConnectionControls
-            isConnected={webrtcConnection.isConnected}
-            isConnecting={webrtcConnection.isConnecting}
-            isEnding={webrtcConnection.isEnding}
+            isConnected={activeConnection.isConnected}
+            isConnecting={activeConnection.isConnecting}
+            isEnding={activeConnection.isEnding}
             onEndSession={endSessionAndNavigate}
-            autoStarted={!!conversationId}
+            autoStarted={!!conversationId || mode === 'free-explore'}
           />
         </div>
       </div>
