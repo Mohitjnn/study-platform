@@ -9,6 +9,7 @@ import PaymentHistorySection from "@/components/Profile/PaymentHistorSection";
 
 type Survey = {
   submitted: boolean;
+  slug: string;
 };
 
 type UserType = {
@@ -17,6 +18,10 @@ type UserType = {
   verified?: boolean;
   user_id?: string;
   user_since?: string;
+  age_years?: number;
+  grade_level?: string | number;
+  last_payment_method?: string;
+  voice_minutes_available?: number;
   survey?: Survey;
 };
 
@@ -64,90 +69,7 @@ export default async function ProfilePage() {
           <div className="w-1/3"></div>
         </div>
         <div className="px-4 py-6 sm:px-0">
-          {/* <div className="space-y-8">
-            <h2 className="text-3xl font-bold text-card-foreground mb-6 text-center">
-              Hello, {user?.full_name || "User"}! Checkout Your Profile
-            </h2>
-            {user && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <User className="h-6 w-6 text-muted-foreground" />
-                  <div>
-                    <p className="text-base text-muted-foreground">Name</p>
-                    <p className="font-semibold text-card-foreground text-lg">
-                      {user.full_name || "N/A"}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Mail className="h-6 w-6 text-muted-foreground" />
-                  <div>
-                    <p className="text-base text-muted-foreground">Email</p>
-                    <p className="font-semibold text-card-foreground text-lg">
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="h-6 w-6 flex items-center justify-center">
-                    <div
-                      className={`h-3 w-3 rounded-full ${
-                        user.verified ? "bg-green-500" : "bg-red-500"
-                      }`}
-                    ></div>
-                  </div>
-                  <div>
-                    <p className="text-base text-muted-foreground">Status</p>
-                    <p
-                      className={`font-semibold text-lg ${
-                        user.verified ? "text-green-600" : "text-red-600"
-                      }`}
-                    >
-                      {user.verified ? "Verified" : "Unverified"}
-                    </p>
-                  </div>
-                </div>
-                {user.user_id && (
-                  <div className="flex items-center gap-4">
-                    <div className="h-6 w-6 flex items-center justify-center">
-                      <div className="h-3 w-3 bg-blue-500 rounded-full"></div>
-                    </div>
-                    <div>
-                      <p className="text-base text-muted-foreground">User ID</p>
-                      <p className="font-semibold text-card-foreground text-lg">
-                        {user.user_id}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {user.user_since && (
-                  <div className="flex items-center gap-4">
-                    <div className="h-6 w-6 flex items-center justify-center">
-                      <div className="h-3 w-3 bg-purple-500 rounded-full"></div>
-                    </div>
-                    <div>
-                      <p className="text-base text-muted-foreground">
-                        Member Since
-                      </p>
-                      <p className="font-semibold text-card-foreground text-lg">
-                        {new Date(user.user_since).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {!user && (
-              <div className="text-center">
-                <p className="text-muted-foreground">
-                  Unable to load profile data. Please try refreshing the page.
-                </p>
-              </div>
-            )}
-          </div> */}
-
-          <Tabs defaultValue="information" className="w-[400px]">
+          <Tabs defaultValue="information">
             <TabsList className="w-full ">
               <TabsTrigger value="information">Information</TabsTrigger>
               <TabsTrigger value="payment">Payment</TabsTrigger>
@@ -157,32 +79,88 @@ export default async function ProfilePage() {
             <TabsContent value="information">
               <h1 className="mt-7">Personal Information</h1>
               {user && (
-                <div className="space-y-6">
+                <div className="space-y-3">
+                  {/* Full Name */}
                   <div className="mt-7">
                     <p className="text-base text-muted-foreground mb-2">
                       Full Name
                     </p>
                     <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                      <div>
-                        <p className="font-light text-white/70 text-lg">
-                          {user.full_name || "N/A"}
-                        </p>
-                      </div>
+                      <p className="font-light text-white/70 text-lg">
+                        {user.full_name || "N/A"}
+                      </p>
                     </div>
                   </div>
-                  <div className="mt-7">
+
+                  {/* Email */}
+                  <div>
                     <p className="text-base text-muted-foreground mb-2">
                       Email
                     </p>
                     <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                      <div>
-                        <p className="font-light text-white/70 text-lg">
-                          {user.email}
-                        </p>
-                      </div>
+                      <p className="font-light text-white/70 text-lg">
+                        {user.email}
+                      </p>
                     </div>
                   </div>
 
+                  {/* Age */}
+                  {user.age_years !== undefined && (
+                    <div>
+                      <p className="text-base text-muted-foreground mb-2">
+                        Age
+                      </p>
+                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
+                        <p className="font-light text-white/70 text-lg">
+                          {user.age_years}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Grade Level */}
+                  {user.grade_level !== undefined && (
+                    <div>
+                      <p className="text-base text-muted-foreground mb-2">
+                        Grade Level
+                      </p>
+                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
+                        <p className="font-light text-white/70 text-lg">
+                          {user.grade_level}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Last Payment Method */}
+                  {user.last_payment_method && (
+                    <div>
+                      <p className="text-base text-muted-foreground mb-2">
+                        Last Payment Method
+                      </p>
+                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
+                        <p className="font-light text-white/70 text-lg">
+                          {user.last_payment_method}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Voice Minutes */}
+                  {user.voice_minutes_available !== undefined && (
+                    <div>
+                      <p className="text-base text-muted-foreground mb-2">
+                        Voice Minutes Available
+                      </p>
+                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
+                        <p className="font-light text-white/70 text-lg">
+                          {user.voice_minutes_available}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Status */}
                   <div className="flex items-center gap-4">
                     <div className="h-6 w-6 flex items-center justify-center">
                       <div
@@ -202,6 +180,8 @@ export default async function ProfilePage() {
                       </p>
                     </div>
                   </div>
+
+                  {/* User ID */}
                   {user.user_id && (
                     <div className="flex items-center gap-4">
                       <div className="h-6 w-6 flex items-center justify-center">
@@ -217,6 +197,8 @@ export default async function ProfilePage() {
                       </div>
                     </div>
                   )}
+
+                  {/* Member Since */}
                   {user.user_since && (
                     <div className="flex items-center gap-4">
                       <div className="h-6 w-6 flex items-center justify-center">
@@ -228,6 +210,25 @@ export default async function ProfilePage() {
                         </p>
                         <p className="font-semibold text-card-foreground text-lg">
                           {new Date(user.user_since).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Survey Info */}
+                  {user.survey && (
+                    <div className="flex items-center gap-4">
+                      <div className="h-6 w-6 flex items-center justify-center">
+                        <div className="h-3 w-3 bg-yellow-500 rounded-full"></div>
+                      </div>
+                      <div>
+                        <p className="text-base text-muted-foreground">
+                          Survey
+                        </p>
+                        <p className="font-semibold text-card-foreground text-lg">
+                          {user.survey.submitted
+                            ? `Submitted (${user.survey.slug})`
+                            : "Not Submitted"}
                         </p>
                       </div>
                     </div>
@@ -247,7 +248,7 @@ export default async function ProfilePage() {
               <PaymentForm />
             </TabsContent>
             <TabsContent value="billing">
-             <PaymentHistorySection />
+              <PaymentHistorySection />
             </TabsContent>
           </Tabs>
         </div>
