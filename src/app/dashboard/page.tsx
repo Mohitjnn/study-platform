@@ -140,7 +140,7 @@ export default async function DashboardPage() {
                 <h1 className="text-2xl font-bold">
                   {overallStats.currentStreak}
                 </h1>
-                <h1 className="text-sm font-light">Streak</h1>
+                <h1 className="text-sm font-light">Curiosity Streaks</h1>
               </div>
             </div>
           </div>
@@ -160,7 +160,10 @@ export default async function DashboardPage() {
           />
         </div>
 
-        <Link href="/chat?mode=free-explore" className="w-full py-4 px-7 border border-white/20 bg-white/10 rounded-lg mt-5 mb-8 flex justify-between items-center hover:bg-white/20 transition-colors cursor-pointer">
+        <Link
+          href="/chat?mode=free-explore"
+          className="w-full py-4 px-7 border border-white/20 bg-white/10 rounded-lg mt-5 mb-8 flex justify-between items-center hover:bg-white/20 transition-colors cursor-pointer"
+        >
           <h1>Free Explore</h1>
           <div className="h-6 w-6 p-1 flex justify-center items-center bg-white/10 rounded-full border border-white/20">
             <ChevronRight />
