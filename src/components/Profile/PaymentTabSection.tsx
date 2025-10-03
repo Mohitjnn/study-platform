@@ -4,7 +4,13 @@ import { TabsContent } from "@/components/ui/tabs";
 import { createPaymentIntent } from "@/actions/paymentActions";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 function PaymentForm() {
   const [selectedMinutes, setSelectedMinutes] = useState("mins_100");
@@ -23,8 +29,9 @@ function PaymentForm() {
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto flex flex-col gap-6 items-center py-8">
-      <h2 className="text-xl font-semibold text-center mb-2">Buy Study Minutes</h2>
+    <div className="w-full max-w-sm mx-auto flex flex-col gap-6">
+      <h1 className="mt-7">Buy Study Minutes</h1>
+
       <Select value={selectedMinutes} onValueChange={setSelectedMinutes}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select minutes" />

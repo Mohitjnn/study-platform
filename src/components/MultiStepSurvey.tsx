@@ -221,6 +221,13 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
       const result = await submitSurvey(submission);
       if (result.success) {
         toast.success("Survey submitted successfully!");
+
+        setTimeout(() => {
+          toast.info(
+            "Disclaimer: This is the MVP version of the application. Features may be incomplete or change."
+          );
+        }, 1500);
+
         router.push("/dashboard");
       } else {
         toast.error(result.error || "Failed to submit survey");
