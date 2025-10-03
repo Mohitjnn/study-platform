@@ -68,7 +68,7 @@ export default function PaymentHistorySection() {
         </Select>
       </div>
       <div
-        className="bg-white/10 rounded-xl backdrop-blur-md overflow-y-auto p-4"
+        className="rounded-xl backdrop-blur-md overflow-y-auto"
         style={{ minHeight: 200 }}
       >
         {items.length === 0 && !loading && (
@@ -79,7 +79,7 @@ export default function PaymentHistorySection() {
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="mb-5 p-4 rounded-lg bg-white/5 flex flex-col gap-1"
+            className="mb-5 p-4 rounded-lg bg-white/10 flex flex-col gap-1"
           >
             <div className="flex justify-between text-sm">
               <span className="font-medium">{item.created_at}</span>

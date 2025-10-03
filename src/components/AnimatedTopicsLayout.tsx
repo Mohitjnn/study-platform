@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, Target } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { initiateConversation } from "@/actions/subjects";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, RotateCcw } from "lucide-react";
 
 interface SubTopicData {
   id: string;
@@ -88,10 +88,10 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto py-6 px-5">
       {/* Subject Title */}
       <motion.div
-        className="mb-12 flex justify-between items-center"
+        className="mb-10 flex justify-between items-center"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -123,7 +123,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
           <motion.section
             key={topicData.topic}
             variants={topicSectionVariants}
-            className="space-y-6"
+            className="space-y-3"
           >
             {/* Topic Header */}
             <div className={"pl-3 border-l-6 border-grey-200"}>
@@ -142,7 +142,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
                 <motion.div
                   key={subtopic.id}
                   variants={subtopicVariants}
-                  className={`border-b-1 border-gray-700 py-4`}
+                  className={`border-b-1 border-gray-700 py-4 flex justify-between items-center`}
                 >
                   <div className="flex flex-col lg:flex-row items-start justify-between gap-2 ">
                     <div className="min-w-0 space-y-1">
@@ -166,19 +166,15 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
                         </p>
                       </div>
                     </div>
-
-                    {/* Start Conversation Button */}
+                  </div>
+                  <div className="p-2 bg-white/20 rounded-full">
+                    {/* Start Conversation Icon Button */}
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="shrink-0"
                     >
-                      <Button
-                        onClick={() => handleSubtopicClick(subtopic)}
-                        disabled={loadingSubtopic === subtopic.id}
-                        className="z-50 text-sm lg:text-base bg-white/20 text-white shadow-lg transition-all duration-300 min-w-[140px] border border-white/20"
-                        size="default"
-                      >
+                      <div onClick={() => handleSubtopicClick(subtopic)}>
                         {loadingSubtopic === subtopic.id ? (
                           <>
                             <motion.div
@@ -188,17 +184,13 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
                                 repeat: Infinity,
                                 ease: "linear",
                               }}
-                              className="w-4 h-4 border-2 border-current border-t-transparent rounded-full mr-2"
+                              className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
                             />
-                            Starting...
                           </>
                         ) : (
-                          <>
-                            <Play className="mr-2 h-2 w-2" />
-                            Start Conversation
-                          </>
+                          <Play className="h-4 w-4" />
                         )}
-                      </Button>
+                      </div>
                     </motion.div>
                   </div>
                 </motion.div>
