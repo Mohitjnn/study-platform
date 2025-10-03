@@ -38,7 +38,6 @@ export default function PaymentHistorySection() {
       setLoading(true);
       try {
         const res = await paymentHistory({ page, per_page: perPage });
-        console.log("Payment history response:", res);
         setItems(res?.items || []);
         setHasMore(res?.items?.length === perPage);
       } finally {

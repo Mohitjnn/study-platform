@@ -48,7 +48,6 @@ export default async function ProfilePage() {
   }
 
   const payment = await createPaymentIntent({ tokens: "MINS_200" });
-  console.log("Payment Intent:", payment);
 
   return (
     <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">

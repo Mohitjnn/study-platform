@@ -16,6 +16,43 @@ function PaymentForm() {
   const [selectedMinutes, setSelectedMinutes] = useState("mins_100");
   const [loading, setLoading] = useState(false);
 
+  const minuteOptions = [
+    {
+      value: "mins_100",
+      label: "100 Minutes",
+      price: 1199,
+      text: [
+        "Great for quick homework help and daily reading.",
+        "Encourages curiosity and learning new things.",
+        "Perfect for children who need a little extra support after school.",
+      ],
+    },
+    {
+      value: "mins_200",
+      label: "200 Minutes",
+      price: 1999,
+      text: [
+        "Ideal for building strong study habits and routines.",
+        "Supports regular learning and positive progress.",
+        "Helps children feel confident in their schoolwork.",
+      ],
+    },
+    {
+      value: "mins_300",
+      label: "300 Minutes",
+      price: 2999,
+      text: [
+        "Best for ongoing support and deeper understanding.",
+        "Encourages children to explore and ask questions.",
+        "Great for kids who love to learn and grow every day.",
+      ],
+    },
+  ];
+
+  const selectedOption = minuteOptions.find(
+    (opt) => opt.value === selectedMinutes
+  );
+
   async function handlePayment() {
     setLoading(true);
     try {
@@ -37,17 +74,37 @@ function PaymentForm() {
           <SelectValue placeholder="Select minutes" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="mins_100">100 Minutes</SelectItem>
-          <SelectItem value="mins_200">200 Minutes</SelectItem>
-          <SelectItem value="mins_300">300 Minutes</SelectItem>
+          {minuteOptions.map((opt) => (
+            <SelectItem key={opt.value} value={opt.value}>
+              {opt.label} &mdash; ₹{opt.price}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
+
+      {/* Show price and dummy text as bullet points */}
+      {selectedOption && (
+        <>
+          <div className="font-semibold text-lg mb-1 text-white text-left">
+            ₹{selectedOption.price} for {selectedOption.label}
+          </div>
+          <ul className="list-disc pl-6 text-white/80 text-sm mb-2">
+            {Array.isArray(selectedOption.text)
+              ? selectedOption.text.map((point, idx) => (
+                  <li key={idx}>{point}</li>
+                ))
+              : <li>{selectedOption.text}</li>
+            }
+          </ul>
+        </>
+      )}
+
       <Button
         className="w-full mt-4"
         onClick={handlePayment}
         disabled={loading}
       >
-        {loading ? "Redirecting..." : "Proceed to Payment"}
+        {loading ? "Redirecting..." : `Proceed to Payment`}
       </Button>
     </div>
   );
