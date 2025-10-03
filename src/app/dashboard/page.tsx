@@ -38,21 +38,13 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="bg-[#010532] text-foreground dark relative pt-5 w-full">
+    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark pt-5">
       {/* <Navbar title="Dashboard" showProfile={true} /> */}
 
-      <div className="absolute inset-0 flex justify-start items-start mt-24 -translate-x-20 right-0 ">
-        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      </div>
+      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
 
-      <div className="absolute inset-0 flex justify-end items-center mt-24 -translate-x-20 right-0 ">
-        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      </div>
-
-      <div className="absolute inset-0 flex justify-end ml-36 items-end mt-24 -translate-x-20 right-0 ">
-        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      </div>
-      <main className="w-full p-4 sm:p-6 lg:p-8">
+      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+      <main className="relative w-full p-4 sm:p-6 lg:p-8">
         {/* Welcome Section */}
         <div className=" w-full flex items-center justify-between">
           <div className="w-1/2 flex gap-3 items-center">
@@ -151,9 +143,11 @@ export default async function DashboardPage() {
         )}
 
         {/* Weekly Progress */}
-        <div className="mb-8 bg-card border-border p-4 rounded-2xl">
+        <div className="mb-8 border-border p-4 rounded-2xl">
           <ScreenTimeChart
             dailyMinutes={screenTimeStats.dailyMinutes}
+            dailyPoints={screenTimeStats.dailyPoints} // 👈 pass per-day points
+            dayLabels={screenTimeStats.dayLabels}
             weeklyAverage={screenTimeStats.weeklyAverage}
             weeklyChange={screenTimeStats.weeklyChange}
             lastUpdated={screenTimeStats.lastUpdated}

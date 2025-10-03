@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
   ReferenceLine,
+  LabelList,
 } from "recharts";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
@@ -57,6 +58,8 @@ const screenTimeConfig = {
 
 interface ScreenTimeChartProps {
   dailyMinutes: number[]; // Array of 7 numbers for Sunday to Saturday
+  dailyPoints: number[];
+  dayLabels: string[];
   weeklyAverage: number;
   weeklyChange: number; // Percentage change from last week
   lastUpdated: string; // e.g., "Updated today at 7:20 PM"
@@ -64,17 +67,19 @@ interface ScreenTimeChartProps {
 
 export default function ScreenTimeChart({
   dailyMinutes,
+  dailyPoints,
+  dayLabels,
   weeklyAverage,
   weeklyChange,
   lastUpdated,
 }: ScreenTimeChartProps) {
-  // Create chart data by mapping props to hardcoded structure
   const chartData = React.useMemo(() => {
-    return dayLabels.map((dayInfo, index) => ({
-      ...dayInfo,
+    return dayLabels.map((label, index) => ({
+      day: label,
       minutes: dailyMinutes[index] || 0,
+      points: dailyPoints[index] || 0,
     }));
-  }, [dailyMinutes]);
+  }, [dayLabels, dailyMinutes, dailyPoints]);
 
   const formatTime = (minutes: number) => {
     const h = Math.floor(minutes / 60);
@@ -89,12 +94,10 @@ export default function ScreenTimeChart({
     <div className="w-full text-white lg:rounded-2xl overflow-hidden ">
       {/* Header */}
       <div className="p-2">
-        <h2 className="text-gray-400 text-sm mb-1">
-          {screenTimeConfig.header.title}
-        </h2>
+        <h2 className="text-gray-400 text-sm mb-1">Daily Average</h2>
         <div className="flex items-center justify-between gap-3">
           <span className="text-xl lg:text-4xl font-light">
-            {formatTime(weeklyAverage)}
+            {Math.floor(weeklyAverage / 60)}h {weeklyAverage % 60}m
           </span>
           <div className="flex items-center gap-1 text-gray-400">
             <span className="text-lg">{weeklyChange >= 0 ? "↗" : "↘"}</span>
@@ -110,67 +113,58 @@ export default function ScreenTimeChart({
         config={chartConfig}
         className="h-[200px] w-[110%] sm:w-full -ml-6 lg:-ml-2"
       >
-        <BarChart data={chartData}>
-          <CartesianGrid
-            vertical={false}
-            horizontal={true}
-            strokeDasharray="none"
-            stroke="#374151"
-            opacity={0.3}
-          />
+        <BarChart data={chartData} margin={{ top: 30 }}>
+          <CartesianGrid vertical={false} stroke="#374151" opacity={0.3} />
+
           <XAxis
             dataKey="day"
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tick={{
-              fill: screenTimeConfig.axis.tickColor,
-              fontSize: screenTimeConfig.axis.fontSize,
-            }}
+            tick={{ fill: "#9ca3af", fontSize: 12 }}
           />
+
           <YAxis
-            tickLine={false}
-            axisLine={false}
-            domain={[0, 120]}
-            ticks={[0, 30, 60, 90, 120]}
-            tick={{
-              fill: screenTimeConfig.axis.tickColor,
-              fontSize: screenTimeConfig.axis.fontSize,
-            }}
-            tickFormatter={(value) => `${value}m`}
+            tickFormatter={(v) => `${v}m`}
+            domain={[0, "auto"]}
+            tick={{ fill: "#9ca3af", fontSize: 12 }}
           />
-          {/* Average line */}
+
+          {/* Average line for minutes */}
           <ReferenceLine
             y={weeklyAverage}
-            stroke={screenTimeConfig.average.lineColor}
-            strokeDasharray={screenTimeConfig.average.lineStyle}
+            stroke="#00d4aa"
+            strokeDasharray="4 4"
             strokeWidth={2}
-            z={1000}
           />
-          <Bar
-            dataKey={screenTimeConfig.bar.dataKey}
-            fill={screenTimeConfig.bar.fill}
-            radius={screenTimeConfig.bar.radius}
-            maxBarSize={screenTimeConfig.bar.maxBarSize}
-            z={10}
-          />
+
+          {/* Single Bar for minutes */}
+          <Bar dataKey="minutes" fill="#00d4aa" radius={[4, 4, 0, 0]}>
+            <LabelList
+              dataKey="points"
+              position="top"
+              className="fill-amber-400 text-xs"
+              formatter={(val: number) => `${val} pts`}
+            />
+          </Bar>
         </BarChart>
       </ChartContainer>
-      {/* Average label */}
-      <div className="flex justify-end mt-2">
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <div
-            className="w-3 h-0 border-t-2 border-dashed"
-            style={{ borderColor: screenTimeConfig.average.lineColor }}
-          ></div>
-          <span>{screenTimeConfig.average.label}</span>
+
+      {/* Legend */}
+      <div className="flex justify-end mt-2 gap-4 text-xs text-gray-400">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-[#00d4aa] rounded-sm"></div>
+          <span>Screen Time</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-[#f59e0b] rounded-sm"></div>
+          <span>Curiosity Points</span>
         </div>
       </div>
+
       {/* Updated time */}
-      <div className="px-6 pb-4">
-        <p className={`${screenTimeConfig.updated.color} text-sm`}>
-          {lastUpdated}
-        </p>
+      <div className="pb-4 mt-4">
+        <p className="text-gray-500 text-sm">{lastUpdated}</p>
       </div>
     </div>
   );
