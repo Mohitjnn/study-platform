@@ -25,19 +25,17 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
   };
 
   return (
-    <>
-      {/*  */}
-
+    <div className="flex flex-col">
       <div
-        className="w-full py-4 px-7 border border-white/20 bg-white/10 rounded-lg my-3 flex justify-between items-center cursor-pointer"
         onClick={handleClick}
-      >
-        <h1 className="font-semibold">{name}</h1>
-        <div className="h-6 w-6 p-1 flex justify-center items-center bg-white/10 rounded-full border border-white/20">
-          <ChevronRight />
-        </div>
+        className="w-28 h-28 rounded-2xl bg-cover bg-center bg-[url('/images/electricity.jpg')] cursor-pointer"
+      ></div>
+
+      <div className="w-full flex justify-between items-center mt-2">
+        <h1>{name}</h1>
+        <ChevronRight />
       </div>
-    </>
+    </div>
   );
 };
 
