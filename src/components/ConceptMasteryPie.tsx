@@ -1,4 +1,5 @@
 "use client";
+import TransitionVertical from "@/animations/TransitionVertical";
 import React, { useState } from "react";
 import { PieChart, Pie, Sector, Cell, SectorProps } from "recharts";
 
@@ -91,7 +92,9 @@ export default function ConceptMasteryPie() {
 
   return (
     <div className="w-full border border-white/20 rounded-lg flex flex-col justify-center items-center mt-7 py-4">
-      <h1 className="font-light text-lg mb-2">Concept Mastery</h1>
+      <TransitionVertical>
+        <h1 className="font-light text-lg mb-2">Concept Mastery</h1>
+      </TransitionVertical>
 
       <div className="bg-gradient-to-b from-[#DF9AEE]/20 to-[#DF9AEE]/10 rounded-full">
         <PieChart width={200} height={200}>

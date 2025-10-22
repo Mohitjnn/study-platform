@@ -1,4 +1,5 @@
 "use client";
+import TransitionVertical from "@/animations/TransitionVertical";
 import React from "react";
 import {
   BarChart,
@@ -43,7 +44,9 @@ const CustomTooltip = ({
 const ConceptMasteryChart = () => {
   return (
     <div className="w-full border border-white/20 rounded-lg py-4 mt-7">
-      <h1 className="text-lg font-light mb-4 text-center">Concept Mastery</h1>
+      <TransitionVertical>
+        <h1 className="text-lg font-light mb-4 text-center">Concept Mastery</h1>
+      </TransitionVertical>
 
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">

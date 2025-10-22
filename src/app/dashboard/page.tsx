@@ -18,6 +18,9 @@ import CuriosityChart from "@/components/CuriosityChart";
 import ConceptMasteryChart from "@/components/ConceptMasteryChart";
 import ActiveTimeCharts from "@/components/ActiveTimeCharts";
 import ConceptMasteryPie from "@/components/ConceptMasteryPie";
+import ConsistencyChart from "@/components/ConsistencyChart";
+import TransitionHorizontal from "@/animations/TransitionHorizontal";
+import { SlotMachineCounter } from "@/animations/SlotMachineCounter";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -54,7 +57,7 @@ export default async function DashboardPage() {
           <div className="w-1/2 flex gap-3 items-center">
             <CategoryButton />
             <MobileMenu />
-            <div>
+            <TransitionHorizontal>
               <h1 className="text-xl sm:text-3xl font-medium text-foreground">
                 Hi,{" "}
                 {typeof user?.full_name === "string" && user.full_name
@@ -63,7 +66,7 @@ export default async function DashboardPage() {
                 !
               </h1>
               <p className="text-muted-foreground text-sm">Good Morning</p>
-            </div>
+            </TransitionHorizontal>
           </div>
         </div>
 
@@ -76,9 +79,13 @@ export default async function DashboardPage() {
                   <img src="images/topic.png" alt="img" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold">
+                  {/* <h1 className="text-2xl font-bold">
                     {overallStats.totalCourses}
-                  </h1>
+                  </h1> */}
+
+                  <SlotMachineCounter targetValue={overallStats.totalCourses}>
+                    <h1 className="text-2xl font-bold" />
+                  </SlotMachineCounter>
                   <h1 className="text-sm font-extralight">Topics Completed</h1>
                 </div>
               </div>
@@ -90,9 +97,12 @@ export default async function DashboardPage() {
                   <img src="images/hours.png" alt="img" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold">
-                    {overallStats.completedCourses}
-                  </h1>
+                  <SlotMachineCounter
+                    targetValue={overallStats.completedCourses}
+                  >
+                    <h1 className="text-2xl font-bold" />
+                  </SlotMachineCounter>
+
                   <h1 className="text-sm font-light">Hours Spend</h1>
                 </div>
               </div>
@@ -106,9 +116,10 @@ export default async function DashboardPage() {
                   <img src="images/streak.png" alt="img" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold">
-                    {overallStats.minutesStudied}
-                  </h1>
+                  <SlotMachineCounter targetValue={overallStats.minutesStudied}>
+                    <h1 className="text-2xl font-bold" />
+                  </SlotMachineCounter>
+
                   <h1 className="text-sm font-light">Streaks</h1>
                 </div>
               </div>
@@ -120,9 +131,10 @@ export default async function DashboardPage() {
                   <img src="images/topic.png" alt="img" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold">
-                    {overallStats.currentStreak}
-                  </h1>
+                  <SlotMachineCounter targetValue={overallStats.currentStreak}>
+                    <h1 className="text-2xl font-bold" />
+                  </SlotMachineCounter>
+
                   <h1 className="text-sm font-light">Curiosity Level</h1>
                 </div>
               </div>
@@ -142,7 +154,9 @@ export default async function DashboardPage() {
         >
           <div className="flex items-center gap-2">
             <img src="/images/Bot.png" alt="img" className="h-10" />
-            <h1 className="font-light">Ask me anything</h1>
+            <TransitionHorizontal>
+              <h1 className="font-light">Ask me anything</h1>
+            </TransitionHorizontal>
           </div>
           <div className="h-8 w-8 p-1 flex justify-center items-center bg-white/10 rounded-full border border-white/20">
             <ChevronRight />
@@ -169,17 +183,19 @@ export default async function DashboardPage() {
         <h1 className="text-2xl lg:text-5xl mt-12 font-medium lg:text-left mb-5">
           Subject and Topic
         </h1>
-        <div className="w-full flex gap-5 overflow-auto scrollbar-hide">
-          {subjects.map((subject, index) => (
-            <SubjectCard
-              key={subject.name}
-              name={subject.name}
-              progress={subject.progress}
-              subtitle={subject.subtitle}
-              index={index}
-            />
-          ))}
-        </div>
+        <TransitionHorizontal>
+          <div className="w-full flex gap-5 overflow-auto scrollbar-hide">
+            {subjects.map((subject, index) => (
+              <SubjectCard
+                key={subject.name}
+                name={subject.name}
+                progress={subject.progress}
+                subtitle={subject.subtitle}
+                index={index}
+              />
+            ))}
+          </div>
+        </TransitionHorizontal>
 
         <div className="w-full flex justify-center mt-5">
           <div className="flex gap-2 items-center px-6 py-2 bg-white/20 rounded-xl border-2 border-white/30">
@@ -196,6 +212,7 @@ export default async function DashboardPage() {
           <CuriosityChart />
           <ConceptMasteryChart />
           <ActiveTimeCharts />
+          <ConsistencyChart />
 
           <ConceptMasteryPie />
         </div>

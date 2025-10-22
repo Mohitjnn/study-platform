@@ -1,4 +1,5 @@
 "use client";
+import TransitionVertical from "@/animations/TransitionVertical";
 import * as React from "react";
 import {
   AreaChart,
@@ -21,7 +22,11 @@ const CuriosityChart = () => {
   return (
     <div className="w-full border border-white/20 rounded-lg mt-7">
       <div className="pt-2">
-        <h1 className="text-lg font-light my-2 text-center">Curiosity Index</h1>
+        <TransitionVertical>
+          <h1 className="text-lg font-light my-2 text-center">
+            Curiosity Index
+          </h1>
+        </TransitionVertical>
       </div>
 
       <div className="h-48 px-4 pb-4">
