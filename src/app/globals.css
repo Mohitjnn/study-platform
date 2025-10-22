@@ -157,3 +157,7 @@ input:-webkit-autofill:active {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.recharts-pie * {
+  outline: none !important;
+}

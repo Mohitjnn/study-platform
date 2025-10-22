@@ -14,6 +14,10 @@ import { getSubjectsWithMetadata } from "@/actions/subjects";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
 import CategoryButton from "@/components/CategoryButton";
 import MobileMenu from "@/components/MobileMenu";
+import CuriosityChart from "@/components/CuriosityChart";
+import ConceptMasteryChart from "@/components/ConceptMasteryChart";
+import ActiveTimeCharts from "@/components/ActiveTimeCharts";
+import ConceptMasteryPie from "@/components/ConceptMasteryPie";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -183,6 +187,17 @@ export default async function DashboardPage() {
 
             <ChevronRight size={16} />
           </div>
+        </div>
+
+        <div className="mt-12">
+          <h1 className="text-2xl">Congratulations!🎉</h1>
+          <p className="text-muted-foreground">You are a Thinker</p>
+
+          <CuriosityChart />
+          <ConceptMasteryChart />
+          <ActiveTimeCharts />
+
+          <ConceptMasteryPie />
         </div>
 
         {/* Weekly Progress */}
