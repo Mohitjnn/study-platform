@@ -21,6 +21,7 @@ import ConceptMasteryPie from "@/components/ConceptMasteryPie";
 import ConsistencyChart from "@/components/ConsistencyChart";
 import TransitionHorizontal from "@/animations/TransitionHorizontal";
 import { SlotMachineCounter } from "@/animations/SlotMachineCounter";
+import FollowUpChart from "@/components/FollowUpChart";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -213,8 +214,8 @@ export default async function DashboardPage() {
           <ConceptMasteryChart />
           <ActiveTimeCharts />
           <ConsistencyChart />
-
           <ConceptMasteryPie />
+          <FollowUpChart />
         </div>
 
         {/* Weekly Progress */}
