@@ -1,16 +1,21 @@
 "use client";
 import TransitionVertical from "@/animations/TransitionVertical";
 import React from "react";
+import type { ConsistencyCalendarResponse } from "@/actions/consistency";
 
-const ConsistencyChart: React.FC = () => {
-  const year = 2025;
-  const month = 8;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+type ConsistencyChartProps = {
+  data: ConsistencyCalendarResponse;
+};
 
-  // Generate day data (simulate work intensity)
-  const days = Array.from({ length: daysInMonth }, (_, i) => ({
-    date: new Date(year, month, i + 1),
-    value: Math.floor(Math.random() * 10),
+const ConsistencyChart: React.FC<ConsistencyChartProps> = ({ data }) => {
+  const monthBreakdown = data.months_breakdown[0];
+  const year = monthBreakdown?.year ?? new Date().getFullYear();
+  const month = monthBreakdown?.month ? monthBreakdown.month - 1 : new Date().getMonth();
+  
+  // Use actual API data instead of random values
+  const days = data.days.map((day) => ({
+    date: new Date(day.date),
+    value: day.lecture_count,
   }));
 
   const firstDay = new Date(year, month, 1).getDay();
@@ -33,8 +38,11 @@ const ConsistencyChart: React.FC = () => {
     weeks.push(currentWeek);
   }
 
-  const getOpacity = (value: number) =>
-    value === 0 ? 0.1 : 0.2 + value * 0.08;
+  const getOpacity = (value: number) => {
+    if (value === 0) return 0.1;
+    const maxValue = data.summary.daily_max || 10;
+    return 0.2 + (value / maxValue) * 0.8;
+  };
 
   const weekdays = ["M", "T", "W", "Th", "F", "Sa", "S"];
 
@@ -45,7 +53,7 @@ const ConsistencyChart: React.FC = () => {
       </TransitionVertical>
 
       <h1 className="text-[#DF9AEE] text-xs font-extralight mb-3">
-        August 2025
+        {monthBreakdown?.label ?? "Current Month"}
       </h1>
 
       {/* Weekday header */}
@@ -132,7 +140,13 @@ const ConsistencyChart: React.FC = () => {
       <div className="flex gap-3">
         <div className="w-7 h-3 bg-[#DF9AEE]"></div>
         <h1 className="text-[10px] font-extralight text-[#DF9AEE]">
-          Your longest streak was 14 days in September — try breaking it!
+          {data.summary.streaks.longest.length > 0
+            ? `Your longest streak was ${data.summary.streaks.longest.length} days ${
+                data.summary.streaks.longest.start_date
+                  ? `starting ${new Date(data.summary.streaks.longest.start_date).toLocaleDateString('en-US', { month: 'long' })}`
+                  : ""
+              } — try breaking it!`
+            : "Start your learning streak today!"}
         </h1>
       </div>
     </div>

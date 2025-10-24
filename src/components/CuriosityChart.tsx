@@ -1,4 +1,5 @@
 "use client";
+import { CuriosityChartData } from "@/actions/curiosity";
 import TransitionVertical from "@/animations/TransitionVertical";
 import * as React from "react";
 import {
@@ -18,7 +19,7 @@ const data = [
   { name: "04 week", uv: 60 },
 ];
 
-const CuriosityChart = () => {
+const CuriosityChart = ({ data }: {data:CuriosityChartData[]}) => {
   return (
     <div className="w-full border border-white/20 rounded-lg mt-7">
       <div className="pt-2">

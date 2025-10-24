@@ -22,6 +22,11 @@ import ConsistencyChart from "@/components/ConsistencyChart";
 import TransitionHorizontal from "@/animations/TransitionHorizontal";
 import { SlotMachineCounter } from "@/animations/SlotMachineCounter";
 import FollowUpChart from "@/components/FollowUpChart";
+import { getCuriosityIndex } from "@/actions/curiosity";
+import { getConsistencyCalendar } from "@/actions/consistency";
+import { getSubjectMastery } from "@/actions/mastery";
+import { getWeeklyTime } from "@/actions/weeklyTime";
+import { getTopRepeatedTopics } from "@/actions/followUp";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -29,6 +34,11 @@ export default async function DashboardPage() {
   const subjects = await getSubjectsWithMetadata();
   const screenTimeStats = await getWeeklyScreenTimeStats();
   const overallStats = await getOverAllStats();
+  const curiosityData = await getCuriosityIndex(4);
+  const consistencyData = await getConsistencyCalendar("month");
+  const masteryData = await getSubjectMastery();
+  const weeklyTimeData = await getWeeklyTime(5);
+  const followUpData = await getTopRepeatedTopics(5);
   // If not authenticated or should redirect, redirect to login
   if (!result.success || result.shouldRedirect) {
     redirect("/login");
@@ -210,12 +220,13 @@ export default async function DashboardPage() {
           <h1 className="text-2xl">Congratulations!🎉</h1>
           <p className="text-muted-foreground">You are a Thinker</p>
 
-          <CuriosityChart />
-          <ConceptMasteryChart />
-          <ActiveTimeCharts />
-          <ConsistencyChart />
-          <ConceptMasteryPie />
-          <FollowUpChart />
+          <CuriosityChart data={curiosityData} />
+          <ConceptMasteryPie data={masteryData} />
+          {/* <ConceptMasteryChart /> */}
+          <ActiveTimeCharts data={weeklyTimeData} />
+          <ConsistencyChart data={consistencyData} />
+
+          <FollowUpChart data={followUpData} />
         </div>
 
         {/* Weekly Progress */}

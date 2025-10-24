@@ -1,6 +1,6 @@
 "use client";
 import TransitionVertical from "@/animations/TransitionVertical";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -11,37 +11,67 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import type { WeeklyTimeResponse } from "@/actions/weeklyTime";
 
-// Sample data for June
-const data = [
-  { date: "Jun 1", practice: 50, assessment: 40, creative: 30, movingAvg: 45 },
-  { date: "Jun 6", practice: 70, assessment: 60, creative: 50, movingAvg: 55 },
-  { date: "Jun 12", practice: 90, assessment: 70, creative: 60, movingAvg: 70 },
-  { date: "Jun 18", practice: 80, assessment: 75, creative: 65, movingAvg: 72 },
-  {
-    date: "Jun 22",
-    practice: 100,
-    assessment: 85,
-    creative: 80,
-    movingAvg: 80,
-  },
-  {
-    date: "Jun 26",
-    practice: 110,
-    assessment: 95,
-    creative: 90,
-    movingAvg: 90,
-  },
-  {
-    date: "Jun 30",
-    practice: 120,
-    assessment: 100,
-    creative: 95,
-    movingAvg: 95,
-  },
-];
+// Color mapping for subjects
+const SUBJECT_COLORS: Record<string, string> = {
+  English: "#FBE38E",
+  Mathematics: "#FF41AA",
+  Science: "#462CF4",
+  "Social Science": "#4EE6FF",
+  "Open-ended": "#7CFF6B",
+};
 
-const ActiveTimeCharts = () => {
+type ActiveTimeChartsProps = {
+  data: WeeklyTimeResponse;
+};
+
+const ActiveTimeCharts: React.FC<ActiveTimeChartsProps> = ({ data }) => {
+  // Transform API data to chart format
+  const chartData = useMemo(() => {
+    return data.weeks
+      .slice()
+      .reverse() // Reverse to show oldest to newest
+      .map((week) => {
+        const weekLabel = new Date(week.week_start).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+        
+        // Create data point with all subjects and moving average
+        const dataPoint: Record<string, number | string> = {
+          date: weekLabel,
+          movingAvg: week.average_minutes,
+        };
+
+        // Add each subject's time
+        data.all_subjects.forEach((subject) => {
+          dataPoint[subject] = week.subjects[subject] || 0;
+        });
+
+        return dataPoint;
+      });
+  }, [data]);
+
+  // Calculate max value for Y axis
+  const maxValue = useMemo(() => {
+    let max = 0;
+    data.weeks.forEach((week) => {
+      Object.values(week.subjects).forEach((value) => {
+        if (value > max) max = value;
+      });
+    });
+    return Math.ceil(max / 30) * 30; // Round up to nearest 30
+  }, [data]);
+
+  const yAxisTicks = useMemo(() => {
+    const ticks = [];
+    const step = Math.max(30, Math.ceil(maxValue / 5 / 10) * 10);
+    for (let i = 0; i <= maxValue; i += step) {
+      ticks.push(i);
+    }
+    return ticks;
+  }, [maxValue]);
   return (
     <div className="w-full h-full border border-white/20 rounded-lg py-4 mt-7">
       <TransitionVertical>
@@ -51,7 +81,7 @@ const ActiveTimeCharts = () => {
       <div className="h-48 px-4">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={data}
+            data={chartData}
             margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
           >
             <CartesianGrid
@@ -67,7 +97,7 @@ const ActiveTimeCharts = () => {
               axisLine={{ stroke: "#555" }}
               tickLine={false}
               label={{
-                value: "Days",
+                value: "Week Start",
                 position: "insideBottom",
                 offset: 0,
                 fill: "#DF9AEE",
@@ -80,7 +110,8 @@ const ActiveTimeCharts = () => {
               tick={{ fill: "#DF9AEE", fontSize: 10 }}
               axisLine={{ stroke: "#555" }}
               tickLine={false}
-              ticks={[0, 30, 60, 90, 120, 150]}
+              ticks={yAxisTicks}
+              domain={[0, maxValue]}
               label={{
                 value: "Minutes Active",
                 dy: 30,
@@ -98,25 +129,11 @@ const ActiveTimeCharts = () => {
               }}
             />
 
-            {/* Lines */}
+            {/* Line for Open-ended only */}
             <Line
               type="monotone"
-              dataKey="practice"
-              stroke="#FBE38E"
-              strokeWidth={2}
-              dot={false}
-            />
-            <Line
-              type="monotone"
-              dataKey="assessment"
-              stroke="#FF41AA"
-              strokeWidth={2}
-              dot={false}
-            />
-            <Line
-              type="monotone"
-              dataKey="creative"
-              stroke="#462CF4"
+              dataKey="Open-ended"
+              stroke={SUBJECT_COLORS["Open-ended"] || "#7CFF6B"}
               strokeWidth={2}
               dot={false}
             />

@@ -1,7 +1,8 @@
 "use client";
 import TransitionVertical from "@/animations/TransitionVertical";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { PieChart, Pie, Sector, Cell, SectorProps } from "recharts";
+import type { MasteryResponse } from "@/actions/mastery";
 
 type DataItem = {
   name: string;
@@ -9,11 +10,14 @@ type DataItem = {
   color: string;
 };
 
-const data: DataItem[] = [
-  { name: "Science", value: 20, color: "#FBE38E" },
-  { name: "Maths", value: 45, color: "#FF41AA" },
-  { name: "English", value: 15, color: "#462CF4" },
-  { name: "History", value: 20, color: "#4EE6FF" },
+// Color palette for subjects
+const SUBJECT_COLORS = [
+  "#FBE38E", // Yellow
+  "#FF41AA", // Pink
+  "#462CF4", // Purple
+  "#4EE6FF", // Cyan
+  "#7CFF6B", // Green
+  "#FF6B6B", // Red
 ];
 
 // Render active slice with center text and gradient
@@ -87,8 +91,33 @@ const renderActiveShape = (props: unknown) => {
   );
 };
 
-export default function ConceptMasteryPie() {
+type ConceptMasteryPieProps = {
+  data: MasteryResponse;
+};
+
+export default function ConceptMasteryPie({ data: apiData }: ConceptMasteryPieProps) {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+
+  // Transform API data to chart format with colors
+  const data = useMemo<DataItem[]>(() => {
+    return apiData.subjects.map((subject, index) => ({
+      name: subject.name,
+      value: subject.mastery_pct,
+      color: SUBJECT_COLORS[index % SUBJECT_COLORS.length],
+    }));
+  }, [apiData]);
+
+  // If no data, show empty state
+  if (!data.length) {
+    return (
+      <div className="w-full border border-white/20 rounded-lg flex flex-col justify-center items-center mt-7 py-4">
+        <TransitionVertical>
+          <h1 className="font-light text-lg mb-2">Concept Mastery</h1>
+        </TransitionVertical>
+        <p className="text-sm text-muted-foreground">No mastery data available</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full border border-white/20 rounded-lg flex flex-col justify-center items-center mt-7 py-4">
