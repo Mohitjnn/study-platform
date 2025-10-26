@@ -1,5 +1,6 @@
 "use server";
 import { fetchFromAPI, postDataToAPI } from "@/lib/api/client";
+import { id } from "zod/v4/locales";
 
 // Types for subject-related data
 export interface SubjectsResponse {
@@ -9,6 +10,33 @@ export interface SubjectsResponse {
 export interface ConversationResponse { 
   conversation_id: string;
   link_id: string;
+}
+
+export interface SubjectStats {
+  subject: string;
+  total_topics: number;
+  completed_topics: number;
+  completion_percentage: number;
+  progress_tag: string;
+  image_url: string;
+}
+
+export interface SubjectsStatsResponse {
+  grade_level: number;
+  subjects: SubjectStats[];
+  total_subjects: number;
+  message: string;
+}
+
+interface TopicMetaData{
+  id: string;
+  subject: string;
+  topic: string;
+  
+}
+
+interface TopicsResponse {
+  topics: string[];
 }
 
 export async function fetchTopics({subject}: {subject: string}): Promise<string[]> {
@@ -172,26 +200,6 @@ export async function fetchTopicsWithSubTopicsForSubject({subject}: {subject: st
   }
 }
 
-// Get subjects with additional metadata (for UI components)
-export async function getSubjectsWithMetadata() {
-  try {
-    const response = await fetchSubjects();
-    
-    // Map subjects to include UI metadata
-    const subjectsWithMetadata = response.subjects.map((subject, index) => ({
-      name: subject,
-      progress: 0, // Default progress - could be fetched from another endpoint
-      subtitle: getSubjectSubtitle(subject),
-      theme: getSubjectTheme(index)
-    }));
-    
-    return subjectsWithMetadata;
-  } catch (error) {
-    // Return fallback data
-    return [];
-  }
-}
-
 export async function initiateConversation({topic_id}:{topic_id:string}) {
   try {
     const response = await postDataToAPI<ConversationResponse>('/conversations/from-topic', { topic_id }, { requiresAuth: true });
@@ -201,26 +209,54 @@ export async function initiateConversation({topic_id}:{topic_id:string}) {
   }
 }
 
-// Helper function to get subject subtitle
-function getSubjectSubtitle(subject: string): string {
-  const subtitles: Record<string, string> = {
-    "Mathematics": "Algebra, Geometry, Calculus",
-    "English": "Grammar, Literature, Writing",
-    "Science": "Physics, Chemistry, Biology",
-    "Social Science": "History, Geography, Civics",
-    "Computer Science": "Programming, Algorithms, Data Structures",
-    "Physics": "Mechanics, Thermodynamics, Optics",
-    "Chemistry": "Organic, Inorganic, Physical",
-    "Biology": "Botany, Zoology, Genetics",
-    "History": "Ancient, Medieval, Modern",
-    "Geography": "Physical, Human, Environmental"
-  };
-  
-  return subtitles[subject] || "Explore and Learn";
+export async function fetchSubjectWithStats(){
+  try {
+    const response = await fetchFromAPI<SubjectsStatsResponse>('/topics/subjects/progress',{requiresAuth:true})
+    return response;
+  } catch (error) {
+    console.error("Error fetching subject stats:", error);
+    return {
+      grade_level: 0,
+      subjects: [],
+      total_subjects: 0,
+      message: 'Failed to fetch subject stats'
+    };
+  }
 }
 
-// Helper function to get subject theme
-function getSubjectTheme(index: number): string {
-  const themes = ["coral", "navy", "sunny"];
-  return themes[index % themes.length];
+export interface TopTopic {
+  id: string | null;
+  subject: string;
+  topic: string;
+  sub_topic: string | null;
+  learning_outcome: string | null;
+  image_url: string;
+  performance_tag: string;
+  session_count: number;
+  avg_accuracy: number;
+  avg_evaluation: number;
+  last_session_at: string;
+}
+
+export interface TopTopicsResponse {
+  grade_level: number;
+  topics: TopTopic[];
+  total_topics: number;
+  message: string;
+}
+
+export async function fetchTopTopics(): Promise<TopTopicsResponse> {
+  try {
+    const response = await fetchFromAPI<TopTopicsResponse>(
+      '/topics/top-5',
+      { requiresAuth: true }
+    );
+    return response;
+  } catch (error) {
+    let message = 'Unknown error';
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    throw new Error(`Failed to fetch top topics: ${message}`);
+  }
 }

@@ -1,10 +1,10 @@
 import React from "react";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
-import { getSubjectsWithMetadata } from "@/actions/subjects";
 import BackButton from "@/components/BackButton";
+import { fetchSubjectWithStats } from "@/actions/subjects";
 
 export default async function Page() {
-  const subjects = await getSubjectsWithMetadata();
+  const subjectStats = await fetchSubjectWithStats();
 
   return (
     <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark pt-5">
@@ -13,7 +13,7 @@ export default async function Page() {
       <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
 
       <main className="relative w-full p-4 sm:p-6 lg:p-8">
-        <div className="relaive flex justify-between items-center px-5">
+        <div className="relaive flex justify-between items-center">
           <div className="absolute top-3 flex">
             <BackButton />
           </div>
@@ -24,21 +24,22 @@ export default async function Page() {
         </h1>
 
         {/* Loading state */}
-        {!subjects && (
+        {!subjectStats && (
           <div className="flex justify-center items-center min-h-[400px]">
             <div className="text-muted-foreground">Loading subjects...</div>
           </div>
         )}
 
         {/* Subjects grid */}
-        {subjects && (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 p-1">
-            {subjects.map((subject, index) => (
+        {subjectStats && (
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-1">
+            {subjectStats.subjects.map((subject, index) => (
               <SubjectCard
-                key={subject.name}
-                name={subject.name}
-                progress={subject.progress}
-                subtitle={subject.subtitle}
+                key={subject.subject}
+                name={subject.subject}
+                progress={subject.completion_percentage}
+                imageUrl={subject.image_url}
+                tag={subject.progress_tag}
                 index={index}
               />
             ))}

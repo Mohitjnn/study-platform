@@ -124,6 +124,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
             key={topicData.topic}
             variants={topicSectionVariants}
             className="space-y-3"
+            id={topicData.topic}
           >
             {/* Topic Header */}
             <div className={"pl-3 border-l-6 border-grey-200"}>

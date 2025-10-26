@@ -10,7 +10,7 @@ import {
   getOverAllStats,
   getWeeklyScreenTimeStats,
 } from "@/actions/screenTime";
-import { getSubjectsWithMetadata } from "@/actions/subjects";
+import {fetchTopTopics,fetchSubjectWithStats } from "@/actions/subjects";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
 import CategoryButton from "@/components/CategoryButton";
 import MobileMenu from "@/components/MobileMenu";
@@ -28,11 +28,14 @@ import { getSubjectMastery } from "@/actions/mastery";
 import { getWeeklyTime } from "@/actions/weeklyTime";
 import { getTopRepeatedTopics } from "@/actions/followUp";
 import AllSubjectRedirectButton from "@/components/AllSubjectRedirectButton";
+import TopicCard from "@/components/PersonalCards/TopicCard";
+import TopicSearch from "@/components/TopicSuggestion";
 
 export default async function DashboardPage() {
   // Get user data from API
   const result = await getUserDataFromAPI();
-  const subjects = await getSubjectsWithMetadata();
+  const topTopics = await fetchTopTopics();
+  const newSubjects = await fetchSubjectWithStats();
   const screenTimeStats = await getWeeklyScreenTimeStats();
   const overallStats = await getOverAllStats();
   const curiosityData = await getCuriosityIndex(4);
@@ -182,34 +185,19 @@ export default async function DashboardPage() {
           </div>
         </Link>
 
-        <div className="w-full py-3 px-4 border-2 border-white/20 rounded-lg mb-8 flex justify-between items-center hover:bg-white/20 transition-colors cursor-pointer">
-          <h1 className="font-extralight text-lg">
-            What are you curious about?
-          </h1>
-
-          <div className="flex items-center rounded-sm border-2 border-white/20 px-4 py-2">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="bg-transparent outline-none text-white placeholder-white/70 text-sm w-12"
-            />
-            <button className="ml-2 text-white/70 transition-colors">
-              <Search size="12" />
-            </button>
-          </div>
-        </div>
+        <TopicSearch />
 
         <h1 className="text-2xl lg:text-5xl mt-12 font-medium lg:text-left mb-5">
-          Subject and Topic
+          Recommended Topics
         </h1>
         <TransitionHorizontal>
           <div className="w-full flex gap-5 overflow-auto scrollbar-hide">
-            {subjects.map((subject, index) => (
-              <SubjectCard
-                key={subject.name}
-                name={subject.name}
-                progress={subject.progress}
-                subtitle={subject.subtitle}
+            {topTopics.topics.map((subject, index) => (
+              <TopicCard
+                key={subject.id}
+                name={subject.topic}
+                subjectName={subject.subject}
+                imageUrl={subject.image_url}
                 index={index}
               />
             ))}

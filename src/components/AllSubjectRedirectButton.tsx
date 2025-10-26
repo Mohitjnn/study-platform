@@ -13,7 +13,7 @@ const AllSubjectRedirectButton = () => {
         }}
         className="flex gap-2 items-center px-6 py-2 bg-white/20 rounded-xl border-2 border-white/30"
       >
-        <h1> View all</h1>
+        <h1> View all Subjects</h1>
 
         <ChevronRight size={16} />
       </div>

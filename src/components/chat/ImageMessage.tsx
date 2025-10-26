@@ -29,9 +29,6 @@ export const ImageMessage: React.FC<ImageMessageProps> = ({ message }) => {
               console.error('Failed to load image:', message.imageUrl);
               e.currentTarget.style.display = 'none';
             }}
-            onLoad={() => {
-              console.log('Image loaded successfully:', message.imageUrl);
-            }}
           />
           <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
             <div className="flex items-center gap-2">
