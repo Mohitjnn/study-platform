@@ -1,2 +1,1 @@
-new dashboards added with animations
-
+integrations done
