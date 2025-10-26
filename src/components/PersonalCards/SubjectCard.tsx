@@ -31,9 +31,9 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
         className="w-28 h-28 rounded-2xl bg-cover bg-center bg-[url('/images/electricity.jpg')] cursor-pointer"
       ></div>
 
-      <div className="w-full flex justify-between items-center mt-2">
+      <div className="w-full px-1 flex justify-between items-center mt-2">
         <h1>{name}</h1>
-        <ChevronRight />
+        <ChevronRight size={16} />
       </div>
     </div>
   );

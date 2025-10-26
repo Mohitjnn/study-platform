@@ -39,14 +39,17 @@ type ChartDataPoint = {
 // Custom tooltip to show minutes and subject
 const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
-    const { subject, topic, sessions, minutes } = payload[0].payload as ChartDataPoint;
+    const { subject, topic, sessions, minutes } = payload[0]
+      .payload as ChartDataPoint;
     return (
       <div className="bg-white text-black px-2 py-1 rounded text-sm shadow-md">
         <div className="font-semibold">{subject}</div>
         <div className="text-xs">{topic}</div>
         <div className="text-xs">Sessions: {sessions}</div>
         <div className="text-xs">Total: {minutes.toFixed(2)} min</div>
-        <div className="text-xs">Avg: {(minutes / sessions).toFixed(2)} min</div>
+        <div className="text-xs">
+          Avg: {(minutes / sessions).toFixed(2)} min
+        </div>
       </div>
     );
   }
@@ -153,7 +156,13 @@ const FollowUpChart: React.FC<FollowUpChartProps> = ({ data: apiData }) => {
                 const radius = Math.max(payload.minutes * 2.5, 10); // Scale by total minutes
                 return (
                   <g>
-                    <circle cx={cx} cy={cy} r={radius} fill={payload.color} opacity={0.7} />
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={radius}
+                      fill={payload.color}
+                      opacity={0.7}
+                    />
                     <text
                       x={cx}
                       y={cy}

@@ -27,6 +27,7 @@ import { getConsistencyCalendar } from "@/actions/consistency";
 import { getSubjectMastery } from "@/actions/mastery";
 import { getWeeklyTime } from "@/actions/weeklyTime";
 import { getTopRepeatedTopics } from "@/actions/followUp";
+import AllSubjectRedirectButton from "@/components/AllSubjectRedirectButton";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -163,8 +164,15 @@ export default async function DashboardPage() {
           href="/chat?mode=free-explore"
           className="w-full py-5 px-4 border-2 border-white/20 rounded-2xl mt-7 mb-5 flex justify-between items-center hover:bg-white/20 transition-colors cursor-pointer"
         >
-          <div className="flex items-center gap-2">
-            <img src="/images/Bot.png" alt="img" className="h-10" />
+          <div className="flex items-center gap-3">
+            <img
+              src="/images/Bot.png"
+              alt="img"
+              className="h-10"
+              style={{
+                filter: "drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))",
+              }}
+            />
             <TransitionHorizontal>
               <h1 className="font-light">Ask me anything</h1>
             </TransitionHorizontal>
@@ -208,25 +216,31 @@ export default async function DashboardPage() {
           </div>
         </TransitionHorizontal>
 
-        <div className="w-full flex justify-center mt-5">
-          <div className="flex gap-2 items-center px-6 py-2 bg-white/20 rounded-xl border-2 border-white/30">
-            <h1> View all</h1>
-
-            <ChevronRight size={16} />
-          </div>
-        </div>
+        <AllSubjectRedirectButton />
 
         <div className="mt-12">
           <h1 className="text-2xl">Congratulations!🎉</h1>
           <p className="text-muted-foreground">You are a Thinker</p>
 
-          <CuriosityChart data={curiosityData} />
-          <ConceptMasteryPie data={masteryData} />
-          {/* <ConceptMasteryChart /> */}
-          <ActiveTimeCharts data={weeklyTimeData} />
-          <ConsistencyChart data={consistencyData} />
+          <div className="sticky top-10 z-10 backdrop-blur-xl">
+            <CuriosityChart data={curiosityData} />
+          </div>
 
-          <FollowUpChart data={followUpData} />
+          <div className="sticky top-20 z-20 backdrop-blur-xl">
+            <ConceptMasteryPie data={masteryData} />
+          </div>
+
+          <div className="sticky top-30 z-30 backdrop-blur-xl">
+            <ActiveTimeCharts data={weeklyTimeData} />
+          </div>
+
+          <div className="sticky top-40 z-40 backdrop-blur-xl">
+            <FollowUpChart data={followUpData} />
+          </div>
+
+          <div className="sticky top-50 z-50 backdrop-blur-xl">
+            <ConsistencyChart data={consistencyData} />
+          </div>
         </div>
 
         {/* Weekly Progress */}
