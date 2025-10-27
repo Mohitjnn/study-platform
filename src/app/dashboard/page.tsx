@@ -10,7 +10,7 @@ import {
   getOverAllStats,
   getWeeklyScreenTimeStats,
 } from "@/actions/screenTime";
-import {fetchTopTopics,fetchSubjectWithStats } from "@/actions/subjects";
+import { fetchTopTopics, fetchSubjectWithStats } from "@/actions/subjects";
 import SubjectCard from "@/components/PersonalCards/SubjectCard";
 import CategoryButton from "@/components/CategoryButton";
 import MobileMenu from "@/components/MobileMenu";
@@ -171,7 +171,7 @@ export default async function DashboardPage() {
             <img
               src="/images/Bot.png"
               alt="img"
-              className="h-10"
+              className="h-10 animate-float"
               style={{
                 filter: "drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))",
               }}

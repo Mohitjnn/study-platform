@@ -51,7 +51,8 @@ interface InitiateConversationResponse {
 }
 
 export default function TopicSearch() {
-  const [searchResults, setSearchResults] = useState<TopicSearchResponse | null>(null);
+  const [searchResults, setSearchResults] =
+    useState<TopicSearchResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -103,7 +104,9 @@ export default function TopicSearch() {
   const handleSubtopicClick = async (subtopic: SubTopicData) => {
     setLoadingSubtopic(subtopic.id);
     try {
-      const conversationResponse = await initiateConversation({topic_id:subtopic.id})
+      const conversationResponse = await initiateConversation({
+        topic_id: subtopic.id,
+      });
 
       router.push(
         `/chat?conversation_id=${conversationResponse.conversation_id}&link_id=${conversationResponse.link_id}`
@@ -119,17 +122,17 @@ export default function TopicSearch() {
     <>
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerTrigger asChild>
-          <div className="w-full py-3 px-4 border-2 border-white/20 rounded-lg mb-8 flex justify-between items-center hover:bg-white/20 transition-colors cursor-pointer">
-            <h1 className="font-extralight text-lg">
+          <div className="w-full lex flex-col justify-between items-start cursor-pointer">
+            <h1 className="text-xl lg:text-5xl font-medium lg:text-left mb-3">
               What are you curious about?
             </h1>
 
-            <div className="flex items-center rounded-sm border-2 border-white/20 px-4 py-2">
+            <div className="flex items-center rounded-sm border-2 border-white/20 px-4 py-3">
               <input
                 ref={inputRef}
                 type="text"
                 placeholder="Search..."
-                className="bg-transparent outline-none text-white placeholder-white/70 text-sm w-12"
+                className="bg-transparent outline-none text-white placeholder-white/70 w-full"
                 onKeyPress={handleKeyPress}
                 onClick={(e) => e.stopPropagation()}
               />
@@ -141,13 +144,13 @@ export default function TopicSearch() {
                 }}
                 disabled={isLoading}
               >
-                <Search size={12} />
+                <Search size={20} />
               </button>
             </div>
           </div>
         </DrawerTrigger>
 
-        <DrawerContent className="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 border-white/20">
+        <DrawerContent className="bg-gradient-to-br from-[#010532]/30 to-[#DF9AEE]/20 border-white/20 backdrop-blur-2xl">
           <DrawerHeader>
             <DrawerTitle className="text-white text-2xl">
               {searchResults
@@ -182,15 +185,17 @@ export default function TopicSearch() {
                 {searchResults.results.map((result) => (
                   <div
                     key={result.id}
-                    className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 hover:bg-white/20 transition-all cursor-pointer group"
-                    onClick={() => handleSubtopicClick({
-                      id: result.id,
-                      sub_topic: result.sub_topic,
-                      learning_outcome: result.learning_outcome
-                    })}
+                    className="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all cursor-pointer group"
+                    onClick={() =>
+                      handleSubtopicClick({
+                        id: result.id,
+                        sub_topic: result.sub_topic,
+                        learning_outcome: result.learning_outcome,
+                      })
+                    }
                   >
                     <div className="flex items-center gap-4">
-                      <div className="flex-shrink-0 w-16 h-16 bg-white/10 rounded-lg overflow-hidden">
+                      <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
                         <Image
                           src={result.image_url}
                           alt={result.topic}
