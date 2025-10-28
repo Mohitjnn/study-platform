@@ -60,12 +60,16 @@ export async function getCuriosityIndex(
       return [];
     }
 
+    // Helper to get ordinal suffix
+    function getOrdinal(n: number) {
+      const s = ["th", "st", "nd", "rd"], v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
     // Map the API response to the format required by CuriosityChart.tsx
     const formattedData: CuriosityChartData[] = response.weeks.map(
       (week, index) => {
-        // Format the week name (e.g., "01 week", "02 week")
-        const weekName = `${String(index + 1).padStart(2, "0")} week`;
-
+        // Format the week name (e.g., "1st week", "2nd week")
+        const weekName = `${getOrdinal(index + 1)} week`;
         return {
           name: weekName,
           uv: week.curiosity_pct, // Mapping curiosity_pct to the 'uv' key

@@ -66,7 +66,7 @@ export default async function DashboardPage() {
       <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
 
       <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-      <main className="relative w-full p-4 sm:p-6 lg:p-8">
+      <main className="relative w-full md:max-w-3xl md:mx-auto p-4 sm:p-6 lg:p-8">
         {/* Welcome Section */}
         <div className=" w-full flex items-center justify-between">
           <div className="w-1/2 flex gap-3 items-center">
@@ -184,10 +184,8 @@ export default async function DashboardPage() {
             <ChevronRight />
           </div>
         </Link>
-
         <TopicSearch />
-
-        <h1 className="text-2xl lg:text-5xl mt-12 font-medium lg:text-left mb-5">
+        <h1 className="text-2xl lg:text-3xl font-medium lg:text-left mb-5">
           Recommended Topics
         </h1>
         <TransitionHorizontal>
@@ -207,8 +205,6 @@ export default async function DashboardPage() {
         <AllSubjectRedirectButton />
 
         <div className="mt-12">
-          <h1 className="text-2xl">Congratulations!🎉</h1>
-          <p className="text-muted-foreground">You are a Thinker</p>
 
           <div className="sticky top-10 z-10 backdrop-blur-xl">
             <CuriosityChart data={curiosityData} />

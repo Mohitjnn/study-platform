@@ -77,14 +77,6 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
       <div className="absolute inset-0 flex justify-start items-start mt-24 -translate-x-20 right-0 ">
         <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
       </div>
-
-      <div className="flex justify-center items-center">
-        <div>
-          <h1 className="text-xl">
-            {mode === 'free-explore' ? 'Free Explore Chat' : 'Speaking to AI Bot'}
-          </h1>
-        </div>
-      </div>
       <ChatInterface
         user={chatUser}
         conversationId={conversationId}

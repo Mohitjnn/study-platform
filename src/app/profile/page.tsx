@@ -6,6 +6,8 @@ import BackButton from "@/components/BackButton";
 import { createPaymentIntent } from "@/actions/paymentActions";
 import PaymentForm from "@/components/Profile/PaymentTabSection";
 import PaymentHistorySection from "@/components/Profile/PaymentHistorSection";
+import MobileMenu from "@/components/MobileMenu";
+import CategoryButton from "@/components/CategoryButton";
 
 type Survey = {
   submitted: boolean;
@@ -56,10 +58,11 @@ export default async function ProfilePage() {
       <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
       {/* <Navbar title="Profile" showProfile={true} /> */}
 
-      <main className="relative w-full mx-auto py-6 sm:px-6 lg:px-8 z-10">
+      <main className="relative w-full md:max-w-3xl mx-auto py-6 sm:px-6 lg:px-8 z-10">
         <div className="mb-4 flex justify-between items-center px-5">
           <div className="w-1/3 flex">
-            <BackButton />
+          <CategoryButton />
+            <MobileMenu />
           </div>
           <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
             Profile
@@ -81,11 +84,11 @@ export default async function ProfilePage() {
                 <div className="space-y-3">
                   {/* Full Name */}
                   <div className="mt-7">
-                    <p className="text-base text-muted-foreground mb-2">
+                    <p className="text-base text-foreground mb-2">
                       Full Name
                     </p>
-                    <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                      <p className="font-light text-white/70 text-lg">
+                    <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
+                      <p className="font-light text-white/70 text-sm">
                         {user.full_name || "N/A"}
                       </p>
                     </div>
@@ -93,24 +96,23 @@ export default async function ProfilePage() {
 
                   {/* Email */}
                   <div>
-                    <p className="text-base text-muted-foreground mb-2">
+                    <p className="text-base text-foreground mb-2">
                       Email
                     </p>
-                    <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                      <p className="font-light text-white/70 text-lg">
+                    <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
+                      <p className="font-light text-white/70 text-sm">
                         {user.email}
                       </p>
                     </div>
                   </div>
-
                   {/* Age */}
                   {user.age_years !== undefined && (
                     <div>
-                      <p className="text-base text-muted-foreground mb-2">
+                      <p className="text-base text-foreground mb-2">
                         Age
                       </p>
-                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                        <p className="font-light text-white/70 text-lg">
+                      <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
+                        <p className="font-light text-white/70 text-sm">
                           {user.age_years}
                         </p>
                       </div>
@@ -120,11 +122,11 @@ export default async function ProfilePage() {
                   {/* Grade Level */}
                   {user.grade_level !== undefined && (
                     <div>
-                      <p className="text-base text-muted-foreground mb-2">
+                      <p className="text-base text-foreground mb-2">
                         Grade Level
                       </p>
-                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                        <p className="font-light text-white/70 text-lg">
+                      <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
+                        <p className="font-light text-white/70 text-sm">
                           {user.grade_level}
                         </p>
                       </div>
@@ -134,11 +136,11 @@ export default async function ProfilePage() {
                   {/* Last Payment Method */}
                   {user.last_payment_method && (
                     <div>
-                      <p className="text-base text-muted-foreground mb-2">
+                      <p className="text-base text-foreground mb-2">
                         Last Payment Method
                       </p>
-                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                        <p className="font-light text-white/70 text-lg">
+                      <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
+                        <p className="font-light text-white/70 text-sm">
                           {user.last_payment_method}
                         </p>
                       </div>
@@ -148,11 +150,11 @@ export default async function ProfilePage() {
                   {/* Voice Minutes */}
                   {user.voice_minutes_available !== undefined && (
                     <div>
-                      <p className="text-base text-muted-foreground mb-2">
+                      <p className="text-base text-foreground mb-2">
                         Voice Minutes Available
                       </p>
-                      <div className="pl-7 text-white placeholder:text-white/60 py-3 border-2 border-white/10 rounded-xl">
-                        <p className="font-light text-white/70 text-lg">
+                      <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
+                        <p className="font-light text-white/70 text-sm">
                           {user.voice_minutes_available}
                         </p>
                       </div>
@@ -160,7 +162,7 @@ export default async function ProfilePage() {
                   )}
 
                   {/* Status */}
-                  <div className="flex items-center gap-4">
+                  {/* <div className="flex items-center gap-4">
                     <div className="h-6 w-6 flex items-center justify-center">
                       <div
                         className={`h-3 w-3 rounded-full ${
@@ -169,7 +171,7 @@ export default async function ProfilePage() {
                       ></div>
                     </div>
                     <div>
-                      <p className="text-base text-muted-foreground">Status</p>
+                      <p className="text-base text-foreground">Status</p>
                       <p
                         className={`font-semibold text-lg ${
                           user.verified ? "text-green-600" : "text-red-600"
@@ -178,7 +180,7 @@ export default async function ProfilePage() {
                         {user.verified ? "Verified" : "Unverified"}
                       </p>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* User ID */}
                   {user.user_id && (
@@ -187,7 +189,7 @@ export default async function ProfilePage() {
                         <div className="h-3 w-3 bg-blue-500 rounded-full"></div>
                       </div>
                       <div>
-                        <p className="text-base text-muted-foreground">
+                        <p className="text-base text-foreground">
                           User ID
                         </p>
                         <p className="font-semibold text-card-foreground text-lg">
@@ -204,7 +206,7 @@ export default async function ProfilePage() {
                         <div className="h-3 w-3 bg-purple-500 rounded-full"></div>
                       </div>
                       <div>
-                        <p className="text-base text-muted-foreground">
+                        <p className="text-base text-foreground">
                           Member Since
                         </p>
                         <p className="font-semibold text-card-foreground text-lg">
@@ -221,12 +223,12 @@ export default async function ProfilePage() {
                         <div className="h-3 w-3 bg-yellow-500 rounded-full"></div>
                       </div>
                       <div>
-                        <p className="text-base text-muted-foreground">
+                        <p className="text-base text-foreground">
                           Survey
                         </p>
                         <p className="font-semibold text-card-foreground text-lg">
                           {user.survey.submitted
-                            ? `Submitted (${user.survey.slug})`
+                            ? `Submitted`
                             : "Not Submitted"}
                         </p>
                       </div>
@@ -237,7 +239,7 @@ export default async function ProfilePage() {
 
               {!user && (
                 <div className="text-center">
-                  <p className="text-muted-foreground">
+                  <p className="text-foreground">
                     Unable to load profile data. Please try refreshing the page.
                   </p>
                 </div>

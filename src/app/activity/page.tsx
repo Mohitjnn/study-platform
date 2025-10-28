@@ -12,7 +12,8 @@ import {
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-
+import CategoryButton from "@/components/CategoryButton";
+import MobileMenu from "@/components/MobileMenu";
 // Helper function to render stars based on percentage
 const renderStars = (percentage: number) => {
   const stars = Math.min(3, Math.max(0, Math.round(percentage / 33.33))); // Convert 0-100 to 0-3 stars
@@ -69,7 +70,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
 
   return (
     <div className="border-2 border-white/20 rounded-lg p-4 hover:shadow-md transition-shadow">
-      <div className="flex flex-col lg:flex-row  items-start justify-between">
+      <div className="flex flex-col  items-start justify-between">
         <div className="flex items-center space-x-3 flex-1 mr-4">
           <div className="flex-1 min-w-0">
             <h3 className="text-white/60 text-lg font-light ">
@@ -246,12 +247,10 @@ const ActivityTimeline: React.FC = () => {
           >
             <div className="w-1/3 flex">
               <div
-                onClick={() => {
-                  router.back();
-                }}
                 className="p-2 rounded-full bg-white/10 border-2 border-white/10"
               >
-                <ChevronLeft />
+                          <CategoryButton />
+                            <MobileMenu />
               </div>
             </div>
             <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
@@ -291,7 +290,8 @@ const ActivityTimeline: React.FC = () => {
                 }}
                 className="p-2 rounded-full bg-white/10 border-2 border-white/10"
               >
-                <ChevronLeft />
+                <CategoryButton/>
+                <MobileMenu />
               </div>
             </div>
             <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
@@ -321,17 +321,12 @@ const ActivityTimeline: React.FC = () => {
       <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
 
       <div className="relative z-10 pt-5">
-        <div className="w-full px-6 py-5">
+        <div className="w-full px-6 py-5 md:max-w-3xl mx-auto">
           <div className="mb-12 flex justify-between items-center">
             <div className="w-1/3 flex">
-              <div
-                onClick={() => {
-                  router.back();
-                }}
-                className="p-2 rounded-full bg-white/10 border-2 border-white/10"
-              >
-                <ChevronLeft />
-              </div>
+
+                <CategoryButton/>
+                <MobileMenu />
             </div>
             <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
               Timeline

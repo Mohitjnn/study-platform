@@ -14,7 +14,7 @@ type DataItem = {
 const SUBJECT_COLORS = [
   "#FBE38E", // Yellow
   "#FF41AA", // Pink
-  "#462CF4", // Purple
+  "#e6e3ffff", // Purple
   "#4EE6FF", // Cyan
   "#7CFF6B", // Green
   "#FF6B6B", // Red
@@ -38,6 +38,23 @@ const renderActiveShape = (props: unknown) => {
   };
 
   const displayPercent = (percent * 100).toFixed(0);
+
+  // --- 2. START: ARROW POSITION CALCULATION ---
+  const RADIAN = Math.PI / 180;
+  const midAngle = (startAngle + endAngle) / 2;
+  // Position the arrow 30px outside the main pie radius
+  const arrowRadius = outerRadius + 30;
+  // Calculate X and Y position
+  const x = cx + arrowRadius * Math.sin(midAngle * RADIAN);
+  // Y is inverted (negative) because 0 is at the top in this SVG coord system
+  const y = cy - arrowRadius * Math.cos(midAngle * RADIAN);
+  // Place the pointer inside the pie, at the midpoint between inner and outer radius
+  const pointerRadius = innerRadius + (outerRadius - innerRadius) / 2;
+  const pointerX = cx + pointerRadius * Math.sin(midAngle * RADIAN);
+  const pointerY = cy - pointerRadius * Math.cos(midAngle * RADIAN);
+  // Calculate rotation angle for the pointer (so it points outward)
+  const pointerAngle = midAngle;
+  // --- END: ARROW POSITION CALCULATION ---
 
   return (
     <g>
@@ -73,16 +90,11 @@ const renderActiveShape = (props: unknown) => {
 
       {/* Center circle gradient */}
       <circle cx={cx} cy={cy} r={64} fill="url(#centerGradient)" />
-
-      {/* Center text */}
-      <text x={cx} y={cy - 12} textAnchor="middle" fill="#DF9AEE" fontSize={10}>
-        You are spending
-      </text>
-      <text x={cx} y={cy} textAnchor="middle" fill="#DF9AEE" fontSize={10}>
+      <text x={cx} y={cy} textAnchor="middle" fill="#DF9AEE" fontSize={32}>
         {displayPercent}%
       </text>
       <text x={cx} y={cy + 12} textAnchor="middle" fill="#DF9AEE" fontSize={10}>
-        of your learning time on
+     learning time on
       </text>
       <text x={cx} y={cy + 24} textAnchor="middle" fill="#DF9AEE" fontSize={10}>
         {payload?.name}
@@ -95,7 +107,9 @@ type ConceptMasteryPieProps = {
   data: MasteryResponse;
 };
 
-export default function ConceptMasteryPie({ data: apiData }: ConceptMasteryPieProps) {
+export default function ConceptMasteryPie({
+  data: apiData,
+}: ConceptMasteryPieProps) {
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   // Transform API data to chart format with colors
@@ -148,14 +162,14 @@ export default function ConceptMasteryPie({ data: apiData }: ConceptMasteryPiePr
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-2 gap-4 mt-4 w-44">
+      <div className="grid grid-cols-2 gap-4 mt-4 w-full mx-auto px-8">
         {data.map((entry) => (
-          <div key={entry.name} className="flex items-center gap-2">
+          <div key={entry.name} className="flex items-center gap-2 w-full">
             <div
-              className="w-3 h-3 rounded-full"
+              className="w-3 h-3 rounded-full z-30"
               style={{ backgroundColor: entry.color }}
             />
-            <span className="text-sm text-white">{entry.name}</span>
+            <span className="text-xs text-white">{entry.name}</span>
           </div>
         ))}
       </div>

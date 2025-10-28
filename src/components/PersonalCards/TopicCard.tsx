@@ -18,7 +18,7 @@ const TopicCard: React.FC<TopicCardProps> = ({
   return (
     <Link className="flex flex-col" href={`/subjects/${subjectName}/#${name}`}>
       <div
-        className="w-32 h-32 rounded-2xl bg-cover bg-center cursor-pointer relative overflow-hidden"
+        className="w-[52vw] md:w-[15vw] aspect-square rounded-2xl bg-cover bg-center cursor-pointer relative overflow-hidden"
         style={{
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}

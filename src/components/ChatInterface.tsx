@@ -11,6 +11,9 @@ import { useAudioManagement } from "@/lib/hooks/useAudioManagement";
 import { useImagePolling } from "@/lib/hooks/useImagePolling";
 import { useConversationHandler } from "@/lib/hooks/useConversationHandler";
 import ConversationLoading from "./ConversationLoading";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { motion } from "framer-motion"; // <-- Import motion
+
 interface Message {
   id: string;
   content: string;
@@ -52,9 +55,10 @@ export default function ChatInterface({
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: mode === 'free-explore' 
-        ? "Welcome to Free Explore! Ask me anything and let's have an open conversation." 
-        : "Hello! I'm your AI assistant. How can I help you today?",
+      content:
+        mode === "free-explore"
+          ? "Welcome to Free Explore! Ask me anything and let's have an open conversation."
+          : "Hello! I'm your AI assistant. How can I help you today?",
       role: "assistant",
       timestamp: new Date(),
       type: "text",
@@ -96,12 +100,13 @@ export default function ChatInterface({
   });
 
   // Choose the appropriate connection based on mode
-  const activeConnection = mode === 'free-explore' ? freeExploreConnection : webrtcConnection;
+  const activeConnection =
+    mode === "free-explore" ? freeExploreConnection : webrtcConnection;
 
   // Auto-start session when conversationId is provided or in free explore mode
   useEffect(() => {
     const autoStartSession = async () => {
-      if (mode === 'free-explore') {
+      if (mode === "free-explore") {
         // For free explore mode, start immediately
         if (
           !activeConnection.isConnected &&
@@ -114,10 +119,10 @@ export default function ChatInterface({
           try {
             // Setup microphone first
             const micStream = await audioManagement.setupMicrophone();
-            
+
             // Start WebRTC session with mic stream
             await activeConnection.startSession(micStream);
-            
+
             // Setup audio analysis after connection
             audioManagement.setupAudioAnalysis(activeConnection.isConnected);
           } catch (error) {
@@ -171,7 +176,7 @@ export default function ChatInterface({
   useEffect(() => {
     return () => {
       sessionStartedRef.current = false;
-      if (mode === 'free-explore' && 'endSession' in activeConnection) {
+      if (mode === "free-explore" && "endSession" in activeConnection) {
         activeConnection.endSession();
       } else {
         activeConnection.cleanup();
@@ -195,15 +200,15 @@ export default function ChatInterface({
   // End session and navigate to dashboard
   const endSessionAndNavigate = async () => {
     sessionStartedRef.current = false;
-    
+
     // For free explore mode, call endSession to properly end the backend session
-    if (mode === 'free-explore' && 'endSession' in activeConnection) {
+    if (mode === "free-explore" && "endSession" in activeConnection) {
       await activeConnection.endSession();
     } else {
       // For regular mode, just cleanup
       await activeConnection.cleanup();
     }
-    
+
     audioManagement.cleanupAudio();
     imagePolling.stopImagePolling();
     router.push("/dashboard");
@@ -217,17 +222,61 @@ export default function ChatInterface({
   return (
     <div className="flex flex-col h-full max-w-6xl mx-auto gap-6 relative">
       <div>
-        <h1 className="font-extralight text-center mt-10 text-white/70">
+        <h1 className="font-medium text-xl text-center mt-10 text-white">
           Go ahead, I am listening
         </h1>
       </div>
 
-      <div className="w-full flex justify-center">
-        <img src="/images/globe.png" alt="Globe" className="h-52 w-52 mt-7" />
+      <div className="w-full flex justify-center md:h-[50vh]">
+        {/* --- ANIMATION WRAPPER --- */}
+        <motion.div
+          className="relative" // For positioning
+          // This animate prop combines all our states
+          animate={{
+            // 1. "Idle" Levitation
+            y: ["-6px", "6px"],
+
+            // 2. Mute Opacity
+            opacity: audioManagement.isMicOn ? 1 : 0.6,
+
+            // 3. Voice Pulse Scaling
+            // We only scale if the mic is on and there's audio
+            scale:
+              audioManagement.isMicOn && audioManagement.audioLevel > 5
+                ? 1 + audioManagement.audioLevel / 250 // Max scale 1.4
+                : 1,
+          }}
+          // Define transitions for each property
+          transition={{
+            // Loop the levitation
+            y: {
+              repeat: Infinity,
+              repeatType: "mirror",
+              duration: 3,
+              ease: "easeInOut",
+            },
+            // Make scale and opacity changes quick and snappy
+            opacity: { duration: 0.2 },
+            scale: { duration: 0.1 },
+          }}
+        >
+          <DotLottieReact
+            src="https://lottie.host/a066e66f-168d-4331-9ec7-873ee59f5a45/2ueyRGjkNZ.lottie"
+            loop
+            // 2. Play/Pause Lottie based on Mute State
+            autoplay={audioManagement.isMicOn}
+            // Bonus: Speed up Lottie animation slightly with voice
+            speed={
+              audioManagement.isMicOn && audioManagement.audioLevel > 5
+                ? 1 + audioManagement.audioLevel / 100 // Max speed 2
+                : 1
+            }
+          />
+        </motion.div>
       </div>
 
       {/* Add the current response text below globe */}
-      <div className="text-center text-white/90 px-4 min-h-[100px]">
+      <div className="text-center text-white/90 px-4 min-h-[100px] md:min-h-[50px]">
         {messages.length > 0 &&
           messages[messages.length - 1].role === "assistant" &&
           messages[messages.length - 1].content}
@@ -237,7 +286,7 @@ export default function ChatInterface({
       {/* <MessageList messages={messages} /> */}
 
       {/* Controls Section */}
-      <div className="flex justify-between items-center mt-20">
+      <div className="flex justify-between items-center mt-20 md:mt-0">
         <div className="w-1/3"></div>
         <div className="w-1/3 flex justify-center">
           <AudioControls
@@ -254,7 +303,7 @@ export default function ChatInterface({
             isConnecting={activeConnection.isConnecting}
             isEnding={activeConnection.isEnding}
             onEndSession={endSessionAndNavigate}
-            autoStarted={!!conversationId || mode === 'free-explore'}
+            autoStarted={!!conversationId || mode === "free-explore"}
           />
         </div>
       </div>

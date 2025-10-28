@@ -13,10 +13,10 @@ import {
 } from "recharts";
 
 const data = [
-  { name: "01 week", uv: 10 },
-  { name: "02 week", uv: 30 },
-  { name: "03 week", uv: 40 },
-  { name: "04 week", uv: 60 },
+  { name: "1st week", uv: 10 },
+  { name: "2nd week", uv: 30 },
+  { name: "3rd week", uv: 40 },
+  { name: "4th week", uv: 60 },
 ];
 
 const CuriosityChart = ({ data }: {data:CuriosityChartData[]}) => {

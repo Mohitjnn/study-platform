@@ -82,7 +82,9 @@ export default function PaymentHistorySection() {
             className="mb-5 p-4 rounded-lg bg-white/10 flex flex-col gap-1"
           >
             <div className="flex justify-between text-sm">
-              <span className="font-medium">{item.created_at}</span>
+              <span className="font-medium">
+                {new Date(item.created_at).toLocaleDateString("en-GB")}
+              </span>
               <span className="font-semibold">{item.status}</span>
             </div>
             <div className="flex justify-between text-sm">
@@ -96,7 +98,9 @@ export default function PaymentHistorySection() {
             <div className="flex justify-between text-sm">
               <span>Amount:</span>
               <span>
-                {item.amount_paise / 100} {item.currency}
+                {item.currency === "INR"
+                  ? `₹${item.amount_paise / 100}`
+                  : `${item.amount_paise / 100} ${item.currency}`}
               </span>
             </div>
           </div>

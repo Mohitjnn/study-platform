@@ -1,24 +1,17 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Search, ChevronRight } from "lucide-react";
-import { fetchFromAPI, postDataToAPI } from "@/lib/api/client";
+import { useState } from "react";
+import { ChevronRight } from "lucide-react";
+import { fetchFromAPI } from "@/lib/api/client";
 import { useRouter } from "next/navigation";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { initiateConversation } from "@/actions/subjects";
 
-// TypeScript interfaces
+// --- Aceternity UI Import ---
+// You will still need this component for the input
+import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
+
+// TypeScript interfaces (unchanged)
 interface TopicResult {
   id: string;
   subject: string;
@@ -50,40 +43,54 @@ interface InitiateConversationResponse {
   link_id: string;
 }
 
+// Re-usable Loading Spinner Component (unchanged)
+const LoadingSpinner = ({ className = "" }: { className?: string }) => (
+  <div
+    className={`inline-block animate-spin rounded-full h-8 w-8 border-4 border-white/20 border-t-white ${className}`}
+  ></div>
+);
+
 export default function TopicSearch() {
+  const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] =
     useState<TopicSearchResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [loadingSubtopic, setLoadingSubtopic] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleSearch = async () => {
-    const query = inputRef.current?.value.trim();
+  // --- Aceternity UI Content ---
+  const placeholders = [
+    "Search 'photosynthesis'",
+    "What is the Roman Empire?",
+    "Explain black holes",
+    "How does DNA replication work?",
+    "Who was Cleopatra?",
+  ];
 
-    if (!query) {
+  const handleSearch = async () => {
+    const searchQuery = query.trim();
+
+    if (!searchQuery) {
       setError("Please enter a search query");
       return;
     }
 
-    if (query.length < 3) {
+    if (searchQuery.length < 3) {
       setError("Search query must be at least 3 characters long");
       return;
     }
 
     setIsLoading(true);
     setError(null);
+    setSearchResults(null);
 
     try {
       const response = await fetchFromAPI<TopicSearchResponse>(
-        `/topics/search?q=${encodeURIComponent(query)}`,
+        `/topics/search?q=${encodeURIComponent(searchQuery)}`,
         { requiresAuth: true }
       );
-
       setSearchResults(response);
-      setIsDrawerOpen(true);
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error("Search error:", err.message);
@@ -92,12 +99,6 @@ export default function TopicSearch() {
       console.error("Search error:", err);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
     }
   };
 
@@ -119,141 +120,112 @@ export default function TopicSearch() {
   };
 
   return (
-    <>
-      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <DrawerTrigger asChild>
-          <div className="w-full lex flex-col justify-between items-start cursor-pointer">
-            <h1 className="text-xl lg:text-5xl font-medium lg:text-left mb-3">
-              What are you curious about?
-            </h1>
+    <div className="w-full">
+      {/* Search Header and Input */}
+      <div className="w-full flex flex-col justify-between items-start">
+        {/* --- Reverted h1 back to original --- */}
+        <h1 className="text-xl lg:text-3xl font-medium lg:text-left mb-3">
+          What are you curious about?
+        </h1>
 
-            <div className="flex items-center rounded-sm border-2 border-white/20 px-4 py-3">
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Search..."
-                className="bg-transparent outline-none text-white placeholder-white/70 w-full"
-                onKeyPress={handleKeyPress}
-                onClick={(e) => e.stopPropagation()}
-              />
-              <button
-                className="ml-2 text-white/70 transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSearch();
-                }}
-                disabled={isLoading}
-              >
-                <Search size={20} />
-              </button>
-            </div>
+        {/* --- Kept PlaceholdersAndVanishInput --- */}
+        <PlaceholdersAndVanishInput
+          placeholders={placeholders}
+          onChange={(e) => setQuery(e.target.value)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch();
+          }}
+        />
+      </div>
+
+      {/* Results Section (unchanged) */}
+      <div className="mt-8">
+        {isLoading && (
+          <div className="text-center py-8">
+            <LoadingSpinner />
+            <p className="text-white/70 mt-4">Searching...</p>
           </div>
-        </DrawerTrigger>
+        )}
 
-        <DrawerContent className="bg-gradient-to-br from-[#010532]/30 to-[#DF9AEE]/20 border-white/20 backdrop-blur-2xl">
-          <DrawerHeader>
-            <DrawerTitle className="text-white text-2xl">
-              {searchResults
-                ? `Search Results for "${searchResults.query}"`
-                : "Search Topics"}
-            </DrawerTitle>
-            <DrawerDescription className="text-white/70">
-              {searchResults
-                ? `Found ${searchResults.total_results} result${
-                    searchResults.total_results !== 1 ? "s" : ""
-                  }`
-                : "Enter at least 3 characters to search"}
-            </DrawerDescription>
-          </DrawerHeader>
+        {error && (
+          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+            <p className="text-red-200">{error}</p>
+          </div>
+        )}
 
-          <div className="px-4 pb-4 max-h-[60vh] overflow-y-auto">
-            {isLoading && (
-              <div className="text-center py-8">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-white/20 border-t-white"></div>
-                <p className="text-white/70 mt-4">Searching...</p>
-              </div>
-            )}
-
-            {error && (
-              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-4">
-                <p className="text-red-200">{error}</p>
-              </div>
-            )}
-
-            {searchResults && searchResults.results.length > 0 && (
-              <div className="space-y-3">
-                {searchResults.results.map((result) => (
-                  <div
-                    key={result.id}
-                    className="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all cursor-pointer group"
-                    onClick={() =>
-                      handleSubtopicClick({
-                        id: result.id,
-                        sub_topic: result.sub_topic,
-                        learning_outcome: result.learning_outcome,
-                      })
-                    }
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
-                        <Image
-                          src={result.image_url}
-                          alt={result.topic}
-                          width={64}
-                          height={64}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white/60 text-sm font-medium">
-                          {result.subject}
-                        </p>
-                        <h3 className="text-white font-semibold text-lg">
-                          {result.topic}
-                        </h3>
-                        <p className="text-white/80 text-sm mt-1">
-                          {result.sub_topic}
-                        </p>
-                      </div>
-
-                      {loadingSubtopic === result.id ? (
-                        <div className="flex-shrink-0">
-                          <div className="animate-spin rounded-full h-6 w-6 border-2 border-white/20 border-t-white"></div>
+        {searchResults && !isLoading && !error && (
+          <>
+            {searchResults.results.length > 0 ? (
+              <>
+                <h2 className="text-white text-2xl font-semibold mb-4">
+                  {`Results for "${searchResults.query}"`}
+                </h2>
+                <div className="flex flex-row gap-4 overflow-x-auto pb-4">
+                  {searchResults.results.map((result: TopicResult) => (
+                    <div
+                      key={result.id}
+                      className="bg-white/10 rounded-lg p-4 hover:bg-white/20 transition-all cursor-pointer group w-80 flex-shrink-0"
+                      onClick={() =>
+                        handleSubtopicClick({
+                          id: result.id,
+                          sub_topic: result.sub_topic,
+                          learning_outcome: result.learning_outcome,
+                        })
+                      }
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden">
+                          <Image
+                            src={result.image_url}
+                            alt={result.topic}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          
+                          />
                         </div>
-                      ) : (
-                        <ChevronRight
-                          className="text-white/40 group-hover:text-white/80 transition-colors flex-shrink-0"
-                          size={24}
-                        />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
 
-            {searchResults && searchResults.results.length === 0 && (
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white/60 text-sm font-medium">
+                            {result.subject}
+                          </p>
+                          <h3 className="text-white font-semibold text-lg truncate">
+                            {result.topic}
+                          </h3>
+                          <p className="text-white/80 text-sm mt-1 truncate">
+                            {result.sub_topic}
+                          </p>
+                        </div>
+
+                        {loadingSubtopic === result.id ? (
+                          <div className="flex-shrink-0">
+                            <LoadingSpinner className="h-6 w-6 border-2" />
+                          </div>
+                        ) : (
+                          <ChevronRight
+                            className="text-white/40 group-hover:text-white/80 transition-colors flex-shrink-0"
+                            size={24}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
               <div className="text-center py-8">
-                <p className="text-white/70">
+                <p className="text-white/70 text-lg">
                   No results found for &quot;{searchResults.query}&quot;
+                </p>
+                <p className="text-white/50">
+                  Try searching for a different topic.
                 </p>
               </div>
             )}
-          </div>
-
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button
-                variant="outline"
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                Close
-              </Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </>
+          </>
+        )}
+      </div>
+    </div>
   );
 }
