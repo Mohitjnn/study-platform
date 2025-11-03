@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { User, Mail, Phone, Lock, Loader2, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { signup } from "@/actions/auth";
+import AnimatedLottie from "@/components/AnimatedLottie";
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -84,11 +85,7 @@ export default function SignupPage() {
   return (
     <main className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] px-5 flex justify-center items-center">
       <div className="w-full max-w-md relative">
-        <img
-          src="/images/blob.png"
-          alt="Logo"
-          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
-        />
+        <AnimatedLottie />
 
         <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">
           <CardHeader className="text-center">

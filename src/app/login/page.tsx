@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import PasswordBasedLogin from "@/components/Login/PaswordLogin";
 import OtpBasedLogin from "@/components/Login/OtpLogin";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import AnimatedLottie from "@/components/AnimatedLottie";
 
 type LoginMethod = "password" | "otp";
 
@@ -18,11 +20,8 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] px-5 flex justify-center items-center py-8">
       <div className="w-full max-w-md relative">
-        <img
-          src="/images/blob.png"
-          alt="Logo"
-          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-        />
+        <AnimatedLottie />
+
         <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">
           <CardHeader className="text-center">
             <CardTitle className="text-xl font-light">Sign In</CardTitle>
