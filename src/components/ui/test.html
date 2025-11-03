@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Invoice</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style type="text/css">
+        /* Basic page styling */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        /* Main container for the invoice */
+        .invoice-container {
+            width: 700px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            padding: 30px;
+        }
+        
+        /* Header section with Logo and Invoice Title */
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .header-table td {
+            vertical-align: top;
+        }
+
+        .logo {
+            width: 150px; /* Logo width */
+        }
+        
+        .invoice-title {
+            text-align: right;
+        }
+
+        .invoice-title h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #000;
+        }
+
+        /* General section title styling */
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #f0f0f0;
+            padding: 8px;
+            margin-top: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        /* Customer details table */
+        .details-table {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .details-table td {
+            padding: 4px 0;
+            vertical-align: top;
+        }
+
+        .details-table .label {
+            font-weight: bold;
+            width: 120px; /* Fixed width for labels */
+        }
+        
+        /* Order items and Payment details table styling */
+        .items-table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse; /* Removes space between borders */
+        }
+        
+        .items-table th, .items-table td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .items-table th {
+            background-color: #eee;
+            font-weight: bold;
+        }
+        
+        .items-table .item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+        
+        /* Column widths for items table */
+        .items-table .col-image { width: 10%; }
+        .items-table .col-spec { width: 35%; }
+        .items-table .col-small { width: 10%; text-align: center; }
+        .items-table .col-craftsman { width: 15%; }
+        
+        /* Totals section */
+        .payment-summary {
+            width: 45%; /* Aligns the summary to the right */
+            margin-left: 55%;
+            margin-top: 20px;
+        }
+
+        .payment-summary .label {
+            font-weight: bold;
+        }
+
+        .payment-summary .payment-value {
+            text-align: right;
+        }
+
+        .total-row .label, .total-row .payment-value {
+            font-size: 16px;
+            font-weight: bold;
+            border-top: 2px solid #000;
+            padding-top: 8px;
+        }
+        
+        /* Footer stamp */
+        .footer-stamp {
+            margin-top: 40px;
+            border: 2px dashed #888;
+            padding: 10px 20px;
+            text-align: center;
+            width: 250px;
+            color: #888;
+        }
+        
+        .footer-stamp .stamp-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #888;
+        }
+
+        .footer-stamp .stamp-date {
+            font-size: 14px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="invoice-container">
+    
+        <table class="header-table">
+            <tr>
+                <td>
+                    <img src="https://via.placeholder.com/150x60.png?text=Your+Logo" alt="Company Logo" class="logo"/>
+                    <br/>
+                    <strong>Your Company Name</strong><br/>
+                    123 Jewelry Lane<br/>
+                    Mumbai, MH 400001
+                </td>
+                <td class="invoice-title">
+                    <h1>ORDER DRAFT</h1>
+                    <table class="details-table">
+                        <tr>
+                            <td class="label">Order ID:</td>
+                            <td>ORD #9</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Date:</td>
+                            <td>October 28, 2025</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        
+        
+        <div class="section-title">Customer Details</div>
+        <table class="details-table">
+            <tr>
+                <td class="label">Customer Name:</td>
+                <td>John Doe</td>
+            </tr>
+            <tr>
+                <td class="label">Contact No:</td>
+                <td>+91 98765 43210</td>
+            </tr>
+            <tr>
+                <td class="label">Address:</td>
+                <td>Juhu Area, Mumbai</td>
+            </tr>
+        </table>
+        
+        
+        <div class="section-title">Order Specifications</div>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th class="col-image">Picture</th>
+                    <th class="col-spec">Specification</th>
+                    <th class="col-small">Purity</th>
+                    <th class="col-small">Weight</th>
+                    <th class="col-small">Size</th>
+                    <th class="col-craftsman">Craftsman</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="https://via.placeholder.com/80x80.png?text=Ring+Image" alt="Ring" class="item-image"/>
+                    </td>
+                    <td>
+                        <strong>Ring</strong><br/>
+                        18 Karat - Round close stone to add design a Bead.
+                    </td>
+                    <td style="text-align: center;">92.j</td>
+                    <td style="text-align: center;">5gm</td>
+                    <td style="text-align: center;">16</td>
+                    <td>Kangar</td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="https://via.placeholder.com/80x80.png?text=Pendant" alt="Pendant" class="item-image"/>
+                    </td>
+                    <td>
+                        <strong>Pendant</strong><br/>
+                        22 Karat - Simple design.
+                    </td>
+                    <td style="text-align: center;">91.6</td>
+                    <td style="text-align: center;">3gm</td>
+                    <td style="text-align: center;">N/A</td>
+                    <td>Raju</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table style="width: 100%; margin-top: 10px;">
+            <tr>
+                <td style="width: 70%;"></td> <td style="width: 30%; text-align: right; border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 5px 0;">
+                    <strong style="font-size: 16px;">Total Order Weight: 8 gm</strong>
+                </td>
+            </tr>
+        </table>
+        <div class="section-title">Payment Details</div>
+        
+        <table class="items-table"> <thead>
+                <tr>
+                    <th style="width: 25%;">Payment Type</th>
+                    <th style="width: 50%;">Payment Method & Details</th>
+                    <th style="width: 25%; text-align: right;">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Advance Payment</strong></td>
+                    <td>Cash</td>
+                    <td style="text-align: right;">₹ 2,000.00</td>
+                </tr>
+                <tr>
+                    <td><strong>Intermediate Payment</strong></td>
+                    <td>
+                        <strong>Metal (Gold)</strong><br/>
+                        Grams: 2.00 gm<br/>
+                        Rate: Fixed
+                    </td>
+                    <td style="text-align: right;">(Valued at ₹ 1,500.00)</td>
+                </tr>
+                 <tr>
+                    <td><strong>Final Payment</strong></td>
+                    <td>Cash</td>
+                    <td style="text-align: right;">₹ 1,500.00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="details-table payment-summary">
+            <tr class="total-row">
+                <td class="label" style="padding-top: 8px;">Total Paid:</td>
+                <td class="payment-value" style="padding-top: 8px;">₹ 5,000.00</td>
+            </tr>
+        </table>
+        
+        
+        <div style="clear: both; height: 1px;"></div> <div class="footer-stamp">
+            <div class="stamp-text">PAID & VERIFIED</div>
+            <div class="stamp-date">Oct 28, 2025</div>
+        </div>
+        
+    </div></body>
+</html>

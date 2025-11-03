@@ -4,6 +4,12 @@ import { ChevronRight, Search } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import DashboardSquareCard from "@/components/DashboardSquareCard";
 import ScreenTimeChart from "@/components/Bar-chart";
 import {
@@ -164,23 +170,28 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        <Link
-          href="/chat?mode=free-explore"
-          className="fixed z-50 left-1/2 -translate-x-1/2 bottom-3 flex flex-col items-center justify-center bg-transparent hover:bg-white/20 transition-colors cursor-pointer rounded-full p-3"
-        >
-          <img
-            src="/images/Bot.png"
-            alt="Chat Bot"
-            className="h-12 animate-float"
-            style={{
-              filter: "drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))",
-            }}
-          />
-
-          {/* <div className="text-center mt-2 px-3 py-1 text-xs text-white rounded-full backdrop-blur-md shadow-md">
-            Click for a new conversation
-          </div> */}
-        </Link>
+        <TooltipProvider>
+          <Tooltip defaultOpen={true}>
+            <TooltipTrigger asChild>
+              <Link
+                href="/chat?mode=free-explore"
+                className="fixed z-50 left-1/2 -translate-x-1/2 bottom-3 flex flex-col items-center justify-center bg-transparent hover:bg-white/20 transition-colors cursor-pointer rounded-full p-3"
+              >
+                <img
+                  src="/images/Bot.png"
+                  alt="Chat Bot"
+                  className="h-12 animate-float"
+                  style={{
+                    filter: "drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))",
+                  }}
+                />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <p>Begin new conversation</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <TopicSearch />
 
@@ -188,8 +199,8 @@ export default async function DashboardPage() {
           All Subjects
         </h1>
 
-        <TransitionHorizontal>
-          <div className="w-full flex gap-5 overflow-auto scrollbar-hide">
+        {/* <TransitionHorizontal> */}
+          <div className="w-full gap-4 grid grid-cols-2">
             {newSubjects.subjects.map((subject, index) => (
               <SubjectCard
                 key={subject.subject}
@@ -201,11 +212,11 @@ export default async function DashboardPage() {
               />
             ))}
           </div>
-        </TransitionHorizontal>
+        {/* </TransitionHorizontal> */}
 
         {/* <AllSubjectRedirectButton /> */}
 
-        <div className="mt-3 mb-2 border-border p-4 rounded-2xl">
+        {/* <div className="mt-3 mb-2 border-border p-4 rounded-2xl">
           <ScreenTimeChart
             dailyMinutes={screenTimeStats.dailyMinutes}
             dailyPoints={screenTimeStats.dailyPoints} // 👈 pass per-day points
@@ -214,7 +225,7 @@ export default async function DashboardPage() {
             weeklyChange={screenTimeStats.weeklyChange}
             lastUpdated={screenTimeStats.lastUpdated}
           />
-        </div>
+        </div> */}
       </main>
     </div>
   );

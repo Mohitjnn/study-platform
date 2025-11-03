@@ -37,7 +37,7 @@ export default function AnimatedLottie() {
       }}
     >
       <DotLottieReact
-        src="https://lottie.host/a066e66f-168d-4331-9ec7-873ee59f5a45/2ueyRGjkNZ.lottie"
+        src="https://lottie.host/e3e00a38-9523-4947-868f-8d93c44d06dc/0lpmf3oIUY.lottie"
         loop
         autoplay
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] pointer-events-none"

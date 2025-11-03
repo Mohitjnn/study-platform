@@ -183,7 +183,7 @@ export default async function ProfilePage() {
                   </div> */}
 
                   {/* User ID */}
-                  {user.user_id && (
+                  {/* {user.user_id && (
                     <div className="flex items-center gap-4">
                       <div className="h-6 w-6 flex items-center justify-center">
                         <div className="h-3 w-3 bg-blue-500 rounded-full"></div>
@@ -197,10 +197,10 @@ export default async function ProfilePage() {
                         </p>
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Member Since */}
-                  {user.user_since && (
+                  {/* {user.user_since && (
                     <div className="flex items-center gap-4">
                       <div className="h-6 w-6 flex items-center justify-center">
                         <div className="h-3 w-3 bg-purple-500 rounded-full"></div>
@@ -214,10 +214,10 @@ export default async function ProfilePage() {
                         </p>
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Survey Info */}
-                  {user.survey && (
+                  {/* {user.survey && (
                     <div className="flex items-center gap-4">
                       <div className="h-6 w-6 flex items-center justify-center">
                         <div className="h-3 w-3 bg-yellow-500 rounded-full"></div>
@@ -233,7 +233,7 @@ export default async function ProfilePage() {
                         </p>
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
 

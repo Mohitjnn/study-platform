@@ -64,7 +64,7 @@ interface SubTopicsResponse {
 
 export async function fetchSubTopics({subject,topic}:{subject:string,topic:string}): Promise<SubTopicsResponse> {
   try {
-    const response = await fetchFromAPI<SubTopicsResponse>(`/topics/subtopics?subject=${subject}&topic=${topic}`, { requiresAuth: true });
+    const response = await fetchFromAPI<SubTopicsResponse>(`/topics/subtopics?subject=${subject}&topic=${encodeURIComponent(topic)}`, { requiresAuth: true });
     return response;
   } catch (error: unknown) {
     let message = 'Unknown error';
