@@ -29,7 +29,7 @@ export default function MobileMenu() {
           initial="closed"
           animate="open"
           exit="closed"
-          className="fixed top-32 left-0 w-full max-w-3xl mx-auto w-[70%] right-0 z-50 text-white rounded-lg overflow-hidden"
+          className="fixed top-28 left-0 w-full max-w-3xl mx-auto right-0 z-50 text-white rounded-lg overflow-hidden"
           style={{ right: 0, left: 0 }}
         >
           <div className="px-2 pt-2 pb-3 space-y-1 border-t bg-white/10 backdrop-blur-md text-white shadow-md">

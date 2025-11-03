@@ -32,7 +32,7 @@ export default async function Page() {
 
         {/* Subjects grid */}
         {subjectStats && (
-          <div className="grid gap-3 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-1 mt-16 gap-6">
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-1 mt-16 ">
             {subjectStats.subjects.map((subject, index) => (
               <SubjectCard
                 key={subject.subject}

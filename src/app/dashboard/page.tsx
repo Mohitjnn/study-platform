@@ -30,6 +30,7 @@ import { getTopRepeatedTopics } from "@/actions/followUp";
 import AllSubjectRedirectButton from "@/components/AllSubjectRedirectButton";
 import TopicCard from "@/components/PersonalCards/TopicCard";
 import TopicSearch from "@/components/TopicSuggestion";
+import ActivityTabServer from "@/components/ActivityTab";
 
 export default async function DashboardPage() {
   // Get user data from API
@@ -66,7 +67,7 @@ export default async function DashboardPage() {
       <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
 
       <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-      <main className="relative w-full md:max-w-3xl md:mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="relative w-full md:max-w-3xl md:mx-auto p-4 sm:p-6 lg:p-8 pb-20">
         {/* Welcome Section */}
         <div className=" w-full flex items-center justify-between">
           <div className="w-1/2 flex gap-3 items-center">
@@ -165,70 +166,46 @@ export default async function DashboardPage() {
 
         <Link
           href="/chat?mode=free-explore"
-          className="w-full py-5 px-4 border-2 border-white/20 rounded-2xl mt-7 mb-5 flex justify-between items-center hover:bg-white/20 transition-colors cursor-pointer"
+          className="fixed z-50 left-1/2 -translate-x-1/2 bottom-3 flex flex-col items-center justify-center bg-transparent hover:bg-white/20 transition-colors cursor-pointer rounded-full p-3"
         >
-          <div className="flex items-center gap-3">
-            <img
-              src="/images/Bot.png"
-              alt="img"
-              className="h-10 animate-float"
-              style={{
-                filter: "drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))",
-              }}
-            />
-            <TransitionHorizontal>
-              <h1 className="font-light">Ask me anything</h1>
-            </TransitionHorizontal>
-          </div>
-          <div className="h-8 w-8 p-1 flex justify-center items-center bg-white/10 rounded-full border border-white/20">
-            <ChevronRight />
-          </div>
+          <img
+            src="/images/Bot.png"
+            alt="Chat Bot"
+            className="h-12 animate-float"
+            style={{
+              filter: "drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5))",
+            }}
+          />
+
+          {/* <div className="text-center mt-2 px-3 py-1 text-xs text-white rounded-full backdrop-blur-md shadow-md">
+            Click for a new conversation
+          </div> */}
         </Link>
+
         <TopicSearch />
+
         <h1 className="text-2xl lg:text-3xl font-medium lg:text-left mb-5">
-          Recommended Topics
+          All Subjects
         </h1>
+
         <TransitionHorizontal>
           <div className="w-full flex gap-5 overflow-auto scrollbar-hide">
-            {topTopics.topics.map((subject, index) => (
-              <TopicCard
-                key={subject.id}
-                name={subject.topic}
-                subjectName={subject.subject}
+            {newSubjects.subjects.map((subject, index) => (
+              <SubjectCard
+                key={subject.subject}
+                name={subject.subject}
+                progress={subject.completion_percentage}
                 imageUrl={subject.image_url}
+                tag={subject.progress_tag}
                 index={index}
               />
             ))}
           </div>
         </TransitionHorizontal>
 
-        <AllSubjectRedirectButton />
+        {/* <AllSubjectRedirectButton /> */}
 
-        <div className="mt-12">
-
-          <div className="sticky top-10 z-10 backdrop-blur-xl">
-            <CuriosityChart data={curiosityData} />
-          </div>
-
-          <div className="sticky top-20 z-20 backdrop-blur-xl">
-            <ConceptMasteryPie data={masteryData} />
-          </div>
-
-          <div className="sticky top-30 z-30 backdrop-blur-xl">
-            <ActiveTimeCharts data={weeklyTimeData} />
-          </div>
-
-          <div className="sticky top-40 z-40 backdrop-blur-xl">
-            <FollowUpChart data={followUpData} />
-          </div>
-
-          <div className="sticky top-50 z-50 backdrop-blur-xl">
-            <ConsistencyChart data={consistencyData} />
-          </div>
-        </div>
-
-        {/* Weekly Progress */}
-        <div className="mb-8 border-border p-4 rounded-2xl">
+        <div className="mt-3 mb-2 border-border p-4 rounded-2xl">
           <ScreenTimeChart
             dailyMinutes={screenTimeStats.dailyMinutes}
             dailyPoints={screenTimeStats.dailyPoints} // 👈 pass per-day points

@@ -9,12 +9,15 @@ import {
   ActivityDay,
 } from "@/actions/activity";
 
+import ActivityTab from "@/components/ActivityTab";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import CategoryButton from "@/components/CategoryButton";
 import MobileMenu from "@/components/MobileMenu";
-// Helper function to render stars based on percentage
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent } from "@radix-ui/react-tabs";
+
 const renderStars = (percentage: number) => {
   const stars = Math.min(3, Math.max(0, Math.round(percentage / 33.33))); // Convert 0-100 to 0-3 stars
   return Array.from({ length: 3 }, (_, i) => (
@@ -233,11 +236,7 @@ const ActivityTimeline: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
-        <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-
-        <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-
+      <div className="relative w-full min-h-screen bg-black text-foreground dark">
         <div className="max-w-4xl mx-auto px-6 py-8">
           <motion.div
             className="mb-12 flex justify-between items-center"
@@ -246,11 +245,9 @@ const ActivityTimeline: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             <div className="w-1/3 flex">
-              <div
-                className="p-2 rounded-full bg-white/10 border-2 border-white/10"
-              >
-                          <CategoryButton />
-                            <MobileMenu />
+              <div className="p-2 rounded-full bg-white/10 border-2 border-white/10">
+                <CategoryButton />
+                <MobileMenu />
               </div>
             </div>
             <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
@@ -290,7 +287,7 @@ const ActivityTimeline: React.FC = () => {
                 }}
                 className="p-2 rounded-full bg-white/10 border-2 border-white/10"
               >
-                <CategoryButton/>
+                <CategoryButton />
                 <MobileMenu />
               </div>
             </div>
@@ -315,53 +312,58 @@ const ActivityTimeline: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
-      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-
-      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-
+    <div className="relative w-full min-h-screen bg-black text-foreground dark">
       <div className="relative z-10 pt-5">
         <div className="w-full px-6 py-5 md:max-w-3xl mx-auto">
-          <div className="mb-12 flex justify-between items-center">
+          <div className="mb-7 flex items-center">
             <div className="w-1/3 flex">
-
-                <CategoryButton/>
-                <MobileMenu />
+              <CategoryButton />
+              <MobileMenu />
             </div>
-            <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
-              Timeline
-            </h1>
 
-            <div className="w-1/3"></div>
+            <h1 className="text-xl">Your Activities</h1>
           </div>
 
-          <div className="space-y-8">
-            {weeks.map((week, weekIndex) => (
-              <div key={`${week.week_start}-${weekIndex}`}>
-                {week.days.map((day) => (
-                  <TimelineSection key={day.date} day={day} />
+          <Tabs defaultValue="timeline">
+            <TabsList className="w-full ">
+              <TabsTrigger value="timeline">Timeline</TabsTrigger>
+              <TabsTrigger value="activity">Activity</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="timeline">
+              <div className="space-y-8">
+                {weeks.map((week, weekIndex) => (
+                  <div key={`${week.week_start}-${weekIndex}`}>
+                    {week.days.map((day) => (
+                      <TimelineSection key={day.date} day={day} />
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
-          </div>
 
-          {/* Loading more indicator */}
-          {loadingMore && (
-            <div className="space-y-4 mt-8">
-              {Array.from({ length: 2 }).map((_, i) => (
-                <LoadingCard key={i} />
-              ))}
-            </div>
-          )}
+              {/* Loading more indicator */}
+              {loadingMore && (
+                <div className="space-y-4 mt-8">
+                  {Array.from({ length: 2 }).map((_, i) => (
+                    <LoadingCard key={i} />
+                  ))}
+                </div>
+              )}
 
-          {/* End of timeline message */}
-          {!hasMore && weeks.length > 0 && (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">
-                You&apos;ve reached the beginning of your journey!
-              </p>
-            </div>
-          )}
+              {/* End of timeline message */}
+              {!hasMore && weeks.length > 0 && (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    You&apos;ve reached the beginning of your journey!
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="activity">
+              <ActivityTab />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

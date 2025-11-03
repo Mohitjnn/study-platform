@@ -31,7 +31,7 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
     <div className="flex flex-col">
       <div
         onClick={handleClick}
-        className="w-full aspect-square rounded-2xl bg-cover bg-center cursor-pointer relative overflow-hidden"
+        className="w-full min-w-48 aspect-square rounded-2xl bg-cover bg-center cursor-pointer relative overflow-hidden"
         style={{
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}
@@ -43,21 +43,21 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
           {tag}
         </Badge>
       </div>
-      <div className="w-full pl-1 mt-2">
+      <div className="w-full pl-1 mt-2 flex justify-between gap-2">
         <h1 className="font-semibold">{name}</h1>
+        <motion.div
+          animate={{ x: [0, 1, 0, -1, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        >
+          <ChevronRight size={16} />
+        </motion.div>
       </div>
-      <div className="w-full px-1 flex justify-start items-center mt-2">
+      <div className="w-full px-1 flex justify-between items-center mt-2 gap-2">
         <div className="w-full flex items-center gap-1 relative">
           <Progress
             value={progress}
             className="relative h-2 bg-white transition-all duration-300 px-4 w-full"
           />
-          <motion.div
-            animate={{ x: [0, 1, 0, -1, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          >
-            <ChevronRight size={16} />
-          </motion.div>
         </div>
         <span className="text-xs text-[#DF9AEE] font-medium">{progress}%</span>
       </div>

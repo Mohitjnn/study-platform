@@ -138,46 +138,34 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
             </div>
 
             {/* Subtopics List */}
-            <div className="grid gap-1 ml-4">
-              {topicData.subtopics.map((subtopic, subtopicIndex) => (
-                <motion.div
-                  key={subtopic.id}
-                  variants={subtopicVariants}
-                  className={`border-b-1 border-gray-700 py-4 flex justify-between items-center`}
-                >
-                  <div className="flex flex-col lg:flex-row items-start justify-between gap-2 ">
-                    <div className="min-w-0 space-y-1">
-                      {/* Subtopic Name and ID */}
-                      <div className="flex flex-col lg:flex-row lg:items-center items-start gap-3">
-                        <h3 className="text-sm lg:text-lg font-semibold text-foreground leading-tight">
-                          {subtopic.sub_topic}
-                        </h3>
-                        <Badge
-                          variant="secondary"
-                          className=" hidden lg:block text-xs font-mono shrink-0 mt-1 bg-muted/50"
-                        >
-                          {subtopic.id}
-                        </Badge>
-                      </div>
 
-                      {/* Learning Outcome */}
-                      <div className=" flex items-start lg:items-center gap-2">
-                        <p className=" text-xs lg:text-base text-muted-foreground leading-relaxed">
-                          {subtopic.learning_outcome}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-2 bg-white/20 rounded-full">
-                    {/* Start Conversation Icon Button */}
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="shrink-0"
-                    >
-                      <div onClick={() => handleSubtopicClick(subtopic)}>
-                        {loadingSubtopic === subtopic.id ? (
-                          <>
+            <div className="overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex gap-4 min-w-max scrollbar-hide">
+                {topicData.subtopics.map((subtopic, subtopicIndex) => (
+                  <motion.div
+                    key={subtopic.id}
+                    variants={subtopicVariants}
+                    className="flex-shrink-0 w-64 border border-gray-700 rounded-lg overflow-hidden"
+                  >
+                    <div className="w-full h-40 bg-white/20" />
+
+                    <div className="p-4 space-y-3">
+                      <h3 className="text-sm lg:text-lg font-semibold text-foreground leading-tight line-clamp-2">
+                        {subtopic.sub_topic}
+                      </h3>
+
+                      <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                        {subtopic.learning_outcome}
+                      </p>
+
+                      <div className="flex justify-end pt-2">
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="p-2 bg-white/20 rounded-full cursor-pointer"
+                          onClick={() => handleSubtopicClick(subtopic)}
+                        >
+                          {loadingSubtopic === subtopic.id ? (
                             <motion.div
                               animate={{ rotate: 360 }}
                               transition={{
@@ -187,15 +175,15 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
                               }}
                               className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
                             />
-                          </>
-                        ) : (
-                          <Play className="h-4 w-4" />
-                        )}
+                          ) : (
+                            <Play className="h-4 w-4" />
+                          )}
+                        </motion.div>
                       </div>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.section>
         ))}
