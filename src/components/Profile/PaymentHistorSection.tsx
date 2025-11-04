@@ -89,7 +89,7 @@ export default function PaymentHistorySection() {
             </div>
             <div className="flex justify-between text-sm">
               <span>Plan:</span>
-              <span>{item.plan_code}</span>
+              <span>{item.plan_code.replace(/_/g, ' ')}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span>Minutes:</span>

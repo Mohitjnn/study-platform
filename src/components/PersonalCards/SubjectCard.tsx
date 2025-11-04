@@ -28,9 +28,8 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
     router.push(`/subjects/${name}`);
   };
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex flex-col space-y-2"  onClick={handleClick}>
       <div
-        onClick={handleClick}
         className="w-full aspect-square rounded-2xl bg-cover bg-center cursor-pointer relative overflow-hidden"
         style={{
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,

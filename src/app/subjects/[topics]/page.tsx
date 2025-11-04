@@ -1,7 +1,9 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import { fetchTopicsWithSubTopicsForSubject } from "@/actions/subjects";
 import AnimatedTopicsLayout from "@/components/AnimatedTopicsLayout";
+import SubjectSkeleton from "@/components/SubjectSkeleton";
+import SubjectContent from "@/components/SubjectContent";
 
 // Color mapping for different subjects
 const subjectColors: Record<string, { primary: string; secondary: string }> = {
@@ -22,42 +24,10 @@ export default async function Page({
   params: Promise<{ topics: string }>;
 }) {
   const { topics } = await params;
-  const topicsWithSubTopics = await fetchTopicsWithSubTopicsForSubject({
-    subject: topics,
-  });
-
-  // Get colors for the subject, fallback to default
-  const colors = subjectColors[topics] || subjectColors.default;
 
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
-      {/* Top left blob - primary color */}
-      <div
-        className="fixed top-24 left-[-100px] w-[400px] h-[400px] opacity-30 blur-3xl rounded-full transition-colors duration-500"
-        style={{ backgroundColor: colors.primary }}
-      ></div>
-
-      {/* Bottom right blob - secondary color */}
-      <div
-        className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] opacity-30 blur-3xl rounded-full transition-colors duration-500"
-        style={{ backgroundColor: colors.secondary }}
-      ></div>
-
-      {/* Page content on top */}
-      <div className="relative z-10 pt-5">
-        {!topicsWithSubTopics && (
-          <div className="flex justify-center items-center min-h-[400px]">
-            <div className="text-muted-foreground">Loading topics...</div>
-          </div>
-        )}
-
-        {topicsWithSubTopics && (
-          <AnimatedTopicsLayout
-            topicsWithSubTopics={topicsWithSubTopics}
-            subjectName={topics}
-          />
-        )}
-      </div>
-    </div>
+    <Suspense fallback={<SubjectSkeleton />}>
+      <SubjectContent topics={topics} />
+    </Suspense>
   );
 }

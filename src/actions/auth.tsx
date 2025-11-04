@@ -239,8 +239,24 @@ export async function getUserData() {
   }
 }
 
+// Type for user data returned from API
+interface UserApiData {
+  full_name?: string;
+  survey?: {
+    submitted: boolean;
+  };
+}
+
+// Type for getUserDataFromAPI response
+interface UserDataResponse {
+  success: boolean;
+  message: string;
+  data: UserApiData | null;
+  shouldRedirect: boolean;
+}
+
 // Get user data from backend /me endpoint
-export async function getUserDataFromAPI() {
+export async function getUserDataFromAPI(): Promise<UserDataResponse> {
   const cookie = await cookies();
   const token = cookie.get("access_token");
   if (!token) {
@@ -253,7 +269,7 @@ export async function getUserDataFromAPI() {
   }
   
   try {
-    const result = await fetchFromAPI<Record<string, unknown>>(
+    const result = await fetchFromAPI<UserApiData>(
       "/me",
       { requiresAuth: true }
     );

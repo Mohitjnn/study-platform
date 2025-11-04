@@ -99,27 +99,20 @@ export default function PaymentCallbackContent() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] text-white flex flex-col justify-center items-center px-4">
       <div className="w-full max-w-md">
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+        <div className=" mt-12 h-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <div className={`w-20 h-20 ${config.iconBgColor} rounded-full flex items-center justify-center`}>
                 {config.icon}
               </div>
             </div>
-            <div className="flex justify-center mb-6">
-              <img 
-                src="/images/Bot.png" 
-                alt="Bot" 
-                className="w-24 h-24 object-contain"
-              />
-            </div>
-            <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               {config.title}
             </h1>
             <p className="text-lg text-white/80 mb-2">
               {config.message}
             </p>
-            <p className="text-sm text-white/60 mb-8">
+            <p className="text-xs text-white/60 mb-8">
               {config.subMessage}
             </p>
             <div className="bg-white/5 rounded-lg p-4 mb-6 text-left">

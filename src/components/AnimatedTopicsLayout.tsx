@@ -8,6 +8,7 @@ import { Play, Target } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { initiateConversation } from "@/actions/subjects";
 import { ChevronLeft, RotateCcw } from "lucide-react";
+import TopicSearch from "./TopicSuggestion";
 
 interface SubTopicData {
   id: string;
@@ -106,12 +107,14 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
             <ChevronLeft />
           </div>
         </div>
-        <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
-          {subjectName}
+        <h1 className="text-2xl font-light text-foreground w-full flex justify-center">
+          {decodeURIComponent(subjectName)}
         </h1>
 
         <div className="w-1/3"></div>
       </motion.div>
+
+      <TopicSearch />
 
       <motion.div
         variants={containerVariants}
