@@ -245,6 +245,52 @@ export interface TopTopicsResponse {
   message: string;
 }
 
+// Types for topic search
+export interface SubTopicStats {
+  sessions: number;
+  mastery_pct: number;
+  last_studied: string | null;
+}
+
+export interface SearchSubTopic {
+  id: string;
+  sub_topic: string;
+  learning_outcome: string;
+  image_url: string;
+  stats: SubTopicStats;
+}
+
+export interface TopicStats {
+  total_sessions: number;
+  mastery_pct: number;
+  last_studied: string | null;
+}
+
+export interface SearchTopicResult {
+  subject: string;
+  topic: string;
+  topic_image_url: string;
+  topic_stats: TopicStats;
+  subtopics: SearchSubTopic[];
+}
+
+export interface SearchPagination {
+  total_topics: number;
+  returned_topics: number;
+  total_subtopics: number;
+  limit: number;
+  offset: number;
+  has_more: boolean;
+  next_offset: number | null;
+}
+
+export interface TopicSearchResponse {
+  query: string;
+  grade_level: number;
+  results: SearchTopicResult[];
+  pagination: SearchPagination;
+}
+
 export async function fetchTopTopics(): Promise<TopTopicsResponse> {
   try {
     const response = await fetchFromAPI<TopTopicsResponse>(
@@ -258,5 +304,39 @@ export async function fetchTopTopics(): Promise<TopTopicsResponse> {
       message = error.message;
     }
     throw new Error(`Failed to fetch top topics: ${message}`);
+  }
+}
+
+// Search topics by subject and query
+export async function searchTopics({
+  subject,
+  query,
+  limit = 20,
+  offset = 0
+}: {
+  subject: string;
+  query: string;
+  limit?: number;
+  offset?: number;
+}): Promise<TopicSearchResponse> {
+  try {
+    const params = new URLSearchParams({
+      subject,
+      q: query,
+      limit: limit.toString(),
+      offset: offset.toString()
+    });
+
+    const response = await fetchFromAPI<TopicSearchResponse>(
+      `/topics/search-topic?${params.toString()}`,
+      { requiresAuth: true }
+    );
+    return response;
+  } catch (error: unknown) {
+    let message = 'Unknown error';
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    throw new Error(`Failed to search topics: ${message}`);
   }
 }
