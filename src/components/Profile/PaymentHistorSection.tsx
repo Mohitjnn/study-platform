@@ -54,15 +54,17 @@ export default function PaymentHistorySection() {
       </h2>
 
       <div className="flex justify-between items-center mb-4">
-        <p className="text-sm text-gray-600">Showing {items.length} transactions</p>
+        <p className="text-sm text-gray-600">
+          Showing {items.length} transactions
+        </p>
         <Select
           value={String(perPage)}
           onValueChange={(v) => setPerPage(Number(v))}
         >
-          <SelectTrigger className="w-24 bg-white border-gray-300 text-black">
+          <SelectTrigger className="w-24 bg-[#090E6C] border-gray-300 text-black">
             <SelectValue placeholder="Per page" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-[#090E6C]">
             {PER_PAGE_OPTIONS.map((opt) => (
               <SelectItem key={opt} value={String(opt)}>
                 {opt}
@@ -79,10 +81,7 @@ export default function PaymentHistorySection() {
           </div>
         )}
         {items.map((item, idx) => (
-          <div
-            key={idx}
-            className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
-          >
+          <div key={idx} className=" ">
             <div className="flex justify-between items-start mb-2">
               <div>
                 <p className="font-semibold text-gray-900">
@@ -116,12 +115,12 @@ export default function PaymentHistorySection() {
                   : `${item.amount_paise / 100} ${item.currency}`}
               </span>
             </div>
+
+            <div className="w-full h-px bg-black/20 my-3"></div>
           </div>
         ))}
         {loading && (
-          <div className="text-center py-8 text-gray-500">
-            Loading...
-          </div>
+          <div className="text-center py-8 text-gray-500">Loading...</div>
         )}
       </div>
 

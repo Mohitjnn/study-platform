@@ -39,7 +39,7 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
   }
 
   // For free explore mode, we don't need conversation_id or link_id
-  if (mode !== 'free-explore' && (!conversationId || !linkId)) {
+  if (mode !== "free-explore" && (!conversationId || !linkId)) {
     redirect("/dashboard");
   }
 
@@ -71,12 +71,9 @@ export default async function ChatPage({ searchParams }: ChatPageProps) {
   };
 
   return (
-    <div className="bg-[#010532] text-white dark min-h-screen px-5 pt-10 relative">
+    <div className="bg-[#090E6C] text-white dark min-h-screen px-5 pt-10 relative">
       {/* <Navbar title="AI Assistant" showProfile={true} /> */}
 
-      <div className="absolute inset-0 flex justify-start items-start mt-24 -translate-x-20 right-0 ">
-        <div className="w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      </div>
       <ChatInterface
         user={chatUser}
         conversationId={conversationId}

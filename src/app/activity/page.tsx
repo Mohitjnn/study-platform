@@ -326,8 +326,18 @@ const ActivityTimeline: React.FC = () => {
 
           <Tabs defaultValue="timeline">
             <TabsList className="w-full ">
-              <TabsTrigger value="timeline">Timeline</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
+              <TabsTrigger
+                value="timeline"
+                className="data-[state=active]:text-white"
+              >
+                Timeline
+              </TabsTrigger>
+              <TabsTrigger
+                value="activity"
+                className="data-[state=active]:text-white"
+              >
+                Activity
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="timeline">

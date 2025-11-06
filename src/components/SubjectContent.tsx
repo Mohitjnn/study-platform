@@ -23,19 +23,7 @@ export default async function SubjectContent({ topics }: { topics: string }) {
   const colors = subjectColors[topics] || subjectColors.default;
 
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
-      {/* Top left blob - primary color */}
-      <div
-        className="fixed top-24 left-[-100px] w-[400px] h-[400px] opacity-30 blur-3xl rounded-full transition-colors duration-500"
-        style={{ backgroundColor: colors.primary }}
-      ></div>
-
-      {/* Bottom right blob - secondary color */}
-      <div
-        className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] opacity-30 blur-3xl rounded-full transition-colors duration-500"
-        style={{ backgroundColor: colors.secondary }}
-      ></div>
-
+    <div className="relative w-full min-h-screen bg-[#090E6C] text-foreground dark">
       {/* Page content on top */}
       <div className="relative z-10 pt-5">
         {!topicsWithSubTopics && (

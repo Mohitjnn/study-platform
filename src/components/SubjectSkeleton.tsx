@@ -4,10 +4,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SubjectSkeleton() {
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
+    <div className="relative w-full min-h-screen bg-[#090E6C] text-foreground dark">
       {/* Animated background blobs */}
-      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
 
       {/* Page content skeleton */}
       <div className="relative z-10 pt-5">
@@ -35,7 +33,7 @@ export default function SubjectSkeleton() {
                 <Skeleton className="h-48 w-full bg-white/10 rounded-xl" />
                 <Skeleton className="h-6 w-3/4 bg-white/10" />
                 <Skeleton className="h-4 w-1/2 bg-white/10" />
-                
+
                 {/* Subtopics skeleton */}
                 <div className="space-y-2 pt-2">
                   <Skeleton className="h-3 w-full bg-white/5" />
@@ -52,7 +50,10 @@ export default function SubjectSkeleton() {
               <Skeleton className="h-8 w-48 mb-4 bg-white/10" />
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {Array.from({ length: 4 }).map((_, index) => (
-                  <Skeleton key={index} className="h-24 w-full bg-white/10 rounded-lg" />
+                  <Skeleton
+                    key={index}
+                    className="h-24 w-full bg-white/10 rounded-lg"
+                  />
                 ))}
               </div>
             </div>

@@ -7,11 +7,7 @@ export default async function Page() {
   const subjectStats = await fetchSubjectWithStats();
 
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark pt-5">
-      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-
-      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-
+    <div className="relative w-full min-h-screen bg-[#090E6C] text-foreground dark pt-5">
       <main className="relative w-full md:max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
         <div className="relative flex justify-between items-center">
           <div className="absolute top-3 flex">
