@@ -1,5 +1,6 @@
+
 import { fetchFromAPI } from "@/lib/api/client";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
 interface dayContent {
   date: string;

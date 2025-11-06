@@ -29,9 +29,9 @@ export default function MobileMenu() {
           initial="closed"
           animate="open"
           exit="closed"
-          className="fixed top-32 left-0 w-full overflow-hidden z-50 text-white rounded-lg"
+          className="fixed top-32 left-0 w-full overflow-hidden z-50 text-white"
         >
-          <div className="px-2 pt-2 pb-3 space-y-1 border-t bg-white/10 backdrop-blur-md text-white shadow-md">
+          <div className="px-2 pt-2 pb-3 space-y-1 border-t bg-white/20 backdrop-blur-sm text-white shadow-lg">
             <motion.div variants={itemVariants}>
               <Link
                 href="/dashboard"

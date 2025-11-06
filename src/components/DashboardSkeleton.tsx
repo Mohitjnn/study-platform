@@ -18,53 +18,6 @@ export default function DashboardSkeleton() {
           </div>
         </div>
 
-        {/* Stats Section Skeleton */}
-        <div className="flex flex-col justify-center items-center relative my-5">
-          <div className="w-full h-px bg-gradient-to-r from-white/40 via-transparent to-white/40 my-2"></div>
-
-          {/* First row of stats */}
-          <div className="flex items-center w-full">
-            <div className="relative flex items-center gap-4 w-1/2 h-full p-2">
-              <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
-              <div className="space-y-1">
-                <Skeleton className="h-8 w-16 bg-white/10" />
-                <Skeleton className="h-3 w-24 bg-white/10" />
-              </div>
-            </div>
-            <div className="w-px h-16 bg-gradient-to-b from-white/40 to-transparent"></div>
-            <div className="relative flex items-center gap-4 w-1/2 h-full pl-2">
-              <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
-              <div className="space-y-1">
-                <Skeleton className="h-8 w-16 bg-white/10" />
-                <Skeleton className="h-3 w-28 bg-white/10" />
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full h-px bg-gradient-to-r from-white/40 via-transparent to-white/40 my-1"></div>
-
-          {/* Second row of stats */}
-          <div className="flex items-center w-full">
-            <div className="relative flex items-center gap-4 w-1/2 h-full pl-2">
-              <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
-              <div className="space-y-1">
-                <Skeleton className="h-8 w-16 bg-white/10" />
-                <Skeleton className="h-3 w-24 bg-white/10" />
-              </div>
-            </div>
-            <div className="w-px h-16 bg-gradient-to-t from-white/40 to-transparent"></div>
-            <div className="relative flex items-center gap-4 w-1/2 h-full p-2">
-              <Skeleton className="h-10 w-10 rounded-full bg-white/10" />
-              <div className="space-y-1">
-                <Skeleton className="h-8 w-16 bg-white/10" />
-                <Skeleton className="h-3 w-16 bg-white/10" />
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full h-px bg-gradient-to-r from-white/40 via-transparent to-white/40 my-2"></div>
-        </div>
-
         {/* Floating Bot Skeleton */}
         <div className="fixed z-50 left-1/2 -translate-x-1/2 bottom-3 flex flex-col items-center justify-center">
           <Skeleton className="h-12 w-12 rounded-full bg-white/10" />

@@ -48,14 +48,18 @@ export default function PaymentHistorySection() {
   }, [page, perPage]);
 
   return (
-    <div className="w-full py-4">
-      <div className="flex justify-between items-center mb-5">
-        <h2 className="text-lg font-semibold">Payment History</h2>
+    <div className="w-full">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        Payment History
+      </h2>
+
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-sm text-gray-600">Showing {items.length} transactions</p>
         <Select
           value={String(perPage)}
           onValueChange={(v) => setPerPage(Number(v))}
         >
-          <SelectTrigger className="w-20">
+          <SelectTrigger className="w-24 bg-white border-gray-300 text-black">
             <SelectValue placeholder="Per page" />
           </SelectTrigger>
           <SelectContent>
@@ -67,37 +71,46 @@ export default function PaymentHistorySection() {
           </SelectContent>
         </Select>
       </div>
-      <div
-        className="rounded-xl backdrop-blur-md overflow-y-auto"
-        style={{ minHeight: 200 }}
-      >
+
+      <div className="space-y-3 w-full" style={{ minHeight: 200 }}>
         {items.length === 0 && !loading && (
-          <div className="text-center text-muted-foreground py-8">
+          <div className="text-center text-gray-500 py-8 bg-gray-50 rounded-lg">
             No payment history found.
           </div>
         )}
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="mb-5 p-4 rounded-lg flex flex-col gap-1 bg-[#655DF1]"
+            className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
           >
-            <div className="flex justify-between text-sm">
-              <span className="font-medium">
-                {new Date(item.created_at).toLocaleDateString("en-GB")}
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <p className="font-semibold text-gray-900">
+                  {item.plan_code.replace(/_/g, " ").toUpperCase()}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {new Date(item.created_at).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  item.status === "SUCCESS"
+                    ? "bg-green-100 text-green-800"
+                    : item.status === "PENDING"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
+                {item.status}
               </span>
-              <span className="font-semibold">{item.status}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span>Plan:</span>
-              <span>{item.plan_code.replace(/_/g, " ")}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Minutes:</span>
-              <span>{item.minutes_purchased}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Amount:</span>
-              <span>
+            <div className="flex justify-between text-sm text-gray-700">
+              <span>Minutes: {item.minutes_purchased}</span>
+              <span className="font-semibold text-gray-900">
                 {item.currency === "INR"
                   ? `₹${item.amount_paise / 100}`
                   : `${item.amount_paise / 100} ${item.currency}`}
@@ -106,30 +119,35 @@ export default function PaymentHistorySection() {
           </div>
         ))}
         {loading && (
-          <div className="text-center py-4 text-muted-foreground">
+          <div className="text-center py-8 text-gray-500">
             Loading...
           </div>
         )}
       </div>
-      <Pagination className="mt-4 flex justify-center">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            />
-          </PaginationItem>
-          <PaginationItem>
-            <span className="px-3 py-1 rounded bg-white/10 text-xs">
-              {page}
-            </span>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => setPage((p) => (hasMore ? p + 1 : p))}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+
+      {items.length > 0 && (
+        <Pagination className="mt-6 flex justify-center">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className={page === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <span className="px-4 py-2 rounded bg-gray-100 text-gray-900 font-medium">
+                Page {page}
+              </span>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setPage((p) => (hasMore ? p + 1 : p))}
+                className={!hasMore ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }
