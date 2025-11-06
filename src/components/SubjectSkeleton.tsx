@@ -2,9 +2,39 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function SubjectSkeleton() {
+const subjectColors: Record<string, { primary: string; secondary: string }> = {
+  Mathematics: {
+    primary: "#6B21A8",
+    secondary: "#A855F7",
+  },
+  Science: {
+    primary: "#B45309",
+    secondary: "#FACC15",
+  },
+  English: {
+    primary: "#166534",
+    secondary: "#4ADE80",
+  },
+  default: {
+    primary: "#991B1B",
+    secondary: "#F87171",
+  },
+
+  ExtraBlue: {
+    primary: "#1E3A8A",
+    secondary: "#60A5FA",
+  },
+};
+
+export default function SubjectSkeleton({ subject }: { subject?: string }) {
+  const colors = subjectColors[subject ?? ""] || subjectColors.default;
   return (
-    <div className="relative w-full min-h-screen bg-[#090E6C] text-foreground dark">
+    <div
+      className="relative w-full min-h-screen text-foreground dark transition-all duration-500"
+      style={{
+        background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+      }}
+    >
       {/* Animated background blobs */}
 
       {/* Page content skeleton */}

@@ -39,8 +39,8 @@ const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
             <defs>
               {/* Gradient fill */}
               <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#DF9AEE" stopOpacity={1} />
-                <stop offset="100%" stopColor="#DF9AEE" stopOpacity={0} />
+                <stop offset="0%" stopColor="#fff" stopOpacity={1} />
+                <stop offset="100%" stopColor="#fff" stopOpacity={0} />
               </linearGradient>
             </defs>
 
@@ -56,7 +56,7 @@ const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
                     x={x}
                     y={y + 18}
                     textAnchor="middle"
-                    fill="#DF9AEE"
+                    fill="#fff"
                     fontSize="10"
                   >
                     <tspan x={x} dy="-6">
@@ -74,7 +74,7 @@ const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
             <YAxis
               yAxisId="left"
               orientation="left"
-              tick={{ fill: "#DF9AEE", fontSize: 10 }}
+              tick={{ fill: "#fff", fontSize: 10 }}
               axisLine={{ stroke: "#fff/10" }}
               tickLine={false}
               tickCount={30}
@@ -83,7 +83,7 @@ const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
                 value: "Unique Curiosity Events",
                 angle: -90,
                 position: "insideLeft",
-                fill: "#DF9AEE",
+                fill: "#fff",
                 fontSize: 12,
                 dy: 90,
               }}
@@ -93,7 +93,7 @@ const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
             <YAxis
               yAxisId="right"
               orientation="right"
-              tick={{ fill: "#DF9AEE", fontSize: 10 }}
+              tick={{ fill: "#fff", fontSize: 10 }}
               axisLine={{ stroke: "#fff/10" }}
               tickLine={false}
               ticks={[0.0, 1.0, 2.0, 3.0]}
@@ -103,7 +103,7 @@ const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
                 value: "Average Followups",
                 angle: 90,
                 position: "insideRight",
-                fill: "#DF9AEE",
+                fill: "#fff",
                 fontSize: 12,
                 dy: 90,
               }}
@@ -112,7 +112,7 @@ const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
             <Tooltip
               contentStyle={{
                 backgroundColor: "rgba(30, 30, 30, 0.9)",
-                borderColor: "#DF9AEE",
+                borderColor: "#fff",
               }}
             />
 

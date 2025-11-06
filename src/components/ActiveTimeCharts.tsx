@@ -33,11 +33,14 @@ const ActiveTimeCharts: React.FC<ActiveTimeChartsProps> = ({ data }) => {
       .slice()
       .reverse() // Reverse to show oldest to newest
       .map((week) => {
-        const weekLabel = new Date(week.week_start).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        });
-        
+        const weekLabel = new Date(week.week_start).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "numeric",
+          }
+        );
+
         // Create data point with all subjects and moving average
         const dataPoint: Record<string, number | string> = {
           date: weekLabel,
@@ -93,21 +96,21 @@ const ActiveTimeCharts: React.FC<ActiveTimeChartsProps> = ({ data }) => {
             {/* X Axis */}
             <XAxis
               dataKey="date"
-              tick={{ fill: "#DF9AEE", fontSize: 10 }}
+              tick={{ fill: "#fff", fontSize: 10 }}
               axisLine={{ stroke: "#555" }}
               tickLine={false}
               label={{
                 value: "Week Start",
                 position: "insideBottom",
                 offset: 0,
-                fill: "#DF9AEE",
+                fill: "#fff",
                 fontSize: 12,
                 dy: 10,
               }}
             />
 
             <YAxis
-              tick={{ fill: "#DF9AEE", fontSize: 10 }}
+              tick={{ fill: "#fff", fontSize: 10 }}
               axisLine={{ stroke: "#555" }}
               tickLine={false}
               ticks={yAxisTicks}
@@ -117,7 +120,7 @@ const ActiveTimeCharts: React.FC<ActiveTimeChartsProps> = ({ data }) => {
                 dy: 30,
                 angle: -90,
                 position: "insideLeft",
-                fill: "#DF9AEE",
+                fill: "#fff",
                 fontSize: 12,
               }}
             />
@@ -125,7 +128,7 @@ const ActiveTimeCharts: React.FC<ActiveTimeChartsProps> = ({ data }) => {
             <Tooltip
               contentStyle={{
                 backgroundColor: "rgba(30,30,30,0.9)",
-                borderColor: "#DF9AEE",
+                borderColor: "#fff",
               }}
             />
 

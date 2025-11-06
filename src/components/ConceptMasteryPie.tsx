@@ -61,8 +61,8 @@ const renderActiveShape = (props: unknown) => {
       {/* Gradient behind center text */}
       <defs>
         <linearGradient id="centerGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(223, 154, 238, 0.5)" />
-          <stop offset="100%" stopColor="rgba(223, 154, 238, 0)" />
+          <stop offset="0%" stopColor="rgba(255, 255, 255, 0.5)" />
+          <stop offset="100%" stopColor="rgba(255, 255, 255, 0)" />
         </linearGradient>
       </defs>
 
@@ -90,13 +90,13 @@ const renderActiveShape = (props: unknown) => {
 
       {/* Center circle gradient */}
       <circle cx={cx} cy={cy} r={64} fill="url(#centerGradient)" />
-      <text x={cx} y={cy} textAnchor="middle" fill="#DF9AEE" fontSize={32}>
+      <text x={cx} y={cy} textAnchor="middle" fill="#090E6C" fontSize={32}>
         {displayPercent}%
       </text>
-      <text x={cx} y={cy + 12} textAnchor="middle" fill="#DF9AEE" fontSize={10}>
-     learning time on
+      <text x={cx} y={cy + 12} textAnchor="middle" fill="#090E6C" fontSize={10}>
+        learning time on
       </text>
-      <text x={cx} y={cy + 24} textAnchor="middle" fill="#DF9AEE" fontSize={10}>
+      <text x={cx} y={cy + 24} textAnchor="middle" fill="#090E6C" fontSize={10}>
         {payload?.name}
       </text>
     </g>
@@ -128,7 +128,9 @@ export default function ConceptMasteryPie({
         <TransitionVertical>
           <h1 className="font-light text-lg mb-2">Concept Mastery</h1>
         </TransitionVertical>
-        <p className="text-sm text-muted-foreground">No mastery data available</p>
+        <p className="text-sm text-muted-foreground">
+          No mastery data available
+        </p>
       </div>
     );
   }
@@ -139,7 +141,7 @@ export default function ConceptMasteryPie({
         <h1 className="font-light text-lg mb-2">Concept Mastery</h1>
       </TransitionVertical>
 
-      <div className="bg-gradient-to-b from-[#DF9AEE]/20 to-[#DF9AEE]/10 rounded-full">
+      <div className="bg-gradient-to-b from-[#fff]/20 to-[#fff]/10 rounded-full">
         <PieChart width={200} height={200}>
           <Pie
             data={data}

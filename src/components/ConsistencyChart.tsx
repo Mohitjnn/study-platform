@@ -10,8 +10,10 @@ type ConsistencyChartProps = {
 const ConsistencyChart: React.FC<ConsistencyChartProps> = ({ data }) => {
   const monthBreakdown = data.months_breakdown[0];
   const year = monthBreakdown?.year ?? new Date().getFullYear();
-  const month = monthBreakdown?.month ? monthBreakdown.month - 1 : new Date().getMonth();
-  
+  const month = monthBreakdown?.month
+    ? monthBreakdown.month - 1
+    : new Date().getMonth();
+
   // Use actual API data instead of random values
   const days = data.days.map((day) => ({
     date: new Date(day.date),
@@ -52,14 +54,14 @@ const ConsistencyChart: React.FC<ConsistencyChartProps> = ({ data }) => {
         <h2 className="text-lg  mb-3 text-white">Consistency</h2>
       </TransitionVertical>
 
-      <h1 className="text-[#DF9AEE] text-xs font-extralight mb-3">
+      <h1 className="text-[#fff] text-xs font-extralight mb-3">
         {monthBreakdown?.label ?? "Current Month"}
       </h1>
 
       {/* Weekday header */}
       <div className="w-full grid grid-cols-7 mb-2 text-center">
         {weekdays.map((day) => (
-          <div key={day} className="text-xs text-[#DF9AEE] text-center">
+          <div key={day} className="text-xs text-[#fff] text-center">
             {day}
           </div>
         ))}
@@ -78,7 +80,7 @@ const ConsistencyChart: React.FC<ConsistencyChartProps> = ({ data }) => {
                     backgroundColor: `rgba(223, 154, 238, ${getOpacity(
                       day.value
                     )})`,
-                    color: day.value > 5 ? "white" : "#DF9AEE",
+                    color: day.value > 5 ? "white" : "#fff",
                     border: "1px solid rgba(255,255,255,0.05)",
                   }}
                   title={`${day.date.getDate()}: ${day.value} pts`}
@@ -96,15 +98,15 @@ const ConsistencyChart: React.FC<ConsistencyChartProps> = ({ data }) => {
       <div className="w-full flex justify-around items-center mt-2">
         <div className="flex justify-between items-center w-1/3 gap-2">
           <div className="flex flex-col justify-center text-center gap-2 items-center">
-            <div className="w-7 h-3 bg-[#DF9AEE]/50"></div>
-            <h1 className="text-[10px] font-extralight text-[#DF9AEE]">
+            <div className="w-7 h-3 bg-[#fff]/50"></div>
+            <h1 className="text-[10px] font-extralight text-[#fff]">
               7-Day Streak
             </h1>
           </div>
 
           <div className="flex flex-col justify-center text-center gap-2 items-center">
-            <div className="w-7 h-3 bg-[#DF9AEE]"></div>
-            <h1 className="text-[10px] font-extralight text-[#DF9AEE]">
+            <div className="w-7 h-3 bg-[#fff]"></div>
+            <h1 className="text-[10px] font-extralight text-[#fff]">
               30 Day Streak
             </h1>
           </div>
@@ -114,22 +116,20 @@ const ConsistencyChart: React.FC<ConsistencyChartProps> = ({ data }) => {
 
         <div className="flex justify-between items-start w-2/3 gap-2">
           <div className="w-1/3 flex flex-col justify-start gap-2 items-center">
-            <div className="w-7 h-3 bg-[#DF9AEE]/10"></div>
-            <h1 className="text-[10px] font-extralight text-[#DF9AEE]">
-              0 min
-            </h1>
+            <div className="w-7 h-3 bg-[#fff]/10"></div>
+            <h1 className="text-[10px] font-extralight text-[#fff]">0 min</h1>
           </div>
 
           <div className="w-1/3 flex flex-col justify-start gap-2 items-start">
-            <div className="w-7 h-3 bg-[#DF9AEE]/50"></div>
-            <h1 className="text-[10px] font-extralight text-[#DF9AEE]">
+            <div className="w-7 h-3 bg-[#fff]/50"></div>
+            <h1 className="text-[10px] font-extralight text-[#fff]">
               Short Session
             </h1>
           </div>
 
           <div className="w-1/3 flex flex-col justify-center gap-2 items-start">
-            <div className="w-7 h-3 bg-[#DF9AEE]"></div>
-            <h1 className="text-[10px] font-extralight text-[#DF9AEE]">
+            <div className="w-7 h-3 bg-[#fff]"></div>
+            <h1 className="text-[10px] font-extralight text-[#fff]">
               Long Session
             </h1>
           </div>
@@ -138,12 +138,16 @@ const ConsistencyChart: React.FC<ConsistencyChartProps> = ({ data }) => {
 
       <div className="w-full h-px bg-white/20 my-3"></div>
       <div className="flex gap-3">
-        <div className="w-7 h-3 bg-[#DF9AEE]"></div>
-        <h1 className="text-[10px] font-extralight text-[#DF9AEE]">
+        <div className="w-7 h-3 bg-[#fff]"></div>
+        <h1 className="text-[10px] font-extralight text-[#fff]">
           {data.summary.streaks.longest.length > 0
-            ? `Your longest streak was ${data.summary.streaks.longest.length} days ${
+            ? `Your longest streak was ${
+                data.summary.streaks.longest.length
+              } days ${
                 data.summary.streaks.longest.start_date
-                  ? `starting ${new Date(data.summary.streaks.longest.start_date).toLocaleDateString('en-US', { month: 'long' })}`
+                  ? `starting ${new Date(
+                      data.summary.streaks.longest.start_date
+                    ).toLocaleDateString("en-US", { month: "long" })}`
                   : ""
               } — try breaking it!`
             : "Start your learning streak today!"}

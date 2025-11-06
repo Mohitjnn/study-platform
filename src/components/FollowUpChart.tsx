@@ -119,7 +119,7 @@ const FollowUpChart: React.FC<FollowUpChartProps> = ({ data: apiData }) => {
             <XAxis
               type="number"
               dataKey="x"
-              tick={{ fill: "#DF9AEE", fontSize: 12 }}
+              tick={{ fill: "#fff", fontSize: 12 }}
               domain={[0, maxSessions]}
               axisLine={{ stroke: "#ffffff20" }}
               tickLine={false}
@@ -127,14 +127,14 @@ const FollowUpChart: React.FC<FollowUpChartProps> = ({ data: apiData }) => {
                 value: "Session Count (Follow Ups)",
                 position: "insideBottom",
                 offset: -10,
-                fill: "#DF9AEE",
+                fill: "#fff",
                 fontSize: 12,
               }}
             />
             <YAxis
               type="number"
               dataKey="y"
-              tick={{ fill: "#DF9AEE", fontSize: 12 }}
+              tick={{ fill: "#fff", fontSize: 12 }}
               domain={[0, maxAvgMinutes]}
               axisLine={{ stroke: "#ffffff20" }}
               tickLine={false}
@@ -143,7 +143,7 @@ const FollowUpChart: React.FC<FollowUpChartProps> = ({ data: apiData }) => {
                 angle: -90,
                 position: "insideLeft",
                 offset: 20,
-                fill: "#DF9AEE",
+                fill: "#fff",
                 fontSize: 12,
               }}
             />
@@ -193,7 +193,7 @@ const FollowUpChart: React.FC<FollowUpChartProps> = ({ data: apiData }) => {
               className="w-2 h-2 rounded-full"
               style={{ backgroundColor: subject.color }}
             ></div>
-            <h1 className="text-xs text-[#DF9AEE]">{subject.name}</h1>
+            <h1 className="text-xs text-[#fff]">{subject.name}</h1>
           </div>
         ))}
       </div>

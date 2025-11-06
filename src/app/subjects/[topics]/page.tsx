@@ -26,7 +26,7 @@ export default async function Page({
   const { topics } = await params;
 
   return (
-    <Suspense fallback={<SubjectSkeleton />}>
+    <Suspense fallback={<SubjectSkeleton subject={topics} />}>
       <SubjectContent topics={topics} />
     </Suspense>
   );

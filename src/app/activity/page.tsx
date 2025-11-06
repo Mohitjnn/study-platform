@@ -19,7 +19,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
 
 const renderStars = (percentage: number) => {
-  const stars = Math.min(3, Math.max(0, Math.round(percentage / 33.33))); // Convert 0-100 to 0-3 stars
+  const stars = Math.min(3, Math.max(0, Math.round(percentage / 33.33)));
   return Array.from({ length: 3 }, (_, i) => (
     <Star
       key={i}
@@ -30,7 +30,6 @@ const renderStars = (percentage: number) => {
   ));
 };
 
-// Helper function to format duration
 const formatDuration = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
@@ -40,7 +39,6 @@ const formatDuration = (seconds: number): string => {
   return `${remainingSeconds}s`;
 };
 
-// Helper function to format date
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
@@ -51,16 +49,42 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-// Helper function to get subject icon and color
-const getSubjectDisplay = (subject: string) => {
-  const subjectLower = subject.toLowerCase();
-  if (subjectLower.includes("math")) {
-    return { icon: Target, color: "text-blue-500 bg-blue-50" };
-  } else if (subjectLower.includes("science")) {
-    return { icon: Brain, color: "text-green-500 bg-green-50" };
-  } else {
-    return { icon: BookOpen, color: "text-purple-500 bg-purple-50" };
-  }
+const subjectColors: Record<string, { primary: string; secondary: string }> = {
+  Mathematics: {
+    primary: "#6B21A8",
+    secondary: "#A855F7",
+  },
+  Science: {
+    primary: "#B45309",
+    secondary: "#FACC15",
+  },
+  English: {
+    primary: "#166534",
+    secondary: "#4ADE80",
+  },
+  default: {
+    primary: "#991B1B",
+    secondary: "#F87171",
+  },
+  ExtraBlue: {
+    primary: "#1E3A8A",
+    secondary: "#60A5FA",
+  },
+};
+
+const getSubjectGradient = (subject: string | null | undefined) => {
+  const safe = (subject || "").toString().trim();
+
+  const exact = subjectColors[safe];
+  if (exact)
+    return `linear-gradient(135deg, ${exact.primary}, ${exact.secondary})`;
+
+  const found = Object.keys(subjectColors).find((key) =>
+    safe.toLowerCase().includes(key.toLowerCase())
+  );
+
+  const { primary, secondary } = subjectColors[found || "default"];
+  return `linear-gradient(135deg, ${primary}, ${secondary})`;
 };
 
 interface ActivityCardProps {
@@ -72,17 +96,22 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
   const quiz = item.percentages.quiz || 0;
 
   return (
-    <div className="border-2 border-white/20 bg-[#3068C5] rounded-sm p-4 hover:shadow-md transition-shadow">
+    <div
+      className="border-2 border-white/20 rounded-sm p-4 hover:shadow-md transition-shadow"
+      style={{
+        background: getSubjectGradient(item.subject),
+      }}
+    >
       <div className="flex flex-col  items-start justify-between">
         <div className="flex items-center space-x-3 flex-1 mr-4">
           <div className="flex-1 min-w-0">
             <h3 className="text-white text-lg font-bold ">
               {item.topic_title}
             </h3>
-            <p className="text-xs tracking-wide mb-2 mt-1">
+            <p className="text-xs tracking-wide mb-2 mt-1 text-white/80">
               {item.subject} • {item.sub_topic}
             </p>
-            {/* Summary */}
+
             <p className="text-xs tracking-wide text-white my-2 leading-relaxed w-full">
               {item.summary}
             </p>
@@ -97,7 +126,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
             </div>
             <div className="text-xs text-white/80">{item.time}</div>
           </div>
-          {/* Performance indicators */}
+
           <div className="space-y-1 w-full flex justify-between">
             {accuracy > 0 && (
               <div className="flex items-center lg:justify-end gap-4">
@@ -110,9 +139,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
 
             {quiz > 0 && (
               <div className="flex items-center gap-4">
-                <span className="text-xs text-muted-foreground">
-                  Quiz Score
-                </span>
+                <span className="text-xs text-white/80">Quiz Score</span>
                 <div className="flex items-center space-x-1">
                   {renderStars(quiz)}
                 </div>
@@ -172,7 +199,6 @@ const ActivityTimeline: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load initial data
   useEffect(() => {
     loadInitialData();
   }, []);
@@ -198,7 +224,6 @@ const ActivityTimeline: React.FC = () => {
       setLoadingMore(true);
       const nextWeek = await fetchWeeklyActivity({ weeks_back: currentWeek });
 
-      // Check if we have data for this week
       if (
         nextWeek.days.length === 0 ||
         nextWeek.days.every((day) => day.items.length === 0)
@@ -219,7 +244,6 @@ const ActivityTimeline: React.FC = () => {
 
   const router = useRouter();
 
-  // Scroll event handler for pagination
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -272,7 +296,7 @@ const ActivityTimeline: React.FC = () => {
         <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
 
         <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-        {/* <Navbar /> */}
+
         <div className="w-full mx-auto px-6 py-8">
           <motion.div
             className="mb-12 flex justify-between items-center"
@@ -351,7 +375,6 @@ const ActivityTimeline: React.FC = () => {
                 ))}
               </div>
 
-              {/* Loading more indicator */}
               {loadingMore && (
                 <div className="space-y-4 mt-8">
                   {Array.from({ length: 2 }).map((_, i) => (
@@ -360,7 +383,6 @@ const ActivityTimeline: React.FC = () => {
                 </div>
               )}
 
-              {/* End of timeline message */}
               {!hasMore && weeks.length > 0 && (
                 <div className="text-center py-8">
                   <p className="text-muted-foreground">
