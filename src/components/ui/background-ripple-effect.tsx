@@ -27,6 +27,7 @@ export const BackgroundRippleEffect = ({
         "dark:[--cell-border-color:var(--color-neutral-700)] dark:[--cell-fill-color:#090E6C] dark:[--cell-shadow-color:var(--color-neutral-800)]",
       )}
     >
+      <div className="absolute inset-0 bg-radial from-white/20 to-transparent left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-84 w-84 overflow-hidden blur-lg" />
       <div className="relative h-auto w-auto overflow-hidden">
         <div className="pointer-events-none absolute inset-0 z-[2] h-full w-full overflow-hidden" />
         <DivGrid
