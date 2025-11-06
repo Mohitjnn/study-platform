@@ -79,7 +79,7 @@ export default function PaymentHistorySection() {
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="mb-5 p-4 rounded-lg bg-white/10 flex flex-col gap-1"
+            className="mb-5 p-4 rounded-lg flex flex-col gap-1 bg-[#655DF1]"
           >
             <div className="flex justify-between text-sm">
               <span className="font-medium">
@@ -89,7 +89,7 @@ export default function PaymentHistorySection() {
             </div>
             <div className="flex justify-between text-sm">
               <span>Plan:</span>
-              <span>{item.plan_code.replace(/_/g, ' ')}</span>
+              <span>{item.plan_code.replace(/_/g, " ")}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span>Minutes:</span>

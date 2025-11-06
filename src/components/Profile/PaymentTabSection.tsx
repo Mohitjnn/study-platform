@@ -62,14 +62,15 @@ function PaymentForm() {
   ];
 
   async function handlePayment(selectedMinutes: string) {
-    const option = minuteOptions.find(opt => opt.value === selectedMinutes) ?? null;
+    const option =
+      minuteOptions.find((opt) => opt.value === selectedMinutes) ?? null;
     setSelectedPlan(option);
     setShowDialog(true);
   }
 
   async function confirmPayment() {
     if (!selectedPlan) return;
-    
+
     setFinalLoading(true);
     try {
       const res = await createPaymentIntent({ tokens: selectedPlan.value });
@@ -91,7 +92,7 @@ function PaymentForm() {
         {minuteOptions.map((opt) => (
           <div
             key={opt.value}
-            className="border rounded-lg p-6 flex flex-col gap-4"
+            className="border rounded-lg p-6 flex flex-col gap-4 bg-[#655DF1]"
           >
             <div className="text-center">
               <h2 className="text-2xl font-bold text-white">{opt.label}</h2>
@@ -149,10 +150,14 @@ function PaymentForm() {
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-sm opacity-80">PLAN</p>
-                      <h5 className="text-lg font-semibold">{selectedPlan.label}</h5>
+                      <h5 className="text-lg font-semibold">
+                        {selectedPlan.label}
+                      </h5>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-bold">₹{selectedPlan.price}</p>
+                      <p className="text-2xl font-bold">
+                        ₹{selectedPlan.price}
+                      </p>
                       <p className="text-sm opacity-80">/ Month</p>
                     </div>
                   </div>
@@ -162,7 +167,9 @@ function PaymentForm() {
 
             {/* Promo Code */}
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-center">Promo Code</h4>
+              <h4 className="text-lg font-semibold mb-3 text-center">
+                Promo Code
+              </h4>
               <div className="flex gap-2">
                 <Input
                   placeholder="Promo Code"

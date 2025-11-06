@@ -54,11 +54,9 @@ export default async function DashboardContent({ user }: { user: UserData }) {
   ]);
 
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark pt-5">
+    <div className="relative w-full min-h-screen bg-[#090E6C] text-foreground dark pt-5">
       {/* Background blobs */}
-      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-      
+
       <main className="relative w-full md:max-w-3xl md:mx-auto p-4 sm:p-6 lg:p-8 pb-20">
         {/* Welcome Section */}
         <div className="w-full flex items-center justify-between">
@@ -102,7 +100,9 @@ export default async function DashboardContent({ user }: { user: UserData }) {
                   <img src="images/hours.png" alt="img" />
                 </div>
                 <div>
-                  <SlotMachineCounter targetValue={overallStats.completedCourses}>
+                  <SlotMachineCounter
+                    targetValue={overallStats.completedCourses}
+                  >
                     <h1 className="text-2xl font-bold" />
                   </SlotMachineCounter>
                   <h1 className="text-xs font-light">Completed Courses</h1>
@@ -180,7 +180,7 @@ export default async function DashboardContent({ user }: { user: UserData }) {
           All Subjects
         </h1>
 
-        <div className="w-full gap-4 grid grid-cols-2">
+        <div className="w-full gap-4 grid grid-cols-1">
           {newSubjects.subjects.map((subject, index) => (
             <SubjectCard
               key={subject.subject}

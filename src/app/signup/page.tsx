@@ -83,7 +83,7 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] px-5 flex justify-center items-center">
+    <main className="h-full w-full bg-[#090E6C] px-5 flex justify-center items-center">
       <div className="w-full max-w-md relative">
         <AnimatedLottie />
 

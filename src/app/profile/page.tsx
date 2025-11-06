@@ -52,16 +52,13 @@ export default async function ProfilePage() {
   const payment = await createPaymentIntent({ tokens: "MINS_200" });
 
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark">
-      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
-
-      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-30 blur-3xl rounded-full"></div>
+    <div className="relative w-full min-h-screen bg-[#090E6C] text-foreground dark">
       {/* <Navbar title="Profile" showProfile={true} /> */}
 
       <main className="relative w-full md:max-w-3xl mx-auto py-6 sm:px-6 lg:px-8 z-10">
         <div className="mb-4 flex justify-between items-center px-5">
           <div className="w-1/3 flex">
-          <CategoryButton />
+            <CategoryButton />
             <MobileMenu />
           </div>
           <h1 className="text-2xl font-light text-foreground w-1/3 flex justify-center">
@@ -84,9 +81,7 @@ export default async function ProfilePage() {
                 <div className="space-y-3">
                   {/* Full Name */}
                   <div className="mt-7">
-                    <p className="text-base text-foreground mb-2">
-                      Full Name
-                    </p>
+                    <p className="text-base text-foreground mb-2">Full Name</p>
                     <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
                       <p className="font-light text-white/70 text-sm">
                         {user.full_name || "N/A"}
@@ -96,9 +91,7 @@ export default async function ProfilePage() {
 
                   {/* Email */}
                   <div>
-                    <p className="text-base text-foreground mb-2">
-                      Email
-                    </p>
+                    <p className="text-base text-foreground mb-2">Email</p>
                     <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
                       <p className="font-light text-white/70 text-sm">
                         {user.email}
@@ -108,9 +101,7 @@ export default async function ProfilePage() {
                   {/* Age */}
                   {user.age_years !== undefined && (
                     <div>
-                      <p className="text-base text-foreground mb-2">
-                        Age
-                      </p>
+                      <p className="text-base text-foreground mb-2">Age</p>
                       <div className="pl-2 text-white placeholder:text-white/60 border-2 border-white/10 rounded-md h-10 px-3 py-2 text-sm bg-white/10 backdrop-blur-md">
                         <p className="font-light text-white/70 text-sm">
                           {user.age_years}

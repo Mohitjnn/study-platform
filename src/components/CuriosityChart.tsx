@@ -19,7 +19,7 @@ const data = [
   { name: "4th week", uv: 60 },
 ];
 
-const CuriosityChart = ({ data }: {data:CuriosityChartData[]}) => {
+const CuriosityChart = ({ data }: { data: CuriosityChartData[] }) => {
   return (
     <div className="w-full border border-white/20 rounded-lg mt-7">
       <div className="pt-2">

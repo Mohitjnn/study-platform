@@ -4,11 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardSkeleton() {
   return (
-    <div className="relative w-full min-h-screen bg-[#010532] text-foreground dark pt-5">
-      {/* Background blobs */}
-      <div className="fixed top-24 left-[-100px] w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-      <div className="fixed bottom-[-100px] right-0 w-[400px] h-[400px] bg-[#DF9AEE] opacity-40 blur-3xl rounded-full"></div>
-      
+    <div className="relative w-full min-h-screen bg-[#090E6C] text-foreground dark pt-5">
       <main className="relative w-full md:max-w-3xl md:mx-auto p-4 sm:p-6 lg:p-8 pb-20">
         {/* Welcome Section Skeleton */}
         <div className="w-full flex items-center justify-between mb-5">
@@ -25,7 +21,7 @@ export default function DashboardSkeleton() {
         {/* Stats Section Skeleton */}
         <div className="flex flex-col justify-center items-center relative my-5">
           <div className="w-full h-px bg-gradient-to-r from-white/40 via-transparent to-white/40 my-2"></div>
-          
+
           {/* First row of stats */}
           <div className="flex items-center w-full">
             <div className="relative flex items-center gap-4 w-1/2 h-full p-2">

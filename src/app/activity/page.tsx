@@ -72,18 +72,18 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
   const quiz = item.percentages.quiz || 0;
 
   return (
-    <div className="border-2 border-white/20 rounded-lg p-4 hover:shadow-md transition-shadow">
+    <div className="border-2 border-white/20 bg-[#3068C5] rounded-sm p-4 hover:shadow-md transition-shadow">
       <div className="flex flex-col  items-start justify-between">
         <div className="flex items-center space-x-3 flex-1 mr-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-white/60 text-lg font-light ">
+            <h3 className="text-white text-lg font-bold ">
               {item.topic_title}
             </h3>
             <p className="text-xs tracking-wide mb-2 mt-1">
               {item.subject} • {item.sub_topic}
             </p>
             {/* Summary */}
-            <p className="text-xs tracking-wide text-white/60 my-2 leading-relaxed w-full">
+            <p className="text-xs tracking-wide text-white my-2 leading-relaxed w-full">
               {item.summary}
             </p>
           </div>
@@ -91,17 +91,17 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
 
         <div className="lg:text-right flex flex-col mt-1 gap-2 w-full">
           <div className="flex justify-between items-center w-full">
-            <div className="flex items-center lg:justify-end text-xs text-muted-foreground">
+            <div className="flex items-center lg:justify-end text-xs text-white/80">
               <Clock className="w-3 h-3 mr-1" />
               {formatDuration(item.duration_seconds)}
             </div>
-            <div className="text-xs text-muted-foreground">{item.time}</div>
+            <div className="text-xs text-white/80">{item.time}</div>
           </div>
           {/* Performance indicators */}
           <div className="space-y-1 w-full flex justify-between">
             {accuracy > 0 && (
               <div className="flex items-center lg:justify-end gap-4">
-                <span className="text-xs text-muted-foreground">Accuracy</span>
+                <span className="text-xs text-white/80">Accuracy</span>
                 <div className="flex items-center space-x-1">
                   {renderStars(accuracy)}
                 </div>
@@ -152,13 +152,13 @@ const TimelineSection: React.FC<TimelineSectionProps> = ({ day }) => {
 };
 
 const LoadingCard = () => (
-  <div className="bg-white/20 rounded-lg border border-border p-4 animate-pulse">
+  <div className="bg-[#3068C5]/20 rounded-lg border border-border p-4 animate-pulse">
     <div className="flex items-start space-x-3">
       <div className="w-8 h-8 bg-white/20 rounded-full"></div>
       <div className="flex-1">
-        <div className="h-4 bg-white/50 rounded w-3/4 mb-2"></div>
-        <div className="h-3 bg-white/50 rounded w-1/2 mb-2"></div>
-        <div className="h-3 bg-white/50 rounded w-full"></div>
+        <div className="h-4 bg-[#3068C5]/50 rounded w-3/4 mb-2"></div>
+        <div className="h-3 bg-[#3068C5]/50 rounded w-1/2 mb-2"></div>
+        <div className="h-3 bg-[#3068C5]/50 rounded w-full"></div>
       </div>
     </div>
   </div>
