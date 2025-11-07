@@ -5,24 +5,24 @@ import AnimatedTopicsLayout from "@/components/AnimatedTopicsLayout";
 const subjectColors: Record<string, { primary: string; secondary: string }> = {
   Mathematics: {
     primary: "#6B21A8",
-    secondary: "#A855F7",
+    secondary: "#4A1674",
   },
   Science: {
     primary: "#B45309",
-    secondary: "#FACC15",
+    secondary: "#7A3906",
   },
   English: {
     primary: "#166534",
-    secondary: "#4ADE80",
+    secondary: "#0F3F21",
   },
   default: {
     primary: "#991B1B",
-    secondary: "#F87171",
+    secondary: "#6B1212",
   },
 
   ExtraBlue: {
     primary: "#1E3A8A",
-    secondary: "#60A5FA",
+    secondary: "#13245A",
   },
 };
 

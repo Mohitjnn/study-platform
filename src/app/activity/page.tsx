@@ -94,6 +94,7 @@ interface ActivityCardProps {
 const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
   const accuracy = item.percentages.accuracy || 0;
   const quiz = item.percentages.quiz || 0;
+  const [viewmore, setViewmore] = useState(false);
 
   return (
     <div
@@ -102,51 +103,75 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
         background: getSubjectGradient(item.subject),
       }}
     >
-      <div className="flex flex-col  items-start justify-between">
-        <div className="flex items-center space-x-3 flex-1 mr-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-white text-lg font-bold ">
-              {item.topic_title}
-            </h3>
-            <p className="text-xs tracking-wide mb-2 mt-1 text-white/80">
-              {item.subject} • {item.sub_topic}
-            </p>
-
-            <p className="text-xs tracking-wide text-white my-2 leading-relaxed w-full">
-              {item.summary}
-            </p>
-          </div>
-        </div>
-
-        <div className="lg:text-right flex flex-col mt-1 gap-2 w-full">
-          <div className="flex justify-between items-center w-full">
-            <div className="flex items-center lg:justify-end text-xs text-white/80">
-              <Clock className="w-3 h-3 mr-1" />
-              {formatDuration(item.duration_seconds)}
+      <div className="flex flex-col items-start justify-between">
+        <div className="w-full">
+          <div className="flex gap-3 items-start">
+            <div className="w-10 h-10 bg-amber-600 mt-1"></div>
+            <div>
+              <h3 className="text-white text-lg font-bold ">
+                {item.topic_title}
+              </h3>
+              <p className="text-xs mb-2 mt-1 text-white/80">
+                {item.subject} • {item.sub_topic}
+              </p>
             </div>
-            <div className="text-xs text-white/80">{item.time}</div>
           </div>
 
-          <div className="space-y-1 w-full flex justify-between">
-            {accuracy > 0 && (
-              <div className="flex items-center lg:justify-end gap-4">
-                <span className="text-xs text-white/80">Accuracy</span>
-                <div className="flex items-center space-x-1">
-                  {renderStars(accuracy)}
-                </div>
-              </div>
-            )}
+          <p
+            onClick={() => {
+              setViewmore(!viewmore);
+            }}
+            className="text-sm underline mt-1 text-white/80"
+          >
+            {viewmore ? <>Show Less</> : <> Show More</>}
+          </p>
 
-            {quiz > 0 && (
-              <div className="flex items-center gap-4">
-                <span className="text-xs text-white/80">Quiz Score</span>
-                <div className="flex items-center space-x-1">
-                  {renderStars(quiz)}
-                </div>
-              </div>
-            )}
-          </div>
+          {viewmore ? (
+            <>
+              <p className="text-xs tracking-wide text-white my-2 leading-relaxed w-full">
+                {item.summary}
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
+
+        {viewmore ? (
+          <>
+            <div className="lg:text-right flex flex-col mt-1 gap-2 w-full">
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center lg:justify-end text-xs text-white/80">
+                  <Clock className="w-3 h-3 mr-1" />
+                  {formatDuration(item.duration_seconds)}
+                </div>
+                <div className="text-xs text-white/80">{item.time}</div>
+              </div>
+
+              <div className="space-y-1 w-full flex justify-between">
+                {accuracy > 0 && (
+                  <div className="flex items-center lg:justify-end gap-4">
+                    <span className="text-xs text-white/80">Accuracy</span>
+                    <div className="flex items-center space-x-1">
+                      {renderStars(accuracy)}
+                    </div>
+                  </div>
+                )}
+
+                {quiz > 0 && (
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs text-white/80">Quiz Score</span>
+                    <div className="flex items-center space-x-1">
+                      {renderStars(quiz)}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
