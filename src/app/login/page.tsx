@@ -10,6 +10,7 @@ import PasswordBasedLogin from "@/components/Login/PaswordLogin";
 import OtpBasedLogin from "@/components/Login/OtpLogin";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import AnimatedLottie from "@/components/AnimatedLottie";
+import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 
 type LoginMethod = "password" | "otp";
 
@@ -19,7 +20,8 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen w-full bg-[#090E6C] px-5 flex justify-center items-center py-8">
-      <div className="w-full max-w-md relative">
+      <BackgroundRippleEffect />
+      <div className="w-full max-w-md relative z-20">
         <AnimatedLottie />
 
         <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">

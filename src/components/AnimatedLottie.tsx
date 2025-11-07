@@ -37,10 +37,10 @@ export default function AnimatedLottie() {
       }}
     >
       <DotLottieReact
-        src="https://lottie.host/e3e00a38-9523-4947-868f-8d93c44d06dc/0lpmf3oIUY.lottie"
+        src="https://lottie.host/38c45396-5af3-4765-98b2-4a853a891e0d/LxroABG7MP.lottie"
         loop
         autoplay
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[45%] w-full overflow-hidden pointer-events-none"
       />
     </motion.div>
   );
