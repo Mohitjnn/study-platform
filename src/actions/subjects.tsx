@@ -39,10 +39,11 @@ interface TopicsResponse {
   topics: string[];
 }
 
-export async function fetchTopics({subject}: {subject: string}): Promise<string[]> {
+export async function fetchTopics({subject}: {subject: string}): Promise<{topic: string, color: string}[]> {
   try {
-    const response = await fetchFromAPI<{ topics: string[] }>(`/topics/topics?subject=${subject}`, { requiresAuth: true });
+    const response = await fetchFromAPI<{ topics: {topic: string,color: string}[] }>(`/topics/topics?subject=${subject}`, { requiresAuth: true });
     return response.topics;
+    
   } catch (error: unknown) {
     let message = 'Unknown error';
     if (error instanceof Error) {
@@ -120,10 +121,12 @@ export async function fetchAllTopicsWithSubTopics(): Promise<AllTopicsResponse> 
         try {
           // Fetch topics for this subject
           const topics = await fetchTopics({ subject });
-          
+          console.log("Fetched topics for subject", subject, topics);
+          const TopicNames = topics.map(t => t.topic);
+
           // For each topic, fetch its subtopics
           const topicsWithSubTopics = await Promise.all(
-            topics.map(async (topic) => {
+            TopicNames.map(async (topic) => {
               try {
                 const subtopicsResponse = await fetchSubTopics({ subject, topic });
                 return {
@@ -171,9 +174,10 @@ export async function fetchTopicsWithSubTopicsForSubject({subject}: {subject: st
   try {
     // Fetch topics for the subject
     const topics = await fetchTopics({ subject });
+    const TopicNames = topics.map(t => t.topic);
     // For each topic, fetch its subtopics
     const topicsWithSubTopics = await Promise.all(
-      topics.map(async (topic) => {
+      TopicNames.map(async (topic) => {
         try {
           const subtopicsResponse = await fetchSubTopics({ subject, topic });
           return {
