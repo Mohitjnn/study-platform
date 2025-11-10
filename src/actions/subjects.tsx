@@ -56,6 +56,7 @@ export async function fetchTopics({subject}: {subject: string}): Promise<{topic:
 interface SubTopicData {
   id: string;
   sub_topic: string;
+  image_url: string;
   learning_outcome: string;
 }
 

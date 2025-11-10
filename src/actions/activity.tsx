@@ -9,6 +9,8 @@ export interface ActivityItem {
   topic_title: string;
   topic_id: string;
   subject: string;
+  color: string;
+  image_url: string;
   sub_topic: string;
   summary: string;
   quiz_m: number;

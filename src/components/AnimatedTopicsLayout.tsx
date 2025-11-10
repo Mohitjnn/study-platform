@@ -181,7 +181,8 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
 
 
   return (
-    <div className="max-w-7xl mx-auto py-6 px-5">
+    <div className="max-w-7xl mx-auto py-6 px-5 ">
+      <div className="absolute inset-0 bg-radial from-white/20 to-transparent left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-72 w-72 overflow-hidden blur-lg z-0" />
       {/* Subject Title */}
       <motion.div
         className="mb-10 flex justify-between items-center"
@@ -189,7 +190,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="w-1/3 flex">
+        <div className="w-1/3 flex reltive z-10">
           <div
             onClick={() => {
               router.back();
@@ -273,7 +274,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
               <h2 className="text-lg font-light text-foreground">
                 {topicData.topic}
               </h2>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-slate-200 text-sm">
                 {topicData.subtopics.length} subtopic
                 {topicData.subtopics.length !== 1 ? "s" : ""} available
               </p>
@@ -286,7 +287,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
                   <motion.div
                     key={subtopic.id}
                     variants={subtopicVariants}
-                    className="flex-shrink-0 w-64 border border-gray-700 rounded-lg overflow-hidden"
+                    className="flex-shrink-0 w-64 border border-gray-100/20 elevated rounded-lg overflow-hidden"
                   >
                     {subtopic.image_url ? (
                       <img className="w-full h-40 bg-white/20" src={subtopic.image_url} alt={subtopic.sub_topic} />
@@ -299,7 +300,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
                         {subtopic.sub_topic}
                       </h3>
 
-                      <p className="text-xs lg:text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                      <p className="text-xs lg:text-sm text-slate-300 leading-relaxed line-clamp-3">
                         {subtopic.learning_outcome}
                       </p>
 

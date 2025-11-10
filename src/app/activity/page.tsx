@@ -72,9 +72,26 @@ const subjectColors: Record<string, { primary: string; secondary: string }> = {
   },
 };
 
-const getSubjectGradient = (subject: string | null | undefined) => {
-  const safe = (subject || "").toString().trim();
+// Dynamic color mapping based on API response (matching SubjectContent)
+const colorMapping: Record<string, { primary: string; secondary: string }> = {
+  blue: { primary: "#1E3A8A", secondary: "#13245A" },
+  green: { primary: "#166534", secondary: "#0F3F21" },
+  purple: { primary: "#6B21A8", secondary: "#4A1674" },
+  red: { primary: "#991B1B", secondary: "#6B1212" },
+  yellow: { primary: "#b48609ff", secondary: "#7A3906" },
+  default: { primary: "#1E3A8A", secondary: "#13245A" },
+};
 
+const getSubjectGradient = (item: ActivityItem) => {
+  // First, try to use the color from the API response
+  if (item.color) {
+    const apiColor = item.color.toLowerCase();
+    const mappedColors = colorMapping[apiColor] || colorMapping.default;
+    return `linear-gradient(135deg, ${mappedColors.primary}, ${mappedColors.secondary})`;
+  }
+
+  // Fallback to subject-based colors
+  const safe = (item.subject || "").toString().trim();
   const exact = subjectColors[safe];
   if (exact)
     return `linear-gradient(135deg, ${exact.primary}, ${exact.secondary})`;
@@ -100,13 +117,27 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ item }) => {
     <div
       className="border-2 border-white/20 rounded-sm p-4 hover:shadow-md transition-shadow"
       style={{
-        background: getSubjectGradient(item.subject),
+        background: getSubjectGradient(item),
       }}
     >
       <div className="flex flex-col items-start justify-between">
         <div className="w-full">
           <div className="flex gap-3 items-start">
-            <div className="w-10 h-10 bg-amber-600 mt-1"></div>
+            {item.image_url ? (
+              <div 
+                className="w-10 h-10 mt-1 rounded bg-cover bg-center bg-white/10"
+                style={{ 
+                  backgroundImage: `url(${item.image_url})` 
+                }}
+              />
+            ) : (
+              <div 
+                className="w-10 h-10 mt-1 rounded"
+                style={{
+                  background: getSubjectGradient(item)
+                }}
+              />
+            )}
             <div>
               <h3 className="text-white text-lg font-bold ">
                 {item.topic_title}

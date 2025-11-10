@@ -2,32 +2,34 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-const subjectColors: Record<string, { primary: string; secondary: string }> = {
-  Mathematics: {
-    primary: "#6B21A8",
-    secondary: "#A855F7",
-  },
-  Science: {
-    primary: "#B45309",
-    secondary: "#FACC15",
-  },
-  English: {
-    primary: "#166534",
-    secondary: "#4ADE80",
-  },
-  default: {
-    primary: "#991B1B",
-    secondary: "#F87171",
-  },
+// Use the same dynamic color mapping as SubjectContent
+const colorMapping: Record<string, { primary: string; secondary: string }> = {
+  blue: { primary: "#1E3A8A", secondary: "#13245A" },
+  green: { primary: "#166534", secondary: "#0F3F21" },
+  purple: { primary: "#6B21A8", secondary: "#4A1674" },
+  red: { primary: "#991B1B", secondary: "#6B1212" },
+  yellow: { primary: "#b48609ff", secondary: "#7A3906" },
+  default: { primary: "#1E3A8A", secondary: "#13245A" },
+};
 
-  ExtraBlue: {
-    primary: "#1E3A8A",
-    secondary: "#60A5FA",
-  },
+// Map common subject names to likely colors (best guess for skeleton)
+const subjectToColorMap: Record<string, string> = {
+  Mathematics: "blue",
+  Math: "blue",
+  Science: "green", 
+  Physics: "purple",
+  Chemistry: "red",
+  Biology: "green",
+  English: "red",
+  History: "yellow",
+  Geography: "blue",
 };
 
 export default function SubjectSkeleton({ subject }: { subject?: string }) {
-  const colors = subjectColors[subject ?? ""] || subjectColors.default;
+  // Try to predict color based on subject name, fallback to default
+  const predictedColor = subject ? subjectToColorMap[subject] || "default" : "default";
+  const colors = colorMapping[predictedColor];
+
   return (
     <div
       className="relative w-full min-h-screen text-foreground dark transition-all duration-500"
