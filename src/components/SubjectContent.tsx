@@ -10,7 +10,7 @@ const colorMapping: Record<string, { primary: string; secondary: string }> = {
   green: { primary: "#166534", secondary: "#0F3F21" },
   purple: { primary: "#6B21A8", secondary: "#4A1674" },
   red: { primary: "#991B1B", secondary: "#6B1212" },
-  yellow: { primary: "#d47d04", secondary: "#e88d0e" },
+  yellow: { primary: "#d96000", secondary: "#e88d0e" },
   default: { primary: "#1E3A8A", secondary: "#13245A" },
 };
 
