@@ -183,7 +183,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-6 px-5 ">
+    <div className="max-w-3xl mx-auto py-6 px-5 ">
       <div className="absolute inset-0 bg-radial from-white/20 to-transparent left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-72 w-72 overflow-hidden blur-lg z-0" />
       {/* Subject Title */}
       <motion.div

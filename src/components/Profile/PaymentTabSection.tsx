@@ -83,7 +83,7 @@ function PaymentForm() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col gap-6">
+    <div className="w-full max-w-3xl mx-auto flex flex-col gap-6">
       <h1 className="mt-7 text-center text-xl font-medium">
         Buy Study Minutes
       </h1>

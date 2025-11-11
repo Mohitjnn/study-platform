@@ -7,7 +7,7 @@ export default function TopicSearchWrapper() {
   const { isOpen } = useMobileMenu();
 
   return (
-    <div className={isOpen ? "hidden" : "block"}>
+    <div className={isOpen ? "hidden" : "block w-full"}>
       <TopicSearch />
     </div>
   );

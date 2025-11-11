@@ -122,7 +122,6 @@ export async function fetchAllTopicsWithSubTopics(): Promise<AllTopicsResponse> 
         try {
           // Fetch topics for this subject
           const topics = await fetchTopics({ subject });
-          console.log("Fetched topics for subject", subject, topics);
           const TopicNames = topics.map(t => t.topic);
 
           // For each topic, fetch its subtopics

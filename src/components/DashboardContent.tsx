@@ -71,7 +71,7 @@ export default async function DashboardContent({ user }: { user: UserData }) {
         </div>
 
         {/* Topic Search */}
-        <div className="z-10">
+        <div className="z-10 w-full">
           <TopicSearchWrapper />
         </div>
 

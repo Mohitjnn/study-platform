@@ -8,7 +8,7 @@ const colorMapping: Record<string, { primary: string; secondary: string }> = {
   green: { primary: "#166534", secondary: "#0F3F21" },
   purple: { primary: "#6B21A8", secondary: "#4A1674" },
   red: { primary: "#991B1B", secondary: "#6B1212" },
-  yellow: { primary: "#b48609ff", secondary: "#7A3906" },
+  yellow: { primary: "#c6a40dff", secondary: "#a22600ff" },
   default: { primary: "#1E3A8A", secondary: "#13245A" },
 };
 
@@ -17,6 +17,7 @@ const subjectToColorMap: Record<string, string> = {
   Mathematics: "blue",
   Math: "blue",
   Science: "green", 
+  "Social Science": "yellow",
   Physics: "purple",
   Chemistry: "red",
   Biology: "green",
@@ -27,12 +28,13 @@ const subjectToColorMap: Record<string, string> = {
 
 export default function SubjectSkeleton({ subject }: { subject?: string }) {
   // Try to predict color based on subject name, fallback to default
-  const predictedColor = subject ? subjectToColorMap[subject] || "default" : "default";
+  const decodedSubject = subject ? decodeURIComponent(subject) : "";
+  const predictedColor = decodedSubject ? subjectToColorMap[decodedSubject] || "default" : "default";
   const colors = colorMapping[predictedColor];
 
   return (
     <div
-      className="relative w-full min-h-screen text-foreground dark transition-all duration-500"
+      className="relative w-full  min-h-screen text-foreground dark transition-all duration-500"
       style={{
         background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
       }}
@@ -40,7 +42,7 @@ export default function SubjectSkeleton({ subject }: { subject?: string }) {
       {/* Animated background blobs */}
 
       {/* Page content skeleton */}
-      <div className="relative z-10 pt-5">
+      <div className="relative z-10 pt-5 max-w-3xl mx-auto">
         <div className="w-full p-4 sm:p-6 lg:p-8">
           {/* Header section skeleton */}
           <div className="mb-8">

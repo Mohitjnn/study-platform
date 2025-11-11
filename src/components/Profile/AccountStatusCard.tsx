@@ -94,7 +94,7 @@ export default function AccountStatusCard({ voiceMinutes = 0 }: AccountStatusCar
 
       {/* Change Plan Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="max-w-4xl bg-[#090E6C] text-white">
+        <DialogContent className="max-w-3xl bg-[#090E6C] text-white">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-center text-white">
               Choose Your Plan

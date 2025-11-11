@@ -58,6 +58,10 @@ const subjectColors: Record<string, { primary: string; secondary: string }> = {
     primary: "#B45309",
     secondary: "#FACC15",
   },
+  "Social Science": {
+    primary: "#b48609ff",
+    secondary: "#7A3906",
+  },
   English: {
     primary: "#166534",
     secondary: "#4ADE80",
@@ -317,7 +321,7 @@ const ActivityTimeline: React.FC = () => {
   if (loading) {
     return (
       <div className="relative w-full min-h-screen bg-black text-foreground dark">
-        <div className="max-w-4xl mx-auto px-6 py-8">
+        <div className="max-w-3xl mx-auto px-6 py-8">
           <motion.div
             className="mb-12 flex justify-between items-center"
             initial={{ opacity: 0, y: -30 }}
