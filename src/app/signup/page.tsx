@@ -57,7 +57,7 @@ export default function SignupPage() {
 
   if (isSuccess) {
     return (
-      <div className="h-full w-full bg-gradient-to-br from-[#010532] to-[#DF9AEE] px-5 flex justify-center items-center">
+      <div className="h-full w-full bg-gradient-to-br from-purple-700 to-purple-900 px-5 flex justify-center items-center">
         <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-20">
           <CardContent className="text-center space-y-6 pt-6">
             <div className="flex justify-center">
@@ -83,7 +83,7 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="h-full w-full bg-[#090E6C] px-5 flex justify-center items-center">
+    <main className="h-full w-full bg-gradient-to-br from-violet-900 to-violet-950 px-5 flex justify-center items-center">
       <div className="w-full max-w-md relative">
         <AnimatedLottie />
 

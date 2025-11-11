@@ -19,7 +19,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen w-full bg-[#090E6C] px-5 flex justify-center items-center py-8">
+    <main className="min-h-screen w-full bg-gradient-to-br from-violet-900 to-violet-950 px-5 flex justify-center items-center py-8">
       <BackgroundRippleEffect />
       <div className="w-full max-w-md relative z-20">
         <AnimatedLottie />

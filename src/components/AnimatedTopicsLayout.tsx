@@ -30,7 +30,8 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
   const [loadingSubtopic, setLoadingSubtopic] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [displayedTopics, setDisplayedTopics] = useState<TopicWithSubTopics[]>(topicsWithSubTopics);
+  const [displayedTopics, setDisplayedTopics] =
+    useState<TopicWithSubTopics[]>(topicsWithSubTopics);
   const router = useRouter();
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -63,31 +64,33 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
       const searchResults = await searchTopics({
         subject: subjectName,
         query: query.trim(),
-        limit: 20
+        limit: 20,
       });
 
       // Transform search results to match TopicWithSubTopics format
       const searchTopicsMap = new Map<string, SubTopicData[]>();
-      
-      searchResults.results.forEach(result => {
+
+      searchResults.results.forEach((result) => {
         if (!searchTopicsMap.has(result.topic)) {
           searchTopicsMap.set(result.topic, []);
         }
-        
+
         // Process all subtopics from the search result
-        result.subtopics.forEach(subtopic => {
+        result.subtopics.forEach((subtopic) => {
           searchTopicsMap.get(result.topic)?.push({
             id: subtopic.id,
             sub_topic: subtopic.sub_topic,
             image_url: subtopic.image_url ? subtopic.image_url : null,
-            learning_outcome: subtopic.learning_outcome
+            learning_outcome: subtopic.learning_outcome,
           });
         });
       });
 
-      const transformedResults: TopicWithSubTopics[] = Array.from(searchTopicsMap.entries()).map(([topic, subtopics]) => ({
+      const transformedResults: TopicWithSubTopics[] = Array.from(
+        searchTopicsMap.entries()
+      ).map(([topic, subtopics]) => ({
         topic,
-        subtopics
+        subtopics,
       }));
 
       setDisplayedTopics(transformedResults);
@@ -179,7 +182,6 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
     },
   };
 
-
   return (
     <div className="max-w-7xl mx-auto py-6 px-5 ">
       <div className="absolute inset-0 bg-radial from-white/20 to-transparent left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-72 w-72 overflow-hidden blur-lg z-0" />
@@ -200,7 +202,7 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
             <ChevronLeft />
           </div>
         </div>
-        <h1 className="text-2xl font-light text-foreground w-full flex justify-center">
+        <h1 className="text-3xl font-light text-foreground w-full flex justify-center">
           {decodeURIComponent(subjectName)}
         </h1>
 
@@ -218,7 +220,9 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
           <Input
             type="text"
-            placeholder={`Search topics in ${decodeURIComponent(subjectName)}...`}
+            placeholder={`Search topics in ${decodeURIComponent(
+              subjectName
+            )}...`}
             value={searchQuery}
             onChange={handleInputChange}
             className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60 focus:border-white/40"
@@ -253,7 +257,9 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
             className="text-center py-12"
           >
             <p className="text-white/70 text-lg">
-              {searchQuery.trim() ? `No topics found for "${searchQuery}"` : "No topics available"}
+              {searchQuery.trim()
+                ? `No topics found for "${searchQuery}"`
+                : "No topics available"}
             </p>
             {searchQuery.trim() && (
               <p className="text-white/50 mt-2">
@@ -263,76 +269,80 @@ const AnimatedTopicsLayout: React.FC<AnimatedTopicsLayoutProps> = ({
           </motion.div>
         ) : (
           displayedTopics.map((topicData, topicIndex) => (
-          <motion.section
-            key={`${topicData.topic}-${displayedTopics.length}`}
-            variants={topicSectionVariants}
-            className="space-y-3"
-            id={topicData.topic}
-          >
-            {/* Topic Header */}
-            <div className={"pl-3 border-l-6 border-grey-200"}>
-              <h2 className="text-lg font-light text-foreground">
-                {topicData.topic}
-              </h2>
-              <p className="text-slate-200 text-sm">
-                {topicData.subtopics.length} subtopic
-                {topicData.subtopics.length !== 1 ? "s" : ""} available
-              </p>
-            </div>
-
-            {/* Subtopics List */}
-            <div className="overflow-x-auto pb-4 scrollbar-hide">
-              <div className="flex gap-4 min-w-max scrollbar-hide">
-                {topicData.subtopics.map((subtopic, subtopicIndex) => (
-                  <motion.div
-                    key={subtopic.id}
-                    variants={subtopicVariants}
-                    className="flex-shrink-0 w-64 border border-gray-100/20 elevated rounded-lg overflow-hidden"
-                  >
-                    {subtopic.image_url ? (
-                      <img className="w-full h-40 bg-white/20" src={subtopic.image_url} alt={subtopic.sub_topic} />
-                    ) : (
-                      <div className="w-full h-40 bg-white/20" />
-                    )}
-
-                    <div className="p-4 space-y-3">
-                      <h3 className="text-sm lg:text-lg font-semibold text-foreground leading-tight line-clamp-2">
-                        {subtopic.sub_topic}
-                      </h3>
-
-                      <p className="text-xs lg:text-sm text-slate-300 leading-relaxed line-clamp-3">
-                        {subtopic.learning_outcome}
-                      </p>
-
-                      <div className="flex justify-end pt-2">
-                        <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="p-2 bg-white/20 rounded-full cursor-pointer"
-                          onClick={() => handleSubtopicClick(subtopic)}
-                        >
-                          {loadingSubtopic === subtopic.id ? (
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{
-                                duration: 1,
-                                repeat: Infinity,
-                                ease: "linear",
-                              }}
-                              className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
-                            />
-                          ) : (
-                            <Play className="h-4 w-4" />
-                          )}
-                        </motion.div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+            <motion.section
+              key={`${topicData.topic}-${displayedTopics.length}`}
+              variants={topicSectionVariants}
+              className="space-y-3"
+              id={topicData.topic}
+            >
+              {/* Topic Header */}
+              <div className={"pl-3 border-l-6 border-grey-200"}>
+                <h2 className="text-xl font-bold text-foreground">
+                  {topicData.topic}
+                </h2>
+                <p className="text-slate-200 text-sm">
+                  {topicData.subtopics.length} subtopic
+                  {topicData.subtopics.length !== 1 ? "s" : ""} available
+                </p>
               </div>
-            </div>
-          </motion.section>
-        ))
+
+              {/* Subtopics List */}
+              <div className="overflow-x-auto pb-4 scrollbar-hide">
+                <div className="flex gap-4 min-w-max scrollbar-hide">
+                  {topicData.subtopics.map((subtopic, subtopicIndex) => (
+                    <motion.div
+                      key={subtopic.id}
+                      variants={subtopicVariants}
+                      className="flex-shrink-0 w-64 border border-gray-100/20 elevated rounded-lg overflow-hidden"
+                    >
+                      {subtopic.image_url ? (
+                        <img
+                          className="w-full h-40 bg-white/20"
+                          src={subtopic.image_url}
+                          alt={subtopic.sub_topic}
+                        />
+                      ) : (
+                        <div className="w-full h-40 bg-white/20" />
+                      )}
+
+                      <div className="p-4 space-y-3">
+                        <h3 className="text-sm lg:text-lg font-semibold text-foreground leading-tight line-clamp-2">
+                          {subtopic.sub_topic}
+                        </h3>
+
+                        <p className="text-xs lg:text-sm text-slate-300 leading-relaxed line-clamp-3">
+                          {subtopic.learning_outcome}
+                        </p>
+
+                        <div className="flex justify-end pt-2">
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="p-2 bg-white/20 rounded-full cursor-pointer"
+                            onClick={() => handleSubtopicClick(subtopic)}
+                          >
+                            {loadingSubtopic === subtopic.id ? (
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{
+                                  duration: 1,
+                                  repeat: Infinity,
+                                  ease: "linear",
+                                }}
+                                className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                              />
+                            ) : (
+                              <Play className="h-4 w-4" />
+                            )}
+                          </motion.div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.section>
+          ))
         )}
       </motion.div>
     </div>
