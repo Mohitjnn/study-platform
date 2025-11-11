@@ -18,7 +18,7 @@ export default function Splash() {
   }, [router]);
 
   return (
-    <div className="h-screen flex text-center flex-col items-center justify-center bg-gradient-to-br from-purple-700 to-purple-900">
+    <div className="h-screen flex text-center flex-col items-center justify-center bg-gradient-to-br from-violet-900 to-violet-950">
       <motion.div
         initial={{ opacity: 1, y: 20, scale: 1.5 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
