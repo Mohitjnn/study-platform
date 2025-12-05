@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         hostname: "images.pexels.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "d22xc3szayx210.cloudfront.net",
+        pathname: "/**",
+      }
     ],
   },
 };

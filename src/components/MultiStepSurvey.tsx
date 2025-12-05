@@ -103,57 +103,55 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
 
   const nextStep = async () => {
     const currentStepQuestions = getCurrentStepQuestions();
-    let hasErrors = false;
-
-    // Manual validation for current step
+    
+    // Get field names for current step
+    const currentStepFields = currentStepQuestions.map(({ index }) => getFieldName(index));
+    
+    // Handle multi-choice validation before triggering form validation
     currentStepQuestions.forEach(({ question, index }) => {
       const fieldName = getFieldName(index);
-      const value = getValues(fieldName);
+      
+      if (question.answer_type === "multi_choice" && question.is_required) {
+        const selections = multiChoiceSelections[fieldName] || [];
+        if (selections.length === 0) {
+          setError(fieldName, {
+            type: "required",
+            message: "Please select at least one option",
+          });
+        } else {
+          // Set the form value for multi-choice to pass validation
+          setValue(fieldName, selections.join(","));
+          clearErrors(fieldName);
+        }
+      }
+    });
 
+    // Trigger validation for current step fields
+    const isStepValid = await trigger(currentStepFields);
+    
+    // Check if all required fields in current step are filled
+    let allRequiredFieldsFilled = true;
+    
+    currentStepQuestions.forEach(({ question, index }) => {
+      const fieldName = getFieldName(index);
+      
       if (question.is_required) {
         if (question.answer_type === "multi_choice") {
           const selections = multiChoiceSelections[fieldName] || [];
           if (selections.length === 0) {
-            setError(fieldName, {
-              type: "required",
-              message: "Please select at least one option",
-            });
-            hasErrors = true;
-          } else {
-            clearErrors(fieldName);
-          }
-        } else if (question.answer_type === "integer") {
-          const numValue = typeof value === "string" ? parseInt(value) : value;
-          if (
-            !value ||
-            (typeof value === "string" && isNaN(parseInt(value))) ||
-            (typeof numValue === "number" && numValue <= 0)
-          ) {
-            setError(fieldName, {
-              type: "required",
-              message: "Please enter a valid number",
-            });
-            hasErrors = true;
-          } else {
-            clearErrors(fieldName);
+            allRequiredFieldsFilled = false;
           }
         } else {
-          const stringValue =
-            typeof value === "string" ? value : String(value || "");
-          if (!value || stringValue.trim() === "") {
-            setError(fieldName, {
-              type: "required",
-              message: "This field is required",
-            });
-            hasErrors = true;
-          } else {
-            clearErrors(fieldName);
+          const value = getValues(fieldName);
+          if (!value || (typeof value === "string" && value.trim() === "")) {
+            allRequiredFieldsFilled = false;
           }
         }
       }
     });
 
-    if (!hasErrors && currentStep < totalSteps) {
+    // Only proceed if validation passes and all required fields are filled
+    if (isStepValid && allRequiredFieldsFilled && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -268,7 +266,12 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
           <div className="space-y-3">
             <RadioGroup
               value={String(watch(fieldName) || "")}
-              onValueChange={(value) => setValue(fieldName, value)}
+              onValueChange={(value) => {
+                setValue(fieldName, value);
+                if (question.is_required) {
+                  trigger(fieldName); // Trigger validation when value changes
+                }
+              }}
               className="lg:flex lg:space-x-4 lg:space-y-0 space-y-2"
             >
               {question.options?.map((option, optionIndex: number) => {
@@ -295,46 +298,69 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
                 );
               })}
             </RadioGroup>
+            {/* Hidden input for form validation */}
+            <input
+              type="hidden"
+              {...register(fieldName, {
+                required: question.is_required ? "Please select an option" : false
+              })}
+            />
           </div>
         );
 
       case "multi_choice":
         return (
-          <div className="lg:flex lg:space-x-4 lg:space-y-0 space-y-3">
-            {question.options?.map((option, optionIndex) => {
-              const optionValue =
-                typeof option === "string"
-                  ? option
-                  : option.value || option.label;
-              const optionLabel =
-                typeof option === "string"
-                  ? option
-                  : option.label || option.value;
+          <div className="space-y-3">
+            <div className="lg:flex lg:space-x-4 lg:space-y-0 space-y-3">
+              {question.options?.map((option, optionIndex) => {
+                const optionValue =
+                  typeof option === "string"
+                    ? option
+                    : option.value || option.label;
+                const optionLabel =
+                  typeof option === "string"
+                    ? option
+                    : option.label || option.value;
 
-              return (
-                <div key={optionIndex} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`${fieldName}-${optionIndex}`}
-                    checked={(multiChoiceSelections[fieldName] || []).includes(
-                      optionValue
-                    )}
-                    onCheckedChange={(checked) =>
-                      handleMultiChoiceChange(
-                        fieldName,
-                        optionValue,
-                        checked === true
-                      )
-                    }
-                  />
-                  <Label
-                    htmlFor={`${fieldName}-${optionIndex}`}
-                    className="text-sm font-normal cursor-pointer"
-                  >
-                    {optionLabel}
-                  </Label>
-                </div>
-              );
-            })}
+                return (
+                  <div key={optionIndex} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`${fieldName}-${optionIndex}`}
+                      checked={(multiChoiceSelections[fieldName] || []).includes(
+                        optionValue
+                      )}
+                      onCheckedChange={(checked) => {
+                        handleMultiChoiceChange(
+                          fieldName,
+                          optionValue,
+                          checked === true
+                        );
+                        if (question.is_required) {
+                          trigger(fieldName); // Trigger validation when selection changes
+                        }
+                      }}
+                    />
+                    <Label
+                      htmlFor={`${fieldName}-${optionIndex}`}
+                      className="text-sm font-normal cursor-pointer"
+                    >
+                      {optionLabel}
+                    </Label>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Hidden input for form validation */}
+            <input
+              type="hidden"
+              {...register(fieldName, {
+                required: question.is_required ? "Please select at least one option" : false,
+                validate: question.is_required ? () => {
+                  const selections = multiChoiceSelections[fieldName] || [];
+                  return selections.length > 0 ? true : "Please select at least one option";
+                } : undefined
+              })}
+            />
           </div>
         );
 
@@ -346,9 +372,15 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             min="0"
             step="1"
             {...register(fieldName, {
-              required: question.is_required ? "This field is required" : false,
+              required: question.is_required ? "Please enter a valid number" : false,
               valueAsNumber: true,
               min: { value: 0, message: "Please enter a positive number" },
+              validate: question.is_required ? (value) => {
+                if (!value && value !== 0) return "This field is required";
+                if (isNaN(Number(value))) return "Please enter a valid number";
+                if (Number(value) < 0) return "Please enter a positive number";
+                return true;
+              } : undefined
             })}
             className="bg-transparent border-white/20 placeholder:text-white/50"
             placeholder="Enter a number..."
@@ -362,6 +394,11 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             type="text"
             {...register(fieldName, {
               required: question.is_required ? "This field is required" : false,
+              validate: question.is_required ? (value) => {
+                const stringValue = String(value || "");
+                if (!value || stringValue.trim() === "") return "This field is required";
+                return true;
+              } : undefined
             })}
             className="bg-transparent border-white/20 placeholder:text-white/50"
             placeholder="Enter your answer..."
@@ -375,9 +412,14 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
             type="text"
             {...register(fieldName, {
               required: question.is_required ? "This field is required" : false,
+              validate: question.is_required ? (value) => {
+                const stringValue = String(value || "");
+                if (!value || stringValue.trim() === "") return "This field is required";
+                return true;
+              } : undefined
             })}
             className="bg-transparent border-white/20 placeholder:text-white/50"
-            placeholder="Enter comma-separated values (e.g. English,Hindi)"
+            placeholder="Enter comma-separated values (e.g. option A, option B)"
           />
         );
 
@@ -408,12 +450,12 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
           return (
             <div key={question.id} className="space-y-4">
               <Label htmlFor={fieldName} className="text-base font-medium">
-                {question.question_key}
+                {question.prompt}
                 {question.is_required && (
                   <span className="text-destructive ml-1">*</span>
                 )}
               </Label>
-              <p className="text-sm text-muted-foreground">{question.prompt}</p>
+              {/* <p className="text-sm text-muted-foreground">{question.prompt}</p> */}
               {renderQuestionInput(question, fieldName)}
 
               {error?.message && (
@@ -429,17 +471,17 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
   };
 
   return (
-    <div className="py-8 px-10 dark">
-      <div className="max-w-7xl mx-auto relative">
+    <div className="py-8 px-10 relative z-20">
+      <div className="w-full lg:max-w-3xl lg:mx-auto relative">
         {/* Background divs */}
-        <div className="absolute inset-0 -top-2 -left-4 -right-4 -bottom-4">
-          <div className="w-full h-[95%] bg-white/10 rounded-2xl transform rotate-[5deg]"></div>
+        <div className="absolute inset-0 -top-2 -left-2 -right-2 -bottom-4">
+          <div className="w-full h-[95%] bg-white/10 rounded-2xl transform rotate-[7deg]"></div>
         </div>
 
         <Card className="bg-white/10 border border-white/20 backdrop-blur-md text-white z-50">
           <CardHeader>
             <CardTitle className="text-2xl">{survey.title}</CardTitle>
-            <CardDescription>
+            <CardDescription className="text-white/60">
               Please answer all questions to complete the survey.
             </CardDescription>
           </CardHeader>
@@ -471,7 +513,7 @@ export default function MultiStepSurvey({ survey }: MultiStepSurveyProps) {
                   <Button
                     type="button"
                     onClick={nextStep}
-                    className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+                    className={`flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90`}
                   >
                     Next
                     <ChevronRight className="h-4 w-4" />
