@@ -12,7 +12,7 @@ import { useImagePolling } from "@/lib/hooks/useImagePolling";
 import { useConversationHandler } from "@/lib/hooks/useConversationHandler";
 import ConversationLoading from "./ConversationLoading";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { motion } from "framer-motion"; // <-- Import motion
+import { motion } from "framer-motion";
 
 interface Message {
   id: string;
@@ -43,7 +43,6 @@ interface ChatInterfaceProps {
   mode?: string;
 }
 
-// Configuration
 export default function ChatInterface({
   user,
   conversationId,
@@ -65,12 +64,10 @@ export default function ChatInterface({
     },
   ]);
 
-  // Audio State
   const [isRecording, setIsRecording] = useState(false);
-
-  // Refs
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const sessionStartedRef = useRef(false);
+  const audioAnalysisSetupRef = useRef(false); // ✅ Track if audio analysis is setup
 
   // Custom hooks
   const audioManagement = useAudioManagement();
@@ -79,10 +76,7 @@ export default function ChatInterface({
 
   // WebRTC data channel message handler
   const handleDataChannelMessage = (ev: DataChannelEvent) => {
-    // Handle image generation events
     imagePolling.maybeStartImagePollingFromEvent(ev);
-
-    // Handle conversation events
     conversationHandler.handleConversationEvent(ev);
   };
 
@@ -99,15 +93,13 @@ export default function ChatInterface({
     remoteAudioRef: audioManagement.remoteAudioRef,
   });
 
-  // Choose the appropriate connection based on mode
   const activeConnection =
     mode === "free-explore" ? freeExploreConnection : webrtcConnection;
 
-  // Auto-start session when conversationId is provided or in free explore mode
+  // Auto-start session
   useEffect(() => {
     const autoStartSession = async () => {
       if (mode === "free-explore") {
-        // For free explore mode, start immediately
         if (
           !activeConnection.isConnected &&
           !activeConnection.isConnecting &&
@@ -117,16 +109,11 @@ export default function ChatInterface({
           setIsLoading(false);
 
           try {
-            // Setup microphone first
             const micStream = await audioManagement.setupMicrophone();
-
-            // Start WebRTC session with mic stream
             await activeConnection.startSession(micStream);
-
-            // Setup audio analysis after connection
-            audioManagement.setupAudioAnalysis(activeConnection.isConnected);
           } catch (error) {
-            sessionStartedRef.current = false; // Reset on error
+            console.error('[ChatInterface] Error starting session:', error);
+            sessionStartedRef.current = false;
           }
         } else {
           setIsLoading(false);
@@ -142,70 +129,75 @@ export default function ChatInterface({
         setIsLoading(false);
 
         try {
-          // Setup microphone first
           const micStream = await audioManagement.setupMicrophone();
-          // Start WebRTC session with mic stream
           await activeConnection.startSession(micStream);
-          // Setup audio analysis after connection
-          audioManagement.setupAudioAnalysis(activeConnection.isConnected);
         } catch (error) {
-          sessionStartedRef.current = false; // Reset on error
+          console.error('[ChatInterface] Error starting session:', error);
+          sessionStartedRef.current = false;
         }
       } else {
         setIsLoading(false);
       }
     };
 
-    // Only run if we haven't started a session yet
     if (!sessionStartedRef.current) {
       const timer = setTimeout(autoStartSession, 500);
       return () => clearTimeout(timer);
     } else {
       setIsLoading(false);
     }
-  }, [conversationId, mode]); // Keep these dependencies but make session start more stable
+  }, [conversationId, mode]);
 
-  // Auto scroll to bottom when new messages are added
+  // ✅ FIXED: Setup audio analysis only once when connected
+  useEffect(() => {
+    if (
+      activeConnection.isConnected && 
+      audioManagement.micStreamRef.current &&
+      !audioAnalysisSetupRef.current
+    ) {
+      console.log('[ChatInterface] Setting up audio analysis (one-time)');
+      audioManagement.setupAudioAnalysis(true);
+      audioAnalysisSetupRef.current = true;
+    }
+    
+    // Reset flag when disconnected
+    if (!activeConnection.isConnected && audioAnalysisSetupRef.current) {
+      audioAnalysisSetupRef.current = false;
+    }
+  }, [activeConnection.isConnected, audioManagement.setupAudioAnalysis]); // ✅ Include stable setupAudioAnalysis
+
+  // Auto scroll to bottom
   useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Cleanup on unmount ONLY - remove dependencies to prevent re-runs
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       sessionStartedRef.current = false;
+      audioAnalysisSetupRef.current = false;
       if (mode === "free-explore" && "endSession" in activeConnection) {
         activeConnection.endSession();
       } else {
         activeConnection.cleanup();
       }
+      audioManagement.cleanupAudio();
     };
-  }, []); // Empty dependency array - only run on mount/unmount
+  }, []);
 
-  // Mic Control
   const toggleMic = () => {
     audioManagement.toggleMic(activeConnection.isConnected);
   };
 
-  // Cleanup function with dashboard navigation
-  const cleanup = async () => {
-    sessionStartedRef.current = false;
-    await activeConnection.cleanup();
-    audioManagement.cleanupAudio();
-    imagePolling.stopImagePolling();
-  };
-
-  // End session and navigate to dashboard
   const endSessionAndNavigate = async () => {
     sessionStartedRef.current = false;
+    audioAnalysisSetupRef.current = false;
 
-    // For free explore mode, call endSession to properly end the backend session
     if (mode === "free-explore" && "endSession" in activeConnection) {
       await activeConnection.endSession();
     } else {
-      // For regular mode, just cleanup
       await activeConnection.cleanup();
     }
 
@@ -214,7 +206,6 @@ export default function ChatInterface({
     router.push("/dashboard");
   };
 
-  // Show loading screen while initializing
   if (isLoading) {
     return <ConversationLoading />;
   }
@@ -228,34 +219,23 @@ export default function ChatInterface({
       </div>
 
       <div className="w-full flex justify-center md:h-[50vh]">
-        {/* --- ANIMATION WRAPPER --- */}
         <motion.div
-          className="relative" // For positioning
-          // This animate prop combines all our states
+          className="relative"
           animate={{
-            // 1. "Idle" Levitation
             y: ["-6px", "6px"],
-
-            // 2. Mute Opacity
             opacity: audioManagement.isMicOn ? 1 : 0.6,
-
-            // 3. Voice Pulse Scaling
-            // We only scale if the mic is on and there's audio
             scale:
               audioManagement.isMicOn && audioManagement.audioLevel > 5
-                ? 1 + audioManagement.audioLevel / 250 // Max scale 1.4
+                ? 1 + audioManagement.audioLevel / 250
                 : 1,
           }}
-          // Define transitions for each property
           transition={{
-            // Loop the levitation
             y: {
               repeat: Infinity,
               repeatType: "mirror",
               duration: 3,
               ease: "easeInOut",
             },
-            // Make scale and opacity changes quick and snappy
             opacity: { duration: 0.2 },
             scale: { duration: 0.1 },
           }}
@@ -263,29 +243,22 @@ export default function ChatInterface({
           <DotLottieReact
             src="https://lottie.host/a066e66f-168d-4331-9ec7-873ee59f5a45/2ueyRGjkNZ.lottie"
             loop
-            // 2. Play/Pause Lottie based on Mute State
             autoplay={audioManagement.isMicOn}
-            // Bonus: Speed up Lottie animation slightly with voice
             speed={
               audioManagement.isMicOn && audioManagement.audioLevel > 5
-                ? 1 + audioManagement.audioLevel / 100 // Max speed 2
+                ? 1 + audioManagement.audioLevel / 100
                 : 1
             }
           />
         </motion.div>
       </div>
 
-      {/* Add the current response text below globe */}
       <div className="text-center text-white/90 px-4 min-h-[100px] md:min-h-[50px]">
         {messages.length > 0 &&
           messages[messages.length - 1].role === "assistant" &&
           messages[messages.length - 1].content}
       </div>
 
-      {/* Remove or comment out the MessageList component */}
-      {/* <MessageList messages={messages} /> */}
-
-      {/* Controls Section */}
       <div className="flex justify-between items-center mt-20 md:mt-0">
         <div className="w-1/3"></div>
         <div className="w-1/3 flex justify-center">

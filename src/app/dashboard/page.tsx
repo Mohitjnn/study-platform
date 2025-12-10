@@ -4,6 +4,9 @@ import { Suspense } from "react";
 import DashboardSkeleton from "@/components/DashboardSkeleton";
 import DashboardContent from "@/components/DashboardContent";
 
+// Force dynamic rendering since this page uses cookies for authentication
+export const dynamic = 'force-dynamic';
+
 // Type definition for user data from API
 interface UserApiData {
   full_name?: string;

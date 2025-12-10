@@ -3,6 +3,9 @@ import SubjectCard from "@/components/PersonalCards/SubjectCard";
 import BackButton from "@/components/BackButton";
 import { fetchSubjectWithStats } from "@/actions/subjects";
 
+// Force dynamic rendering since this page uses cookies for authentication
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
   const subjectStats = await fetchSubjectWithStats();
 

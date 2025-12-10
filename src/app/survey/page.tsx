@@ -6,6 +6,9 @@ import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 
+// Force dynamic rendering since this page uses cookies
+export const dynamic = 'force-dynamic';
+
 export default async function SurveyPage() {
   const surveySlug = process.env.SURVEY_SLUG || "user_personalization_v2";
 

@@ -8,6 +8,9 @@ import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect
 import AccountStatusCard from "@/components/Profile/AccountStatusCard";
 import PaymentHistorySection from "@/components/Profile/PaymentHistorSection";
 
+// Force dynamic rendering since this page uses cookies for authentication
+export const dynamic = 'force-dynamic';
+
 type Survey = {
   submitted: boolean;
   slug: string;
