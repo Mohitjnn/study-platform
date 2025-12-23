@@ -26,7 +26,6 @@ interface PlanOption {
 
 export default function AccountStatusCard({ voiceMinutes = 0 }: AccountStatusCardProps) {
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(null);
   const [loading, setLoading] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [finalLoading, setFinalLoading] = useState(false);
@@ -54,6 +53,10 @@ export default function AccountStatusCard({ voiceMinutes = 0 }: AccountStatusCar
       text: "Best for ongoing support and deeper understanding.",
     },
   ];
+
+  const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(
+    planOptions[0]
+  );
 
   function handlePlanSelect(plan: PlanOption) {
     setSelectedPlan(plan);
@@ -111,7 +114,7 @@ export default function AccountStatusCard({ voiceMinutes = 0 }: AccountStatusCar
                     key={plan.value}
                     className={`rounded-xl p-2 cursor-pointer transition-all ${
                       selectedPlan?.value === plan.value
-                        ? 'border-b-purple-400 bg-purple-600/20'
+                        ? 'border-b-purple-400 bg-purple-600/80'
                         : ''
                     }`}
                     onClick={() => setSelectedPlan(plan)}

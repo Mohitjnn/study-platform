@@ -23,7 +23,6 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
   index = 0,
 }) => {
   const router = useRouter();
-
   const handleClick = () => {
     router.push(`/subjects/${name}`);
   };
@@ -49,12 +48,12 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
             <h1 className="font-semibold text-lg">{name}</h1>
             <ChevronRight size={20} className="text-white/70" />
           </div>
-          <Badge
+          {/* <Badge
             className=" px-2 py-1 font-semibold bg-[#655DF1] text-white border-none hover:bg-[#DF9AEE]/90"
             style={{ fontSize: "10px" }}
           >
-            {tag}
-          </Badge>
+            {tag.replace(/_/g, " ")}
+          </Badge> */}
         </div>
 
         <div className="w-full px-1 flex justify-between items-center">
@@ -65,7 +64,7 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
             />
           </div>
           <span className="text-xs text-green-400 font-medium ml-3">
-            {Math.round(progress)}%
+            {progress ? Math.round(progress) : 0}%
           </span>
         </div>
       </div>

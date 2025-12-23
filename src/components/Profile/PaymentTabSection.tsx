@@ -23,8 +23,7 @@ interface minuteOptions {
 
 function PaymentForm() {
   const [loading, setLoading] = useState<string | null>(null);
-  const [showDialog, setShowDialog] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<minuteOptions | null>(null);
+  const [showDialog, setShowDialog] = useState(true);
   const [promoCode, setPromoCode] = useState("");
   const [finalLoading, setFinalLoading] = useState(false);
 
@@ -60,6 +59,10 @@ function PaymentForm() {
       ],
     },
   ];
+
+  const [selectedPlan, setSelectedPlan] = useState<minuteOptions | null>(
+    minuteOptions[0]
+  );
 
   async function handlePayment(selectedMinutes: string) {
     const option =
