@@ -17,12 +17,16 @@ interface UseFreeExploreWebRTCProps {
   user: User;
   onDataChannelMessage: (event: DataChannelEvent) => void;
   remoteAudioRef: React.RefObject<HTMLAudioElement | null>;
+  micStreamRef: React.RefObject<MediaStream | null>; // Add processed stream ref
+  onAudioReconnection?: () => Promise<void>; // ✅ Add callback for audio reconnection
 }
 
 export const useFreeExploreWebRTC = ({
   user,
   onDataChannelMessage,
   remoteAudioRef,
+  micStreamRef, // Add processed stream ref
+  onAudioReconnection, // ✅ Add callback for audio reconnection
 }: UseFreeExploreWebRTCProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -32,7 +36,6 @@ export const useFreeExploreWebRTC = ({
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const dcRef = useRef<RTCDataChannel | null>(null);
-  const localStreamRef = useRef<MediaStream | null>(null);
   const isStartingRef = useRef(false); // Add this to prevent multiple starts
 
   const cleanup = useCallback(() => {
@@ -45,11 +48,6 @@ export const useFreeExploreWebRTC = ({
     setIsConnecting(false);
     setConnectionStatus("Disconnected");
     setSessionId(null);
-    
-    if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach(track => track.stop());
-      localStreamRef.current = null;
-    }
 
     if (pcRef.current) {
       pcRef.current.close();
@@ -98,97 +96,120 @@ export const useFreeExploreWebRTC = ({
         return;
       }
 
-      isStartingRef.current = true; // Set starting flag
+      isStartingRef.current = true;
       setIsConnecting(true);
       setConnectionStatus("Connecting...");
 
-      // Store mic stream in ref
-      if (micStream) {
-        localStreamRef.current = micStream;
-      }
-
       try {
-        // Create RTCPeerConnection with local variable (critical!)
         const pc = new RTCPeerConnection({
           iceServers: [
             { urls: "stun:stun.l.google.com:19302" },
+            { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "stun:stun.cloudflare.com:3478" },
           ],
+          iceCandidatePoolSize: 10,
         });
 
         // Store in ref for cleanup
         pcRef.current = pc;
 
-        // Create data channel BEFORE adding tracks
-        let dc: RTCDataChannel | null = null;
-        try {
-          dc = pc.createDataChannel("oai-events");
-          dcRef.current = dc;
-          
-          dc.onopen = () => { 
-            // Data channel opened
-          };
-          
-          dc.onclose = () => { 
-            // Data channel closed
-          };
-          
-          dc.onerror = (e) => { 
-            // Data channel error
-          };
-          
-          dc.onmessage = (e) => {
-            try {
-              const data = JSON.parse(e.data);
-              onDataChannelMessage(data);
-            } catch (error) {
-              // Error parsing data channel message
-            }
-          };
-        } catch (e) {
-          // Failed to create data channel
-        }
-
-        // Add microphone track if available
-        if (micStream) {
-          micStream.getTracks().forEach(track => {
-            pc.addTrack(track, micStream);
-          });
-        }
-
-        // Handle remote audio - EXACTLY like home.js
-        pc.ontrack = (event) => {
-          if (remoteAudioRef.current) {
-            remoteAudioRef.current.srcObject = event.streams[0];
-            const playPromise = remoteAudioRef.current.play();
-            if (playPromise && typeof playPromise.then === 'function') {
-              playPromise.catch((e) => {
-                // Autoplay blocked, waiting for user gesture
-              });
-            }
-          }
-        };
-
-        // Handle ICE candidates
-        pc.onicecandidate = (event) => {
-          // ICE candidate generated
-        };
-
-        // Connection state handler - NO CLEANUP on failure (like home.js)
+        // Connection state handler - match useWebRTCConnection behavior
         pc.onconnectionstatechange = () => {
-          setConnectionStatus(`Connection: ${pc.connectionState}`);
+          const state = pc.connectionState;
+          setConnectionStatus(`Connection: ${state}`);
           
-          if (pc.connectionState === 'connected') {
+          if (state === "connected") {
             setIsConnected(true);
             setIsConnecting(false);
-            isStartingRef.current = false; // Clear starting flag on success
-          } else if (pc.connectionState === 'connecting') {
-            // WebRTC connection in progress
+            isStartingRef.current = false;
+          } else if (
+            state === "disconnected" ||
+            state === "failed" ||
+            state === "closed"
+          ) {
+            // ✅ Handle audio reconnection before cleanup
+            if (onAudioReconnection && (state === "disconnected" || state === "failed")) {
+              onAudioReconnection().catch(console.warn);
+            }
+            cleanup();
           }
-          // NOTE: NOT calling cleanup on failed/disconnected like home.js
         };
 
-        // Create offer
-        const offer = await pc.createOffer();
+        pc.onicecandidate = () => {
+          // ICE candidate handling (no logging)
+        };
+
+        pc.oniceconnectionstatechange = () => {
+          // ICE state change handling (no logging)
+        };
+
+        // Handle remote audio - exactly like useWebRTCConnection
+        pc.ontrack = (event) => {
+          if (event.track.kind === "audio") {
+            event.track.onended = () => {};
+            event.track.onmute = () => {};
+            event.track.onunmute = () => {};
+
+            if (remoteAudioRef.current && event.streams.length > 0) {
+              const audioElement = remoteAudioRef.current;
+              audioElement.srcObject = event.streams[0];
+
+              audioElement.onloadstart = () => {};
+              audioElement.oncanplay = () => {};
+              audioElement.onplay = () => {};
+              audioElement.onplaying = () => {};
+              audioElement.onerror = () => {};
+              audioElement.onstalled = () => {};
+              audioElement.onwaiting = () => {};
+              audioElement.onsuspend = () => {};
+
+              audioElement.autoplay = true;
+              audioElement.muted = false;
+              audioElement.volume = 1.0;
+
+              audioElement.play().catch(() => {});
+            }
+          }
+        };
+
+        // Use processed microphone stream (with DTLN) like useWebRTCConnection
+        const processedStream = micStreamRef.current;
+        if (processedStream) {
+          const audioTrack = processedStream.getTracks()[0];
+          audioTrack.enabled = true;
+          pc.addTrack(audioTrack, processedStream);
+        }
+
+        // Create data channel EXACTLY like useWebRTCConnection
+        const dc = pc.createDataChannel("oai-events");
+        dcRef.current = dc;
+
+        dc.onopen = () => {};
+
+        dc.onerror = () => {};
+
+        dc.onclose = () => {};
+
+        dc.onmessage = (e) => {
+          try {
+            const ev = JSON.parse(e.data);
+
+            if (ev.type === "session.updated") {
+              setIsConnected(true);
+              setConnectionStatus("Connected");
+            }
+
+            onDataChannelMessage(ev);
+          } catch (error) {
+            // Silent error handling
+          }
+        };
+
+        // Create offer with same options as useWebRTCConnection
+        const offer = await pc.createOffer({
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: false,
+        });
         await pc.setLocalDescription(offer);
 
         // Exchange SDP using free explore endpoint
@@ -202,30 +223,21 @@ export const useFreeExploreWebRTC = ({
         }
 
         // Set remote description using LOCAL pc variable (NOT pcRef.current)
-        const answer = new RTCSessionDescription({ type: "answer", sdp: sdpAnswer });
+        const answer = { type: "answer" as RTCSdpType, sdp: sdpAnswer };
         await pc.setRemoteDescription(answer);
 
-        // Ensure playback after remote description is set (like home.js)
-        if (remoteAudioRef.current) {
-          try {
-            await remoteAudioRef.current.play();
-          } catch (e) {
-            // Autoplay after setRemoteDescription failed
-          }
-        }
-
-        // Set session ID AFTER successful connection
+        setIsConnecting(false);
         setSessionId(responseSessionId);
-        isStartingRef.current = false; // Clear starting flag on success
+        isStartingRef.current = false;
         
       } catch (error) {
-        isStartingRef.current = false; // Clear starting flag on error
+        isStartingRef.current = false;
         setIsConnecting(false);
         setConnectionStatus("Connection Failed");
-        // Don't call cleanup here - let user manually end session
+        await cleanup();
       }
     },
-    [isConnecting, isConnected, onDataChannelMessage, remoteAudioRef]
+    [isConnecting, isConnected, onDataChannelMessage, remoteAudioRef, cleanup]
   );
 
   return {

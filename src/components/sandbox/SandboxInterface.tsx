@@ -90,6 +90,7 @@ export const SandboxInterface: React.FC = () => {
     onDataChannelMessage: handleDataChannelMessage,
     remoteAudioRef: audioManagement.remoteAudioRef,
     config,
+    onAudioReconnection: audioManagement.handleReconnection, // ✅ Add audio reconnection handler
   });
 
   const handleConfigChange = (newConfig: Partial<SandboxConfig>) => {

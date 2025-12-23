@@ -19,6 +19,7 @@ interface UseSandboxWebRTCProps {
   onDataChannelMessage: (event: DataChannelEvent) => void;
   remoteAudioRef: React.RefObject<HTMLAudioElement | null>;
   config: SandboxConfig;
+  onAudioReconnection?: () => Promise<void>; // ✅ Add callback for audio reconnection
 }
 
 export const useSandboxWebRTC = ({
@@ -26,6 +27,7 @@ export const useSandboxWebRTC = ({
   onDataChannelMessage,
   remoteAudioRef,
   config,
+  onAudioReconnection, // ✅ Add callback for audio reconnection
 }: UseSandboxWebRTCProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -101,6 +103,10 @@ export const useSandboxWebRTC = ({
             setIsConnected(true);
             setIsConnecting(false);
           } else if (state === 'failed' || state === 'disconnected') {
+            // ✅ Handle audio reconnection before cleanup
+            if (onAudioReconnection && (state === "disconnected" || state === "failed")) {
+              onAudioReconnection().catch(console.warn);
+            }
             cleanup(true);
           }
         };

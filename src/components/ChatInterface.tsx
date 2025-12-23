@@ -85,12 +85,16 @@ export default function ChatInterface({
     onDataChannelMessage: handleDataChannelMessage,
     remoteAudioRef: audioManagement.remoteAudioRef,
     externalConversationId: conversationId,
+    onAudioReconnection: audioManagement.handleReconnection, // ✅ Add audio reconnection handler
+    // micStreamRef: audioManagement.micStreamRef,
   });
 
   const freeExploreConnection = useFreeExploreWebRTC({
     user,
     onDataChannelMessage: handleDataChannelMessage,
     remoteAudioRef: audioManagement.remoteAudioRef,
+    micStreamRef: audioManagement.micStreamRef, // Pass processed stream ref
+    onAudioReconnection: audioManagement.handleReconnection, // ✅ Add audio reconnection handler
   });
 
   const activeConnection =
