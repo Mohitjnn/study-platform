@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 // Type definition for user data from API
 interface UserApiData {
-  full_name?: string;
+  child_name?: string;
   survey?: {
     submitted: boolean;
   };
@@ -38,10 +38,10 @@ export default async function DashboardPage() {
   // Type-safe extraction of user data
   const userData: UserApiData = user && typeof user === "object" 
     ? { 
-        full_name: "full_name" in user ? user.full_name as string : undefined, 
+        child_name: "child_name" in user ? user.child_name as string : undefined, 
         survey: "survey" in user ? user.survey as { submitted: boolean } : undefined 
       }
-    : { full_name: undefined, survey: undefined };
+    : { child_name: undefined, survey: undefined };
 
   return (
     <Suspense fallback={<DashboardSkeleton />}>

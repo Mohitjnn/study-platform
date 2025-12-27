@@ -23,7 +23,7 @@ import TopicSearchWrapper from "./TopicSearchWrapper";
 import FloatingBotWrapper from "./FloatingBotWrapper";
 
 type UserData = {
-  full_name?: string;
+  child_name?: string;
   survey?: { submitted: boolean };
 };
 
@@ -60,8 +60,8 @@ export default async function DashboardContent({ user }: { user: UserData }) {
             <TransitionHorizontal>
               <h1 className="text-xl sm:text-3xl font-medium text-foreground">
                 Hi,{" "}
-                {typeof user?.full_name === "string" && user.full_name
-                  ? user.full_name
+                {typeof user?.child_name === "string" && user.child_name
+                  ? user.child_name
                   : "Student"}
                 !
               </h1>

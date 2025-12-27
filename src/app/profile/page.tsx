@@ -18,6 +18,7 @@ type Survey = {
 
 type UserType = {
   full_name?: string;
+  child_name?: string;
   email?: string;
   verified?: boolean;
   user_id?: string;
@@ -95,11 +96,22 @@ export default async function ProfilePage() {
                   {/* Full Name */}
                   <div>
                     <p className="text-sm font-medium text-gray-700 mb-2">
-                      Full Name
+                      Parent&apos;s Name
                     </p>
                     <div className="border border-gray-300 rounded-md px-4 py-2 bg-gray-50">
                       <p className="text-gray-900">
                         {user.full_name || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+
+                                    <div>
+                    <p className="text-sm font-medium text-gray-700 mb-2">
+                      Child&apos;s Name
+                    </p>
+                    <div className="border border-gray-300 rounded-md px-4 py-2 bg-gray-50">
+                      <p className="text-gray-900">
+                        {user.child_name || "N/A"}
                       </p>
                     </div>
                   </div>
